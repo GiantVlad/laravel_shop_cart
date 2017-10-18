@@ -2,26 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
-use App\RelatedProduct;
 use App\Order;
 use App\OrderData;
-use Illuminate\Http\Request;
+use App\Product;
+use App\RelatedProduct;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     public function post (Request $request)
     {
-        //All products has been removed (ajax)
-        if (isset($request->input) && ($request->input == 'emptyCart')) {
-            return view('empty-cart');
+        if (isset($request->input)) {
+            $request->validate([
+                'input' => 'string|min:5|max:30'
+            ]);
+            if ($request->input == 'emptyCart') { //All products has been removed (ajax)
+                return view('empty-cart');
+            } elseif ($request->input == 'removeRelated'){ //Related product has removed (ajax)
+                RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
+                return 'success';
+            }
         }
-        //Related product has removed (ajax)
-        if (isset($request->input) && ($request->input == 'removeRelated')) {
-            RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
-            return 'success';
-        }
+
+        $request->validate([
+            'productId.*' => 'required|integer|min:1|max:99999',
+            'related_product_id' => 'integer|max:99999',
+            'isRelatedProduct.*' => 'required|boolean',
+            'productQty.*' => 'required|integer|min:1|max:99'
+        ]);
 
         $result = $request->all();
 
@@ -43,7 +52,7 @@ class CartController extends Controller
             );
             $subtotal = 0;
             for ($i = 0; $i < $length; $i++) {
-                $price = Product::find( $result['productId'][$i] )->price;
+                $price = Product::find($result['productId'][$i])->price;
                 OrderData::insert(
                     [
                         'order_id' => $orderId,
@@ -66,7 +75,8 @@ class CartController extends Controller
         }
     }
 
-    public function index ()
+    public
+    function index ()
     {
         $product = Product::where('name', 'General product')->first();
         $product['is_related'] = 0;
@@ -77,7 +87,8 @@ class CartController extends Controller
         return view('cart', ['products' => array($product), 'relatedProduct' => $relatedProduct]);
     }
 
-    private function addRelatedProduct (Request $request)
+    private
+    function addRelatedProduct (Request $request)
     {
         $result = $request->all();
         array_push($result['productId'], $result['related_product_id']);

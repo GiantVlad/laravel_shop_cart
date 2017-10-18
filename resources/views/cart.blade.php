@@ -8,8 +8,17 @@
         </div>
     </div>
     <div class="product-form">
-        <form name="productCart" class="form-horizontal" action="/cart" method="POST">
+        <form name="productCart" class="form-horizontal" action="/cart" method="POST" data-toggle="validator">
             <div class="container">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 @foreach ($products as $product)
                     @include('product')

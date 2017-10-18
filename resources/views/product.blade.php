@@ -5,16 +5,17 @@
                                             width="304" height="236"
                                             src="{{ asset('images/'.$product['image']) }}"></a>
         </div>
-        <div class="col-6">
+        <div class="col-5">
             <h4>{{$product['name']}}</h4>
             <p>{{$product['description']}}</p>
             <button class="btn btn-link" name="delete{{$product['id']}}" value="{{$product['id']}}">Remove
             </button>
         </div>
-        <div class="col-1 form-group">
+        <div class="col-2 form-group">
             <label class="control-label" for="productQty{{$product['id']}}">QTY</label>
             <input type="text" class="form-control" name="productQty[]"
-                   id="productQty{{$product['id']}}" placeholder="QTY" value="{{$product['qty']}}">
+                   id="productQty{{$product['id']}}" placeholder="QTY" value="{{$product['qty']}}"
+                   >
         </div>
         <div class="col-1"><p>Price: <span id="price{{$product['id']}}">{{$product['price']}}</span></p>
         </div>
