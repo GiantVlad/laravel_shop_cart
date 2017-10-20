@@ -15,7 +15,7 @@
             <label class="control-label" for="productQty{{$product['id']}}">QTY</label>
             <input type="text" class="form-control" name="productQty[]"
                    id="productQty{{$product['id']}}" placeholder="QTY" value="{{$product['qty']}}"
-                   >
+                   min="1" max="99" required>
         </div>
         <div class="col-1"><p>Price: <span id="price{{$product['id']}}">{{$product['price']}}</span></p>
         </div>

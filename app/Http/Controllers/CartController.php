@@ -19,18 +19,25 @@ class CartController extends Controller
             ]);
             if ($request->input == 'emptyCart') { //All products has been removed (ajax)
                 return view('empty-cart');
-            } elseif ($request->input == 'removeRelated'){ //Related product has removed (ajax)
+            } elseif ($request->input == 'removeRelated') { //Related product has removed (ajax)
                 RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
                 return 'success';
             }
         }
 
-        $request->validate([
-            'productId.*' => 'required|integer|min:1|max:99999',
-            'related_product_id' => 'integer|max:99999',
-            'isRelatedProduct.*' => 'required|boolean',
-            'productQty.*' => 'required|integer|min:1|max:99'
-        ]);
+        $request->validate(
+            [
+                'productId.*' => 'required|integer|min:1|max:99999',
+                'related_product_id' => 'integer|max:99999',
+                'isRelatedProduct.*' => 'required|boolean',
+                'productQty.*' => 'required|integer|min:1|max:99'
+            ],
+            [
+                'productQty.*.required' => 'The Quantity field can not be blank.',
+                'productQty.*.integer'  => 'Quantity must be integer.',
+                'productQty.*.min' => 'Minimum of Quantity is 1 psc.',
+                'productQty.*.max' => 'Maximum of Quantity is 99 psc.'
+            ]);
 
         $result = $request->all();
 
