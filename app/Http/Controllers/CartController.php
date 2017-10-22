@@ -88,6 +88,9 @@ class CartController extends Controller
                 }
             }
             Order::where('id', $orderId)->update(['total' => $subtotal]);
+
+            if (session()->has('cart')) session()->forget('cart');
+
             return view('success');
         }
     }
@@ -98,7 +101,7 @@ class CartController extends Controller
         if (!session()->has('cart')) return view('empty-cart');
 
         $cart = session('cart');
-        $product = Product::find($cart['productId'])->first();
+        $product = Product::where('id', $cart['productId'])->first();
         $product['is_related'] = 0;
         $product['qty'] = $cart['productQty'];
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
