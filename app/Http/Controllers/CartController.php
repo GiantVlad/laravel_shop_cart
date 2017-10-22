@@ -95,19 +95,21 @@ class CartController extends Controller
         }
     }
 
-    public
-    function index ()
+    public function index ()
     {
-        if (!session()->has('cart')) return view('empty-cart');
-
-        $cart = session('cart');
-        $product = Product::where('id', $cart['productId'])->first();
-        $product['is_related'] = 0;
-        $product['qty'] = $cart['productQty'];
+        if (!session()->has('cartProducts')) return view('empty-cart');
+        var_dump(session()->all());
+        exit;
+        $cartProducts = session('cartProducts');
+        $products = [];
+        foreach ($cartProducts as $cartProduct) {
+            $products[] = Product::where('id', $cartProduct['productId'])->first();
+            $products[]['is_related'] = 0;
+            $products[]['qty'] = $cartProduct['productQty'];
+        }
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
-            ->where('product_id', '=', $product['id'])->orderBy('points', 'desc')->first();
-
-        return view('cart', ['products' => array($product), 'relatedProduct' => $relatedProduct]);
+            ->whereIn('product_id', '=', $products[]['id'])->orderBy('points', 'desc')->first();
+        return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct]);
     }
 
     public function addToCart (Request $request)
@@ -124,9 +126,28 @@ class CartController extends Controller
                 'productQty.max' => 'Maximum of Quantity is 99 psc.'
             ]);
 
-        session(['cart' =>
-            ['productId' => $request->get('productId'), 'productQty' => $request->get('productQty')]
-        ]);
+        $cartProducts = $request->session()->get('cartProducts');
+        $qty = $request->get('productQty');
+
+        //If product exist in the cart
+        if (!empty($cartProducts)) {
+            foreach ($cartProducts as $key => $cartProduct) {
+                if (!empty(
+                    array_intersect_assoc(['productId' => $request->get('productId')], $cartProduct)
+                )) {
+                    $qty += $cartProduct['productQty'];
+                    $cartProducts[$key] = ['productId' => $request->get('productId'), 'productQty' => $qty];
+                    $request->session()->forget('cartProducts');
+                    $request->session()->put('cartProducts', $cartProducts);
+
+                    return redirect('cart');
+                }
+            }
+        }
+
+        $request->session()->push('cartProducts',
+            ['productId' => $request->get('productId'), 'productQty' => $qty]
+        );
         return redirect('cart');
     }
 
