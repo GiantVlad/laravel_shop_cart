@@ -96,6 +96,7 @@ class CartController extends Controller
     function index ()
     {
         if (!session()->has('cart')) return view('empty-cart');
+
         $cart = session('cart');
         $product = Product::find($cart['productId'])->first();
         $product['is_related'] = 0;
