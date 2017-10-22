@@ -11,6 +11,16 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct ()
+    {
+        $this->middleware('auth');
+    }
+
     public function post (Request $request)
     {
         if (isset($request->input)) {
@@ -34,7 +44,7 @@ class CartController extends Controller
             ],
             [
                 'productQty.*.required' => 'The Quantity field can not be blank.',
-                'productQty.*.integer'  => 'Quantity must be integer.',
+                'productQty.*.integer' => 'Quantity must be integer.',
                 'productQty.*.min' => 'Minimum of Quantity is 1 psc.',
                 'productQty.*.max' => 'Maximum of Quantity is 99 psc.'
             ]);
@@ -85,17 +95,38 @@ class CartController extends Controller
     public
     function index ()
     {
-        $product = Product::where('name', 'General product')->first();
+        if (!session()->has('cart')) return view('empty-cart');
+        $cart = session('cart');
+        $product = Product::find($cart['productId'])->first();
         $product['is_related'] = 0;
-        $product['qty'] = 1;
+        $product['qty'] = $cart['productQty'];
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
             ->where('product_id', '=', $product['id'])->orderBy('points', 'desc')->first();
 
         return view('cart', ['products' => array($product), 'relatedProduct' => $relatedProduct]);
     }
 
-    private
-    function addRelatedProduct (Request $request)
+    public function addToCart (Request $request)
+    {
+        $request->validate(
+            [
+                'productId' => 'required|integer|min:1|max:99999',
+                'productQty' => 'required|integer|min:1|max:99'
+            ],
+            [
+                'productQty.required' => 'The Quantity field can not be blank.',
+                'productQty.integer' => 'Quantity must be integer.',
+                'productQty.min' => 'Minimum of Quantity is 1 psc.',
+                'productQty.max' => 'Maximum of Quantity is 99 psc.'
+            ]);
+
+        session(['cart' =>
+            ['productId' => $request->get('productId'), 'productQty' => $request->get('productQty')]
+        ]);
+        return redirect('cart');
+    }
+
+    private function addRelatedProduct (Request $request)
     {
         $result = $request->all();
         array_push($result['productId'], $result['related_product_id']);

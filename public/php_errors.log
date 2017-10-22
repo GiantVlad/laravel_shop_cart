@@ -1,0 +1,9 @@
+[22-Oct-2017 10:06:06 UTC] PHP Fatal error:  Uncaught ReflectionException: Class config does not exist in E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php:752
+Stack trace:
+#0 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php(752): ReflectionClass->__construct('config')
+#1 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php(631): Illuminate\Container\Container->build('config')
+#2 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php(586): Illuminate\Container\Container->resolve('config', Array)
+#3 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php(721): Illuminate\Container\Container->make('config', Array)
+#4 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php(110): Illuminate\Foundation\Application->make('config', Array)
+#5 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php(272): app('config')
+#6 E:\lerning\php_ii\vendor\laravel\framework\sr in E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php on line 752

@@ -14,7 +14,17 @@
 
 Route::post('/cart', 'CartController@post');
 
+Route::post('/cart/add-to-cart', 'CartController@addToCart');
+
 Route::get('/cart', 'CartController@index');
 
 Route::get('/', 'CartController@index');
 
+Route::get('/shop', 'ShopController@list');
+
+Route::get('shop/{id}', 'ShopController@get_product');
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

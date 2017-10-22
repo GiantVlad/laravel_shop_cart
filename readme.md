@@ -9,7 +9,7 @@ This is DEMO PHP application with AI.
 We have a cart-page with product and related product on the page.
 The related product, that has a more points than other products, will be received from a database automatically.
 If you add related product to the cart, this product will take 5 rating points.
-If you don't add related product to the cart, this product will miss 1 rating points.
+If you don't add related product to the cart, this product will miss 1 rating point.
 If you remove related product from the cart, this product will miss 3 rating points.
 
 1. Install [Composer](https://getcomposer.org/doc/00-intro.md)
