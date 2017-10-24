@@ -29,8 +29,21 @@ class CartController extends Controller
             ]);
             if ($request->input == 'emptyCart') { //All products has been removed (ajax)
                 return view('empty-cart');
-            } elseif ($request->input == 'removeRelated') { //Related product has removed (ajax)
+            } elseif ($request->input == 'removeRelated') { //Product has been removed (ajax)
                 RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
+                if (!session()->has('cartProducts')) {
+                    $cartProducts = session('cartProducts');
+                    foreach ($cartProducts as $key => $cartProduct) {
+                        if ($cartProduct['productId'] == $request->id) {
+                            array_splice($cartProducts, $key, 1);
+                            $request->session()->forget('cartProducts');
+                            $request->session()->put('cartProducts', $cartProducts);
+                            var_dump($request->session()->get());
+                            exit;
+                            break;
+                        }
+                    }
+                }
                 return 'success';
             }
         }
@@ -89,7 +102,7 @@ class CartController extends Controller
             }
             Order::where('id', $orderId)->update(['total' => $subtotal]);
 
-            if (session()->has('cart')) session()->forget('cart');
+            if (session()->has('cartProducts')) session()->forget('cartProducts');
 
             return view('success');
         }
@@ -98,17 +111,22 @@ class CartController extends Controller
     public function index ()
     {
         if (!session()->has('cartProducts')) return view('empty-cart');
-        var_dump(session()->all());
-        exit;
+
         $cartProducts = session('cartProducts');
         $products = [];
-        foreach ($cartProducts as $cartProduct) {
-            $products[] = Product::where('id', $cartProduct['productId'])->first();
-            $products[]['is_related'] = 0;
-            $products[]['qty'] = $cartProduct['productQty'];
+        $index = 0;
+        $productsIds = [];
+        foreach ($cartProducts as $key => $cartProduct) {
+            if ($key == 'total') continue;
+            $products[$index] = Product::where('id', $cartProduct['productId'])->first();
+            //$products[$index]->is_related = $cartProduct['isRelatedProduct'];
+            $products[$index]->qty = $cartProduct['productQty'];
+            $productsIds[] = $products[$index]->id;
+            $index++;
         }
+
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
-            ->whereIn('product_id', '=', $products[]['id'])->orderBy('points', 'desc')->first();
+            ->whereIn('product_id', $productsIds)->orderBy('points', 'desc')->first();
         return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct]);
     }
 
@@ -132,6 +150,7 @@ class CartController extends Controller
         //If product exist in the cart
         if (!empty($cartProducts)) {
             foreach ($cartProducts as $key => $cartProduct) {
+                if ($key == 'total') continue;
                 if (!empty(
                     array_intersect_assoc(['productId' => $request->get('productId')], $cartProduct)
                 )) {
@@ -145,8 +164,9 @@ class CartController extends Controller
             }
         }
 
+        $request->session()->put('cartProducts.total', 50);
         $request->session()->push('cartProducts',
-            ['productId' => $request->get('productId'), 'productQty' => $qty]
+            ['productId' => $request->get('productId'), 'productQty' => $qty, 'isRelatedProduct' => 0]
         );
         return redirect('cart');
     }
@@ -163,6 +183,11 @@ class CartController extends Controller
             $product['is_related'] = $result['isRelatedProduct'][$key];
             $product['qty'] = $result['productQty'][$key];
         }
+
+        //add to session
+        $request->session()->push('cartProducts',
+            ['productId' => $result['productId'], 'productQty' => $result['productQty'], 'isRelatedProduct' => $result['isRelatedProduct']]
+        );
 
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
             ->whereNotIn('products.id', $result['productId'])
