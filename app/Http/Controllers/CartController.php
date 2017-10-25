@@ -29,17 +29,24 @@ class CartController extends Controller
             ]);
             if ($request->input == 'emptyCart') { //All products has been removed (ajax)
                 return view('empty-cart');
-            } elseif ($request->input == 'removeRelated') { //Product has been removed (ajax)
-                RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
-                if (!session()->has('cartProducts')) {
-                    $cartProducts = session('cartProducts');
+            } elseif ($request->input == 'removeRow') { //Product has been removed (ajax)
+                if ($request->isRelated > 0) {
+                    RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
+                }
+
+                if ($request->session()->has('cartProducts')) {
+                    $cartProducts = $request->session()->get('cartProducts');
                     foreach ($cartProducts as $key => $cartProduct) {
+                        if ($key == 'total') continue;
+
                         if ($cartProduct['productId'] == $request->id) {
-                            array_splice($cartProducts, $key, 1);
+                            $cartProducts = array_splice($cartProducts, (1 + $key), 1);
+                            $cartProducts['total'] = $request->subtotal;
                             $request->session()->forget('cartProducts');
                             $request->session()->put('cartProducts', $cartProducts);
-                            var_dump($request->session()->get());
-                            exit;
+
+                            dd($request->session()->get('cartProducts'));
+
                             break;
                         }
                     }
@@ -47,6 +54,7 @@ class CartController extends Controller
                 return 'success';
             }
         }
+
 
         $request->validate(
             [
@@ -113,18 +121,21 @@ class CartController extends Controller
         if (!session()->has('cartProducts')) return view('empty-cart');
 
         $cartProducts = session('cartProducts');
+
         $products = [];
         $index = 0;
         $productsIds = [];
+
         foreach ($cartProducts as $key => $cartProduct) {
-            if ($key == 'total') continue;
-            $products[$index] = Product::where('id', $cartProduct['productId'])->first();
+
+            if ($key === 'total') continue;
+
+            $products[$index] = Product::find($cartProduct['productId']);
             //$products[$index]->is_related = $cartProduct['isRelatedProduct'];
             $products[$index]->qty = $cartProduct['productQty'];
             $productsIds[] = $products[$index]->id;
             $index++;
         }
-
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
             ->whereIn('product_id', $productsIds)->orderBy('points', 'desc')->first();
         return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct]);
@@ -158,13 +169,15 @@ class CartController extends Controller
                     $cartProducts[$key] = ['productId' => $request->get('productId'), 'productQty' => $qty];
                     $request->session()->forget('cartProducts');
                     $request->session()->put('cartProducts', $cartProducts);
-
+                    auth()->user()->cart = serialize(session()->get('cartProducts'));
+                    auth()->user()->save;
                     return redirect('cart');
                 }
             }
         }
 
-        $request->session()->put('cartProducts.total', 50);
+        $total = Product::find($request->get('productId'))->price * $qty;
+        $request->session()->put('cartProducts.total', $total);
         $request->session()->push('cartProducts',
             ['productId' => $request->get('productId'), 'productQty' => $qty, 'isRelatedProduct' => 0]
         );

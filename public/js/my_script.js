@@ -4,7 +4,7 @@ $(document).ready(function () {
         $('input[name^=productId]').each(function () {
             totalFunc($(this).val());
         });
-        subtotal();
+        $('#subtotal').text(subtotal());
         //Single product page
         singleTotal(1);
     }
@@ -33,10 +33,10 @@ $(document).ready(function () {
         productRow.remove();
         var CSRF_TOKEN = $('input[name=_token]').val();
         if ($('div').is('.product-row')) {
-            if (isRelated > 0) {
-                $.post('cart/', {input: "removeRelated", id: id, _token: CSRF_TOKEN});
-            }
-            subtotal();
+            var totalAmount = subtotal();
+            $('#subtotal').text(totalAmount);
+            $.post('cart/', {input: "removeRow", id: id, isRelated: isRelated, subtotal: totalAmount, _token: CSRF_TOKEN});
+            
         } else {
             $.post('cart/', {input: "emptyCart", _token: CSRF_TOKEN}, function (data) {
                 $("div.product-form").replaceWith(data);
@@ -51,13 +51,11 @@ $(document).ready(function () {
     }
 
     function subtotal() {
-        $('#subtotal').text('');
+        var totalAmount = 0;
         $('span[id^=total]').each(function () {
-            $('#subtotal').text(Math.round(100 *
-                (+$('#subtotal').text() + parseFloat($(this).text()))
-            ) / 100
-            );
+            totalAmount = Math.round( 100 *(totalAmount + parseFloat( $(this).text() )) ) / 100;
         });
+        return totalAmount;
     }
     init();
 });
