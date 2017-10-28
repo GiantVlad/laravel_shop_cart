@@ -35,7 +35,7 @@ $(document).ready(function () {
         if ($('div').is('.product-row')) {
             var totalAmount = subtotal();
             $('#subtotal').text(totalAmount);
-            $.post('cart/', {input: "removeRow", id: id, isRelated: isRelated, subtotal: totalAmount, _token: CSRF_TOKEN});
+            $.post('cart/', {input: "removeRow", productId: id, isRelated: isRelated, subtotal: totalAmount, _token: CSRF_TOKEN});
             
         } else {
             $.post('cart/', {input: "emptyCart", _token: CSRF_TOKEN}, function (data) {

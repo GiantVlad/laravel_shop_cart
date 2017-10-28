@@ -13,4 +13,8 @@ class Product extends Model
     {
         return $this->hasMany('App\RelatedProduct', 'related_product_id', 'id');
     }
+    public function getProductPriceById (int $id) {
+
+        return $this::find($id)->price;
+    }
 }

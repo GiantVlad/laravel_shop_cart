@@ -16,9 +16,11 @@ class CartController extends Controller
      *
      * @return void
      */
-    public function __construct ()
+    private $product;
+    public function __construct (Product $product)
     {
         $this->middleware('auth');
+        $this->product = $product;
     }
 
     public function post (Request $request)
@@ -29,32 +31,28 @@ class CartController extends Controller
             ]);
             if ($request->input == 'emptyCart') { //All products has been removed (ajax)
                 return view('empty-cart');
-            } elseif ($request->input == 'removeRow') { //Product has been removed (ajax)
-                if ($request->isRelated > 0) {
-                    RelatedProduct::where('related_product_id', $request->id)->increment('points', -3);
+            } elseif ($request->get('input') == 'removeRow') { //Product has been removed (ajax)
+                $productId = $request->get('productId');
+                if ($request->get('isRelated') > 0) {
+                    RelatedProduct::where('related_product_id', $productId)->increment('points', -3);
                 }
 
                 if ($request->session()->has('cartProducts')) {
+
                     $cartProducts = $request->session()->get('cartProducts');
-                    foreach ($cartProducts as $key => $cartProduct) {
-                        if ($key == 'total') continue;
 
-                        if ($cartProduct['productId'] == $request->id) {
-                            $cartProducts = array_splice($cartProducts, (1 + $key), 1);
-                            $cartProducts['total'] = $request->subtotal;
-                            $request->session()->forget('cartProducts');
-                            $request->session()->put('cartProducts', $cartProducts);
+                    if (array_key_exists($productId, $cartProducts)) {
 
-                            dd($request->session()->get('cartProducts'));
-
-                            break;
-                        }
+                        unset($cartProducts[$productId]);
+                        $cartProducts['total'] = $request->get('subtotal');
+                        $request->session()->forget('cartProducts');
+                        $request->session()->put('cartProducts', $cartProducts);
                     }
+                    return count($cartProducts);
                 }
-                return 'success';
+                return 0;
             }
         }
-
 
         $request->validate(
             [
@@ -121,7 +119,6 @@ class CartController extends Controller
         if (!session()->has('cartProducts')) return view('empty-cart');
 
         $cartProducts = session('cartProducts');
-
         $products = [];
         $index = 0;
         $productsIds = [];
@@ -130,8 +127,8 @@ class CartController extends Controller
 
             if ($key === 'total') continue;
 
-            $products[$index] = Product::find($cartProduct['productId']);
-            //$products[$index]->is_related = $cartProduct['isRelatedProduct'];
+            $products[$index] = Product::find($key);
+            $products[$index]->is_related = $cartProduct['isRelatedProduct'];
             $products[$index]->qty = $cartProduct['productQty'];
             $productsIds[] = $products[$index]->id;
             $index++;
@@ -156,30 +153,27 @@ class CartController extends Controller
             ]);
 
         $cartProducts = $request->session()->get('cartProducts');
+        $productId = $request->get('productId');
         $qty = $request->get('productQty');
-
+        $total = 0;
         //If product exist in the cart
         if (!empty($cartProducts)) {
-            foreach ($cartProducts as $key => $cartProduct) {
-                if ($key == 'total') continue;
-                if (!empty(
-                    array_intersect_assoc(['productId' => $request->get('productId')], $cartProduct)
-                )) {
-                    $qty += $cartProduct['productQty'];
-                    $cartProducts[$key] = ['productId' => $request->get('productId'), 'productQty' => $qty];
-                    $request->session()->forget('cartProducts');
-                    $request->session()->put('cartProducts', $cartProducts);
-                    auth()->user()->cart = serialize(session()->get('cartProducts'));
-                    auth()->user()->save;
-                    return redirect('cart');
-                }
+            $total = $cartProducts['total'];
+            if (array_key_exists($productId, $cartProducts)) {
+                $total += $this->product->getProductPriceById($productId) * $qty;
+                $cartProducts['total'] = $total;
+                $qty += $cartProducts[$productId]['productQty'];
+                $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
+                $request->session()->forget('cartProducts');
+                $request->session()->put('cartProducts', $cartProducts);
+                return redirect('cart');
             }
         }
 
-        $total = Product::find($request->get('productId'))->price * $qty;
+        $total += $this->product->getProductPriceById($request->get('productId')) * $qty;
         $request->session()->put('cartProducts.total', $total);
-        $request->session()->push('cartProducts',
-            ['productId' => $request->get('productId'), 'productQty' => $qty, 'isRelatedProduct' => 0]
+        $request->session()->put('cartProducts.'.$request->get('productId'),
+            ['productQty' => $qty, 'isRelatedProduct' => 0]
         );
         return redirect('cart');
     }
