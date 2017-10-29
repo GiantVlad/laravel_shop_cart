@@ -48,7 +48,7 @@ class CartController extends Controller
                         $request->session()->forget('cartProducts');
                         $request->session()->put('cartProducts', $cartProducts);
                     }
-                    return count($cartProducts);
+                    return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
                 }
                 return 0;
             }

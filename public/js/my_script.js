@@ -34,9 +34,17 @@ $(document).ready(function () {
         var CSRF_TOKEN = $('input[name=_token]').val();
         if ($('div').is('.product-row')) {
             var totalAmount = subtotal();
-            $('#subtotal').text(totalAmount);
-            $.post('cart/', {input: "removeRow", productId: id, isRelated: isRelated, subtotal: totalAmount, _token: CSRF_TOKEN});
-            
+            $.post('cart/', {
+                input: "removeRow",
+                productId: id,
+                isRelated: isRelated,
+                subtotal: totalAmount,
+                _token: CSRF_TOKEN
+            }).done(function (data) {
+                $('span#nav-items').text(data.items);
+                $('span#nav-total').text(data.total);
+                $('#subtotal').text(data.total);
+            });
         } else {
             $.post('cart/', {input: "emptyCart", _token: CSRF_TOKEN}, function (data) {
                 $("div.product-form").replaceWith(data);
@@ -53,9 +61,10 @@ $(document).ready(function () {
     function subtotal() {
         var totalAmount = 0;
         $('span[id^=total]').each(function () {
-            totalAmount = Math.round( 100 *(totalAmount + parseFloat( $(this).text() )) ) / 100;
+            totalAmount = Math.round(100 * (totalAmount + parseFloat($(this).text()))) / 100;
         });
         return totalAmount;
     }
+
     init();
 });
