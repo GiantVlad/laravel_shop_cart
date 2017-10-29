@@ -26,6 +26,22 @@ $(document).ready(function () {
         subtotal();
     });
 
+    $('button[name^=addFromShop]').on('click', function () {
+        var CSRF_TOKEN = $('input[name=_token]').val();
+        var id = $(this).val();
+        console.log(id);
+        $.post('cart/add-to-cart', {
+            productId: id,
+            isRelated: 0,
+            productQty: 1,
+            _token: CSRF_TOKEN
+        }).done(function (data) {
+            console.log(data);
+            $('span#nav-items').text(data.items);
+            $('span#nav-total').text(data.total);
+        });
+    });
+
     $('button[name^=delete]').on('click', function () {
         var id = $(this).val();
         var productRow = $(this).closest('div.product-row');

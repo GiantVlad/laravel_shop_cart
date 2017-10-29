@@ -11,7 +11,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
 </head>
-<body>
+<body style="padding-top: 70px;">
 <div id="app">
     @include('layouts.nav')
     @yield('content')

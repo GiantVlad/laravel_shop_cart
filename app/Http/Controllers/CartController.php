@@ -17,6 +17,7 @@ class CartController extends Controller
      * @return void
      */
     private $product;
+
     public function __construct (Product $product)
     {
         $this->middleware('auth');
@@ -166,15 +167,17 @@ class CartController extends Controller
                 $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
                 $request->session()->forget('cartProducts');
                 $request->session()->put('cartProducts', $cartProducts);
+                if ($request->ajax()) return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
                 return redirect('cart');
             }
         }
 
         $total += $this->product->getProductPriceById($request->get('productId')) * $qty;
         $request->session()->put('cartProducts.total', $total);
-        $request->session()->put('cartProducts.'.$request->get('productId'),
+        $request->session()->put('cartProducts.' . $request->get('productId'),
             ['productQty' => $qty, 'isRelatedProduct' => 0]
         );
+        if ($request->ajax()) return ['items' => (count($request->session()->get('cartProducts')) - 1), 'total' => $request->session()->get('cartProducts.total')];
         return redirect('cart');
     }
 
