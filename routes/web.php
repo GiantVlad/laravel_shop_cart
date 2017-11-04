@@ -24,6 +24,7 @@ Route::get('/shop', 'ShopController@list');
 
 Route::get('shop/{id}', 'ShopController@get_product');
 
+Route::post('search', 'SearchController@search');
 
 Auth::routes();
 
