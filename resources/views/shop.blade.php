@@ -15,11 +15,15 @@
 
                 <div class="col-md-4 col-sm-6">
                     <h5>{{$product->name}}</h5>
-                    <a href="shop/{{$product->id}}"><img class="img-thumbnail" alt="product id {{ $product->id }}"
-                                                         width="400" height="300"
-                                                         src="{{ asset('images/'.$product->image) }}">
-                    </a>
-
+                    <div class="thumbnail">
+                        <a href="{{ asset('shop/'.$product->id) }}">
+                            <div class="img-wrapper">
+                                <img class="center-block" alt="product id {{ $product->id }}"
+                                     height="300"
+                                     src="{{ asset('images/'.$product->image) }}">
+                            </div>
+                        </a>
+                    </div>
                     <p>Price: {{$product->price}}
                         <button class="btn btn-link" name="addFromShop{{ $product->id }}" value="{{ $product->id }}">
                             ADD TO CART

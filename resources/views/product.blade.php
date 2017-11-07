@@ -2,7 +2,7 @@
     <div class="row">
         <input type="hidden" name="productId[]" value="{{$product['id']}}">
         <div class="col-md-2"><a href="#"><img class="img-thumbnail" alt="product id {{ $product['id'] }}"
-                                            width="304" height="236"
+                                            height="240"
                                             src="{{ asset('images/'.$product['image']) }}"></a>
         </div>
         <div class="col-md-5">
