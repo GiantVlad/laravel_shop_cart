@@ -1,6 +1,8 @@
 @extends('app')
 
+
 @section('content')
+
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <h3 class="display-3">Shop</h3>

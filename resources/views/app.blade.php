@@ -14,6 +14,7 @@
 <body style="padding-top: 70px;">
 <div id="app">
     @include('layouts.nav')
+    @include('layouts.categories')
     @include('layouts.modal')
     @yield('content')
     <hr/>

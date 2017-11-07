@@ -22,6 +22,8 @@ Route::get('/', 'CartController@index');
 
 Route::get('/shop', 'ShopController@list');
 
+Route::get('shop/category/{id}', 'ShopController@get_child_catalogs');
+
 Route::get('shop/{id}', 'ShopController@get_product');
 
 Route::post('search', 'SearchController@search');
