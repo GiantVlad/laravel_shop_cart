@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    var baseUrl = document.location.origin;
+
     function init() {
         $('input[name^=productId]').each(function () {
             totalFunc($(this).val());
@@ -29,7 +31,7 @@ $(document).ready(function () {
     $('button[name^=addFromShop]').on('click', function () {
         var CSRF_TOKEN = $('input[name=_token]').val();
         var id = $(this).val();
-        $.post('cart/add-to-cart', {
+        $.post( baseUrl+'/cart/add-to-cart', {
             productId: id,
             isRelated: 0,
             productQty: 1,
@@ -61,7 +63,7 @@ $(document).ready(function () {
                 $('#subtotal').text(data.total);
             });
         } else {
-            $.post('cart/', {input: "emptyCart", _token: CSRF_TOKEN}, function (data) {
+            $.post( baseUrl+'/cart', {input: "emptyCart", _token: CSRF_TOKEN}, function (data) {
                 $("div.product-form").replaceWith(data);
             });
         }
@@ -84,7 +86,7 @@ $(document).ready(function () {
     $('button#nav-search-btn').on('click', function () {
         var token = $('meta[name="csrf-token"]').attr('content');
         var keyword = $('input#nav-search').val();
-        $.post('search', { _token: token, keyword: keyword}, function (data) {
+        $.post( baseUrl+'/search', { _token: token, keyword: keyword}, function (data) {
 
             $('div.modal-body').html(data.html);
 

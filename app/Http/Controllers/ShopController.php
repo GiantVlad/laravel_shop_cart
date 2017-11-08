@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\RelatedProduct;
 use App\Catalog;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
