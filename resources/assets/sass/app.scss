@@ -19,7 +19,7 @@ div.nav-search {
 
 .img-wrapper{
   width: 100%;
-  padding-bottom: 90%; /* your aspect ratio here! */
+  padding-bottom: 100%; /* your aspect ratio here! */
   position: relative;
 }
 
@@ -29,5 +29,5 @@ div.nav-search {
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 100%; /* optional: if you want the smallest images to fill the .thumbnail */
+  min-height: 200px; /* optional: if you want the smallest images to fill the .thumbnail */
 }
