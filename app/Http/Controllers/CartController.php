@@ -33,7 +33,9 @@ class CartController extends Controller
             if ($request->input == 'emptyCart') { //All products has been removed (ajax)
                 return view('empty-cart');
             } elseif ($request->get('input') == 'removeRow') { //Product has been removed (ajax)
+
                 $productId = $request->get('productId');
+
                 if ($request->get('isRelated') > 0) {
                     RelatedProduct::where('related_product_id', $productId)->increment('points', -3);
                 }
@@ -125,7 +127,6 @@ class CartController extends Controller
         $productsIds = [];
 
         foreach ($cartProducts as $key => $cartProduct) {
-
             if ($key === 'total') continue;
 
             $products[$index] = Product::find($key);
@@ -136,6 +137,7 @@ class CartController extends Controller
         }
         $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
             ->whereIn('product_id', $productsIds)->orderBy('points', 'desc')->first();
+
         return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct]);
     }
 
@@ -165,6 +167,7 @@ class CartController extends Controller
                 $cartProducts['total'] = $total;
                 $qty += $cartProducts[$productId]['productQty'];
                 $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
+                //dd($cartProducts);
                 $request->session()->forget('cartProducts');
                 $request->session()->put('cartProducts', $cartProducts);
                 if ($request->ajax()) return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];

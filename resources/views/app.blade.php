@@ -16,7 +16,17 @@
     @include('layouts.nav')
     @include('layouts.categories')
     @include('layouts.modal')
-    @yield('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2">
+                @yield('left-column')
+            </div>
+            <div class="col-lg-10">
+                @yield('content')
+            </div>
+        </div>
+    </div>
+
     <hr/>
     <footer class="footer" style="background-color: #eeeeee">
         <p class="text-center">Created by Uladzimir Sadkou hofirma@gmail.com</p>

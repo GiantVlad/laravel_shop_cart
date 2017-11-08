@@ -9,10 +9,8 @@
         </div>
     </div>
     <div class="container">
-        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="row">
             @foreach ($products as $product)
-
                 <div class="col-md-4 col-sm-6">
                     <h5>{{$product->name}}</h5>
                     <div class="thumbnail">

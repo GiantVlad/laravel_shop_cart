@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use App\RelatedProduct;
+use Illuminate\Support\Facades\View;
 use App\Catalog;
 use Illuminate\Http\Request;
 
@@ -56,6 +56,9 @@ class ShopController extends Controller
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
 
-        return view('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
+        $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
+        $view->nest('filter', 'layouts.filter');
+
+        return $view;
     }
 }
