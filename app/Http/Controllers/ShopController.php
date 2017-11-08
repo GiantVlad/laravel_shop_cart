@@ -38,6 +38,16 @@ class ShopController extends Controller
     {
         $child_catalogs = Catalog::where('parent_id', $id)->get();
 
+        $child_ids = [ (int)$id ];
+        $catalog_ids = [];
+        do {
+            $catalog_ids = array_merge($catalog_ids, $child_ids);
+            $child_ids = Catalog::whereIn('parent_id', $child_ids)->pluck('id')->toArray();
+        }
+        while ($child_ids);
+
+        $products = Product::whereIn('catalog_id', $catalog_ids)->get();
+
         $parent_id = $id;
         $parent_catalogs_array = [];
         while ($parent_id !== NULL) {
@@ -46,8 +56,6 @@ class ShopController extends Controller
             $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
-
-        $products = Product::where('catalog_id', $id)->get();
 
         return view('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
     }
