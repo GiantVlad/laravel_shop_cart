@@ -9,10 +9,11 @@
         </div>
     </div>
     <div class="container">
-        <div class="row">
+        <div class="row product-list">
             @foreach ($products as $product)
                 <div class="col-md-4 col-sm-6">
-                    <h5>{{$product->name}}</h5>
+                    <h4 class="header">{{$product->name}}</h4>
+                    <h4 class="header">{{$product->catalogs->name}}</h4>
                     <div class="thumbnail">
                         <a href="{{ asset('shop/'.$product->id) }}">
                             <div class="img-wrapper">

@@ -11,7 +11,8 @@ class SearchController extends Controller
     {
         $this->middleware('auth');
     }
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $keyword = $request->keyword;
 
         if ($keyword!='') {

@@ -12,4 +12,17 @@ class Catalog extends Model
     {
         return $this->hasMany('App\Product', 'catalog_id', 'id');
     }
+
+    public function get_catalog_ids_tree(int $id)
+    {
+        $child_ids = [$id];
+        $catalog_ids = [];
+        do {
+            $catalog_ids = array_merge($catalog_ids, $child_ids);
+            $child_ids = $this::whereIn('parent_id', $child_ids)->pluck('id')->toArray();
+        }
+        while ($child_ids);
+        return $catalog_ids;
+    }
 }
+

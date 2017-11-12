@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="product-form">
-        <form name="productCart" class="form-horizontal" action="/cart" method="POST" data-toggle="validator">
+        <form name="productCart" class="form-horizontal" action="{{asset('/cart')}}" method="POST" data-toggle="validator">
             <div class="container">
                 @include('layouts.error')
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

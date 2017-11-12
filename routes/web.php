@@ -28,6 +28,8 @@ Route::get('shop/{id}', 'ShopController@get_product');
 
 Route::post('search', 'SearchController@search');
 
+Route::post('filter', 'PropertyController@filter');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

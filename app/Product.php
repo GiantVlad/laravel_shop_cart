@@ -14,9 +14,14 @@ class Product extends Model
         return $this->hasMany('App\RelatedProduct', 'related_product_id', 'id');
     }
 
+    public function properties()
+    {
+        return $this->belongsToMany('App\Property', 'product_property');
+    }
+
     public function catalogs()
     {
-        return $this->belongsTo('App\Catalog', 'id','catalog_id');
+        return $this->belongsTo('App\Catalog', 'catalog_id','id');
     }
 
     public function getProductPriceById (int $id) {

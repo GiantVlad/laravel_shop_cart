@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Support\Facades\View;
 use App\Catalog;
+use App\Property;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -14,8 +15,10 @@ class ShopController extends Controller
      *
      * @return void
      */
-    public function __construct ()
+    private $catalog;
+    public function __construct (Catalog $catalog)
     {
+        $this->catalog = $catalog;
         $this->middleware('auth');
     }
 
@@ -37,27 +40,21 @@ class ShopController extends Controller
     {
         $child_catalogs = Catalog::where('parent_id', $id)->get();
 
-        $child_ids = [ (int)$id ];
-        $catalog_ids = [];
-        do {
-            $catalog_ids = array_merge($catalog_ids, $child_ids);
-            $child_ids = Catalog::whereIn('parent_id', $child_ids)->pluck('id')->toArray();
-        }
-        while ($child_ids);
+        $catalog_ids = $this->catalog->get_catalog_ids_tree((int) $id);
 
         $products = Product::whereIn('catalog_id', $catalog_ids)->get();
 
         $parent_id = $id;
         $parent_catalogs_array = [];
         while ($parent_id !== NULL) {
-            $parent_catalog = Catalog::find($parent_id);
+            $parent_catalog = $this->catalog::find($parent_id);
             $parent_id = $parent_catalog->parent_id;
             $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
 
         $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
-        $view->nest('filter', 'layouts.filter');
+        $view->nest('filter', 'layouts.filter', ['properties' => Property::all()]);
 
         return $view;
     }

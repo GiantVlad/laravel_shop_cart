@@ -30,7 +30,7 @@ $(document).ready(function () {
         $('#nav-total').text(subtotal());
     });
 
-    $('button[name^=addFromShop]').on('click', function () {
+    $(document).on('click', 'button[name^=addFromShop]', function () {
         var id = $(this).val();
         $.post(baseUrl + '/cart/add-to-cart', {
             productId: id,
@@ -38,7 +38,6 @@ $(document).ready(function () {
             productQty: 1,
             _token: token
         }).done(function (data) {
-            console.log(data);
             $('span#nav-items').text(data.items);
             $('span#nav-total').text(Math.round(100 * parseFloat(data.total)) / 100);
         });
@@ -93,6 +92,20 @@ $(document).ready(function () {
             $('div.modal-body').html(data.html);
 
             $("#searchModal").modal('toggle');
+        });
+    });
+
+    //filter
+    $('input[id^=filter]').on('change', function () {
+
+        var properties = $('input:checked[id^=filter]').map(function () {
+            return $(this).data('filter');
+        }).get();
+        if (properties.length < 1) properties = [];
+        var category = $('.active-catalog').data('id');
+        $.post(baseUrl + '/filter', {_token: token, properties: properties, category: category}, function (data) {
+            var products = $($.parseHTML( data.html )).find('div.product-list');
+            $('div.product-list').replaceWith(products);
         });
     });
     init();
