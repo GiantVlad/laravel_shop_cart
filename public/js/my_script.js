@@ -51,7 +51,7 @@ $(document).ready(function () {
         productRow.remove();
 
         var totalAmount = subtotal();
-        $.post( baseUrl + '/cart', {
+        $.post(baseUrl + '/cart', {
             input: "removeRow",
             productId: id,
             isRelated: isRelated,
@@ -60,7 +60,7 @@ $(document).ready(function () {
         }).done(function (data) {
             //ToDo redirect to empty Cart
             if (!$('div').is('.product-row')) {
-                $.post( baseUrl + '/cart', {input: "emptyCart", _token: token}, function (data) {
+                $.post(baseUrl + '/cart', {input: "emptyCart", _token: token}, function (data) {
                     $("div.product-form").replaceWith(data);
                 });
             }
@@ -96,17 +96,63 @@ $(document).ready(function () {
     });
 
     //filter
-    $('input[id^=filter]').on('change', function () {
-
+    function propertyFilter() {
         var properties = $('input:checked[id^=filter]').map(function () {
-            return $(this).data('filter');
+            var dataFilter = {};
+            dataFilter.property_value_id = $(this).data('filter');
+            return dataFilter;
         }).get();
+        var propertiesData =
+            $('input[id^=select-property-min-]')
+                .filter(function () {
+                    return this.value.length !== 0;
+                })
+                .map(function () {
+                    var dataFilter = {};
+                    dataFilter.property_id = $(this).data('filter');
+                    dataFilter.minValue = $(this).val();
+                    return dataFilter;
+                }).get();
+        if (propertiesData.length > 0) $.merge(properties, propertiesData);
+
+        propertiesData =
+            $('input[id^=select-property-max-][value!=""]')
+                .filter(function () {
+                    return this.value.length !== 0;
+                })
+                .map(function () {
+                    var dataFilter = {};
+                    dataFilter.property_id = $(this).data('filter');
+                    dataFilter.maxValue = $(this).val();
+                    return dataFilter;
+                }).get();
+
+        if (propertiesData.length > 0) {
+            $.each(properties, function (i, val) {
+                var result = $.grep(propertiesData, function (e) {
+                    return e.property_id == val.property_id;
+                });
+                if (result.length > 0) {
+                    $.extend(true, val, result[0]);
+                    //remove this form propertiesData
+                    propertiesData.splice( $.inArray(result[0], propertiesData), 1 );
+                }
+            });
+            $.merge(properties, propertiesData);
+        }
+
         if (properties.length < 1) properties = [];
         var category = $('.active-catalog').data('id');
         $.post(baseUrl + '/filter', {_token: token, properties: properties, category: category}, function (data) {
-            var products = $($.parseHTML( data.html )).find('div.product-list');
+            var products = $($.parseHTML(data.html)).find('div.product-list');
+            console.log($($.parseHTML(data.html)).find('.product-list'));
+
             $('div.product-list').replaceWith(products);
         });
-    });
+    }
+
+    $('input[id^=filter], input[id^=select-property-]').on('change', propertyFilter);
+
     init();
-});
+})
+;

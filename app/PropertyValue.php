@@ -4,7 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PropertyValues extends Model
+class PropertyValue extends Model
 {
-    //
+    protected $fillable = array('property_id', 'value', 'unit_id');
+
+    public function products()
+    {
+        return $this->belongsToMany('App\Product', 'product_property', 'property_value_id');
+    }
+
+    public function properties()
+    {
+        return $this->belongsTo('App\Property', 'property_id','id');
+    }
 }

@@ -52,9 +52,9 @@ class ShopController extends Controller
             $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
-
+        $properties = Property::orderBy('priority')->get();
         $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
-        $view->nest('filter', 'layouts.filter', ['properties' => Property::all()]);
+        $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 
         return $view;
     }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCartToUsers extends Migration
+class AddPriorityToPropertiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCartToUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->string('cart')->nullable();
+        Schema::table('properties', function (Blueprint $table) {
+            $table->string('priority')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddCartToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropColumn('cart');
+        Schema::table('properties', function (Blueprint $table) {
+            $table->dropColumn('priority');
         });
     }
 }

@@ -13,7 +13,12 @@
             @foreach ($products as $product)
                 <div class="col-md-4 col-sm-6">
                     <h4 class="header">{{$product->name}}</h4>
-                    <h4 class="header">{{$product->catalogs->name}}</h4>
+                    <p>Catalog: {{$product->catalogs->name}}</p>
+                    <p>Property:
+                        @foreach ($product->properties as $productProperty)
+                            {{$productProperty->value}}<br/>
+                        @endforeach
+                    </p>
                     <div class="thumbnail">
                         <a href="{{ asset('shop/'.$product->id) }}">
                             <div class="img-wrapper">

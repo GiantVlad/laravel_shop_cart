@@ -15,47 +15,19 @@ class PropertiesTableSeeder extends Seeder
         DB::table('properties')->truncate();
         DB::table('properties')->insert([
             [
-                'property_name_id' => 1,
                 'name' => 'manufacturer',
-                'value' => 'Canon',
+                'priority' => 0,
+                'type' => 'selector',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
             [
-                'property_name_id' => 1,
-                'name' => 'manufacturer',
-                'value' => 'Philips',
+                'name' => 'weight',
+                'priority' => 1,
+                'type' => 'number',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'property_name_id' => 1,
-                'name' => 'manufacturer',
-                'value' => 'Bosch',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'property_name_id' => 1,
-                'name' => 'manufacturer',
-                'value' => 'Nesquik',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'property_name_id' => 1,
-                'name' => 'manufacturer',
-                'value' => 'Rolex',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
-            [
-                'property_name_id' => 1,
-                'name' => 'manufacturer',
-                'value' => 'Ferrari',
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ],
+            ]
         ]);
     }
 }

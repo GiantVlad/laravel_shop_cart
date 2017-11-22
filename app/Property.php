@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
 {
-    protected $fillable = array('property_id', 'name', 'value', 'prop_group_id', 'unit_id');
+    protected $fillable = array('name', 'prop_group_id', 'priority', 'type');
 
-    public function products()
+    public function propertyValues()
     {
-        return $this->belongsToMany('App\Product', 'product_property');
+        return $this->hasMany('App\PropertyValue', 'property_id', 'id');
     }
 }
