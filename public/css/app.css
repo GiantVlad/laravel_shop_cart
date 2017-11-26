@@ -8355,19 +8355,57 @@ div.nav-search {
   padding-bottom: 7px;
 }
 
-.thumbnail img {
+.product-list .product-cart {
+  margin-bottom: 15px;
+}
+
+.product-list .product-cart .cart-wrapper {
+  border: 1px solid gray;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
+.product-list .product-cart .cart-wrapper .cart-header {
+  height: 6em;
+  position: relative;
+}
+
+.product-list .product-cart .cart-wrapper .cart-header .effect {
+  top: 55px;
+  position: absolute;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+  display: block;
+  width: 100%;
+  padding: 0 4px 0 4px;
+  height: 100%;
+}
+
+.product-list .product-cart .cart-wrapper .cart-header .effect .glyphicon {
+  vertical-align: top;
+  -webkit-transition: 0.6s ease-out;
+  transition: 0.6s ease-out;
+}
+
+.product-list .product-cart .cart-wrapper .cart-header .effect .spacer {
+  background-color: #fff;
+  height: 100%;
+}
+
+.product-list .product-cart .cart-wrapper .thumbnail img {
   max-width: 100%;
   /* do not stretch the bootstrap column */
 }
 
-.img-wrapper {
+.product-list .product-cart .cart-wrapper .img-wrapper {
   width: 100%;
   padding-bottom: 100%;
   /* your aspect ratio here! */
   position: relative;
 }
 
-.img-wrapper img {
+.product-list .product-cart .cart-wrapper .img-wrapper img {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -8375,5 +8413,9 @@ div.nav-search {
   right: 0;
   min-height: 200px;
   /* optional: if you want the smallest images to fill the .thumbnail */
+}
+
+.footer {
+  background-color: #eeeeee;
 }
 

@@ -50,13 +50,20 @@ class PropertyController extends Controller
                 $property_val_ids = $properties['property_val_ids'];
                 if ($property_val_ids) {
                     $query = $query->whereHas('properties', function ($q) use ($property_val_ids) {
-                        return $q->whereIn('property_value_id', $property_val_ids);
+                        $resp = $q->whereIn('property_value_id', $property_val_ids);
+                        //todo check it
+                        if ($resp) return $resp;
+                        return;
                     });
                 }
                 $conditions = $properties['conditions'];
                 foreach ($conditions as $condition) {
                     $query = $query->whereHas('properties', function ($q) use ($condition) {
-                        return $q->where($condition);
+                        //todo check it
+                        $resp = $q->where($condition);
+                        if ($resp) return $resp;
+                        return;
+
                     });
                 }
                 return $query;

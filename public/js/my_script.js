@@ -135,7 +135,7 @@ $(document).ready(function () {
                 if (result.length > 0) {
                     $.extend(true, val, result[0]);
                     //remove this form propertiesData
-                    propertiesData.splice( $.inArray(result[0], propertiesData), 1 );
+                    propertiesData.splice($.inArray(result[0], propertiesData), 1);
                 }
             });
             $.merge(properties, propertiesData);
@@ -154,5 +154,30 @@ $(document).ready(function () {
     $('input[id^=filter], input[id^=select-property-]').on('change', propertyFilter);
 
     init();
-})
-;
+
+    // animation effect in product list
+    $('div.content').on('click', '.effect', function () {
+        var value = $(this).closest('div.cart-wrapper').outerHeight() - 100;
+        if (!$(this).data('status')) {
+            console.log(value);
+            $(this).closest('div.cart-wrapper').find('.thumbnail').animate({'opacity': 0}, 'slow');
+            $(this).find('.glyphicon').css({
+                '-webkit-transform': 'rotateZ(180deg)', '-moz-transform': 'rotateZ(180deg)',
+                'transform': 'rotateZ(180deg)'
+            }, 'slow');
+            $(this).css({'z-index': '10', 'height': '1.5em'});
+            $(this).data('status', true);
+            $(this).animate({top: value}, {duration: 500, easing: 'easeOutExpo'});
+        } else {
+            $(this).css({'z-index': '0', 'height': '100%'});
+            $(this).animate({top: '55px'}, {duration: 500, easing: 'easeInExpo'});
+            $(this).find('.glyphicon').css({
+                '-webkit-transform': 'rotateZ(0deg)', '-moz-transform': 'rotateZ(0deg)',
+                'transform': 'rotateZ(0deg)'
+            }, 'slow');
+            $(this).closest('div.cart-wrapper').find('.thumbnail').animate({'opacity': 1}, 'slow');
+            $(this).data('status', false);
+        }
+    });
+
+});

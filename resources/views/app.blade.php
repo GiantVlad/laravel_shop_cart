@@ -21,14 +21,14 @@
             <div class="col-lg-2">
                 @yield('left-column')
             </div>
-            <div class="col-lg-10">
+            <div class="col-lg-10 content">
                 @yield('content')
             </div>
         </div>
     </div>
 
     <hr/>
-    <footer class="footer" style="background-color: #eeeeee">
+    <footer class="footer">
         <p class="text-center">Created by Uladzimir Sadkou hofirma@gmail.com</p>
     </footer>
 </div>
