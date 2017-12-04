@@ -20,7 +20,7 @@ class CartController extends Controller
 
     public function __construct (Product $product)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('logout');
         $this->product = $product;
     }
 

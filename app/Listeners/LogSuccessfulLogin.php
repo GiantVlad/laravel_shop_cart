@@ -28,6 +28,7 @@ class LogSuccessfulLogin
     public function handle(Login $event)
     {
         $user = auth()->user();
+        if (!$user) return;
         $cart = unserialize($user->cart);
         if ($cart) session()->put('cartProducts', $cart);
 

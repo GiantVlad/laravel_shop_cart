@@ -14,7 +14,6 @@ class PropertyController extends Controller
     public function __construct (Catalog $catalog)
     {
         $this->catalog = $catalog;
-        $this->middleware('auth');
     }
 
     public function filter (Request $request)

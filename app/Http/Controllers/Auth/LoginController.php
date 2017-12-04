@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -38,19 +39,24 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function logout(Request $request) {
+    public function logout (Request $request) {
 
         if (session()->has('cartProducts')) {
             $cartProductsString = serialize(session()->get('cartProducts'));
-            $user =auth()->user();
+            $user = auth()->user();
             $user->cart = $cartProductsString;
             $user->save();
         }
 
-        $this->guard()->logout();
+        Auth::guard('web')->logout();
         $request->session()->flush();
         $request->session()->regenerate();
 
         return redirect('/');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+
     }
 }
