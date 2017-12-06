@@ -32,8 +32,8 @@ Route::post('filter', 'PropertyController@filter');
 
 Auth::routes();
 Route::post('/users/logout', 'Auth\LoginController@logout')->name('user.logout');
-//ToDO create home page or not
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/test', function () {return view('test');} );
 
 Route::prefix('admin')->group( function() {
     Route::get('/', 'AdminController@index')->name('admin.dashboard');
@@ -46,4 +46,10 @@ Route::prefix('admin')->group( function() {
     Route::get('/password/reset', 'Auth\AdminForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
     Route::post('/password/reset', 'Auth\AdminResetPasswordController@reset');
     Route::get('/password/reset/{token}', 'Auth\AdminResetPasswordController@showResetForm')->name('admin.password.reset');
+
+
+    Route::get('/categories', 'AdminCategoriesController@list')->name('admin.categories');
+    Route::delete('/categories/{id}', 'AdminCategoriesController@delete');
+    Route::get('/add-category', 'AdminCategoriesController@showEditForm')->name('add-category');
+    Route::post('/categories', 'AdminCategoriesController@update');
 });

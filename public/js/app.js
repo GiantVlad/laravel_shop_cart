@@ -71,7 +71,7 @@
 
 
 var bind = __webpack_require__(3);
-var isBuffer = __webpack_require__(18);
+var isBuffer = __webpack_require__(19);
 
 /*global toString:true*/
 
@@ -381,7 +381,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(21);
+var normalizeHeaderName = __webpack_require__(22);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -471,7 +471,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ }),
 /* 2 */
@@ -10759,12 +10759,12 @@ module.exports = function bind(fn, thisArg) {
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(22);
-var buildURL = __webpack_require__(24);
-var parseHeaders = __webpack_require__(25);
-var isURLSameOrigin = __webpack_require__(26);
+var settle = __webpack_require__(23);
+var buildURL = __webpack_require__(25);
+var parseHeaders = __webpack_require__(26);
+var isURLSameOrigin = __webpack_require__(27);
 var createError = __webpack_require__(5);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(27);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(28);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -10861,7 +10861,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(28);
+      var cookies = __webpack_require__(29);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -10945,7 +10945,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(23);
+var enhanceError = __webpack_require__(24);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -11006,7 +11006,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(9);
-module.exports = __webpack_require__(36);
+module.exports = __webpack_require__(37);
 
 
 /***/ }),
@@ -11052,9 +11052,9 @@ window._ = __webpack_require__(11);
 
 try {
   window.$ = window.jQuery = __webpack_require__(2);
-
   __webpack_require__(14);
   __webpack_require__(15);
+  __webpack_require__(16);
 } catch (e) {}
 
 /**
@@ -11063,7 +11063,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(16);
+window.axios = __webpack_require__(17);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -30801,12 +30801,473 @@ $.extend( $.easing,
 
 /***/ }),
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(17);
+/*!
+ * Bootstrap Confirmation
+ * Copyright 2013 Nimit Suwannagate <ethaizone@hotmail.com>
+ * Copyright 2014-2016 Damien "Mistic" Sorel <contact@git.strangeplanet.fr>
+ * Licensed under the Apache License, Version 2.0
+ */
+
+(function($) {
+  'use strict';
+
+  var activeConfirmation;
+
+  // Confirmation extends popover.js
+  if (!$.fn.popover) throw new Error('Confirmation requires popover.js');
+
+  // CONFIRMATION PUBLIC CLASS DEFINITION
+  // ===============================
+  var Confirmation = function(element, options) {
+    options.trigger = 'click';
+
+    this.init(element, options);
+  };
+
+  Confirmation.VERSION = '2.4.0';
+
+  /**
+   * Map between keyboard events "keyCode|which" and "key"
+   */
+  Confirmation.KEYMAP = {
+    13: 'Enter',
+    27: 'Escape',
+    39: 'ArrowRight',
+    40: 'ArrowDown'
+  };
+
+  Confirmation.DEFAULTS = $.extend({}, $.fn.popover.Constructor.DEFAULTS, {
+    placement: 'top',
+    title: 'Are you sure?',
+    popout: false,
+    singleton: false,
+    copyAttributes: 'href target',
+    buttons: null,
+    onConfirm: $.noop,
+    onCancel: $.noop,
+    btnOkClass: 'btn-xs btn-primary',
+    btnOkIcon: 'glyphicon glyphicon-ok',
+    btnOkLabel: 'Yes',
+    btnCancelClass: 'btn-xs btn-default',
+    btnCancelIcon: 'glyphicon glyphicon-remove',
+    btnCancelLabel: 'No',
+    // @formatter:off
+    // href="#" allows the buttons to be focused
+    template: '<div class="popover confirmation">' +
+      '<div class="arrow"></div>' +
+      '<h3 class="popover-title"></h3>' +
+      '<div class="popover-content">' +
+        '<p class="confirmation-content"></p>' +
+        '<div class="confirmation-buttons text-center">' +
+          '<div class="btn-group">' +
+            '<a href="#" class="btn" data-apply="confirmation"></a>' +
+            '<a href="#" class="btn" data-dismiss="confirmation"></a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+    // @formatter:on
+  });
+
+  Confirmation.prototype = $.extend({}, $.fn.popover.Constructor.prototype);
+  Confirmation.prototype.constructor = Confirmation;
+
+  /**
+   * Expose defaults
+   * @returns {object}
+   */
+  Confirmation.prototype.getDefaults = function() {
+    return Confirmation.DEFAULTS;
+  };
+
+  /**
+   * Init the component
+   * @param element {jQuery}
+   * @param options {object}
+   */
+  Confirmation.prototype.init = function(element, options) {
+    $.fn.popover.Constructor.prototype.init.call(this, 'confirmation', element, options);
+
+    if ((this.options.popout || this.options.singleton) && !options.rootSelector) {
+      throw new Error('The rootSelector option is required to use popout and singleton features since jQuery 3.');
+    }
+
+    // keep trace of selectors
+    this.options._isDelegate = false;
+    if (options.selector) { // container of buttons
+      this.options._selector = this._options._selector = options.rootSelector + ' ' + options.selector;
+    }
+    else if (options._selector) { // children of container
+      this.options._selector = options._selector;
+      this.options._isDelegate = true;
+    }
+    else { // standalone
+      this.options._selector = options.rootSelector;
+    }
+
+    var self = this;
+
+    if (!this.options.selector) {
+      // store copied attributes
+      this.options._attributes = {};
+      if (this.options.copyAttributes) {
+        if (typeof this.options.copyAttributes === 'string') {
+          this.options.copyAttributes = this.options.copyAttributes.split(' ');
+        }
+      }
+      else {
+        this.options.copyAttributes = [];
+      }
+
+      this.options.copyAttributes.forEach(function(attr) {
+        this.options._attributes[attr] = this.$element.attr(attr);
+      }, this);
+
+      // cancel original event
+      this.$element.on(this.options.trigger, function(e, ack) {
+        if (!ack) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+        }
+      });
+
+      // manage singleton
+      this.$element.on('show.bs.confirmation', function(e) {
+        if (self.options.singleton) {
+          // close all other popover already initialized
+          $(self.options._selector).not($(this)).filter(function() {
+            return $(this).data('bs.confirmation') !== undefined;
+          }).confirmation('hide');
+        }
+      });
+    }
+    else {
+      // cancel original event
+      this.$element.on(this.options.trigger, this.options.selector, function(e, ack) {
+        if (!ack) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+        }
+      });
+    }
+
+    if (!this.options._isDelegate) {
+      // manage popout
+      this.eventBody = false;
+      this.uid = this.$element[0].id || this.getUID('group_');
+
+      this.$element.on('shown.bs.confirmation', function(e) {
+        if (self.options.popout && !self.eventBody) {
+          self.eventBody = $('body').on('click.bs.confirmation.' + self.uid, function(e) {
+            if ($(self.options._selector).is(e.target)) {
+              return;
+            }
+
+            // close all popover already initialized
+            $(self.options._selector).filter(function() {
+              return $(this).data('bs.confirmation') !== undefined;
+            }).confirmation('hide');
+
+            $('body').off('click.bs.' + self.uid);
+            self.eventBody = false;
+          });
+        }
+      });
+    }
+  };
+
+  /**
+   * Overrides, always show
+   * @returns {boolean}
+   */
+  Confirmation.prototype.hasContent = function() {
+    return true;
+  };
+
+  /**
+   * Sets the popover content
+   */
+  Confirmation.prototype.setContent = function() {
+    var self = this;
+    var $tip = this.tip();
+    var title = this.getTitle();
+    var content = this.getContent();
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title);
+
+    $tip.find('.confirmation-content').toggle(!!content).children().detach().end()[
+      // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+      ](content);
+
+    $tip.on('click', function(e) {
+      e.stopPropagation();
+    });
+
+    if (this.options.buttons) {
+      // configure custom buttons
+      var $group = $tip.find('.confirmation-buttons .btn-group').empty();
+
+      this.options.buttons.forEach(function(button) {
+        $group.append(
+          $('<a href="#"></a>')
+            .addClass(button.class || 'btn btn-xs btn-default')
+            .html(button.label || '')
+            .attr(button.attr || {})
+            .prepend($('<i></i>').addClass(button.icon), ' ')
+            .one('click', function(e) {
+              if ($(this).attr('href') === '#') {
+                e.preventDefault();
+              }
+
+              if (button.onClick) {
+                button.onClick.call(self.$element);
+              }
+
+              if (button.cancel) {
+                self.getOnCancel.call(self).call(self.$element);
+                self.$element.trigger('canceled.bs.confirmation');
+              }
+              else {
+                self.getOnConfirm.call(self).call(self.$element);
+                self.$element.trigger('confirmed.bs.confirmation');
+              }
+
+              if (self.inState) { // Bootstrap 3.3.5
+                self.inState.click = false;
+              }
+
+              self.hide();
+            })
+        );
+      }, this);
+    }
+    else {
+      // configure 'ok' button
+      $tip.find('[data-apply="confirmation"]')
+        .addClass(this.options.btnOkClass)
+        .html(this.options.btnOkLabel)
+        .attr(this.options._attributes)
+        .prepend($('<i></i>').addClass(this.options.btnOkIcon), ' ')
+        .off('click')
+        .one('click', function(e) {
+          if ($(this).attr('href') === '#') {
+            e.preventDefault();
+          }
+
+          self.getOnConfirm.call(self).call(self.$element);
+          self.$element.trigger('confirmed.bs.confirmation');
+
+          self.$element.trigger(self.options.trigger, [true]);
+
+          self.hide();
+        });
+
+      // configure 'cancel' button
+      $tip.find('[data-dismiss="confirmation"]')
+        .addClass(this.options.btnCancelClass)
+        .html(this.options.btnCancelLabel)
+        .prepend($('<i></i>').addClass(this.options.btnCancelIcon), ' ')
+        .off('click')
+        .one('click', function(e) {
+          e.preventDefault();
+
+          self.getOnCancel.call(self).call(self.$element);
+          self.$element.trigger('canceled.bs.confirmation');
+
+          if (self.inState) { // Bootstrap 3.3.5
+            self.inState.click = false;
+          }
+
+          self.hide();
+        });
+    }
+
+    $tip.removeClass('fade top bottom left right in');
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) {
+      $tip.find('.popover-title').hide();
+    }
+
+    // bind key navigation
+    activeConfirmation = this;
+    $(window)
+      .off('keyup.bs.confirmation')
+      .on('keyup.bs.confirmation', this._onKeyup.bind(this));
+  };
+
+  /**
+   * Remove key binding on destroy
+   */
+  Confirmation.prototype.destroy = function() {
+    if (activeConfirmation === this) {
+      activeConfirmation = undefined;
+      $(window).off('keyup.bs.confirmation');
+    }
+    $.fn.popover.Constructor.prototype.destroy.call(this);
+  };
+
+  /**
+   * Remove key binding on hide
+   */
+  Confirmation.prototype.hide = function() {
+    if (activeConfirmation === this) {
+      activeConfirmation = undefined;
+      $(window).off('keyup.bs.confirmation');
+    }
+    $.fn.popover.Constructor.prototype.hide.call(this);
+  };
+
+  /**
+   * Navigate through buttons with keyboard
+   * @param event
+   * @private
+   */
+  Confirmation.prototype._onKeyup = function(event) {
+    if (!this.$tip) {
+      activeConfirmation = undefined;
+      $(window).off('keyup.bs.confirmation');
+      return;
+    }
+
+    var key = event.key || Confirmation.KEYMAP[event.keyCode || event.which];
+
+    var $group = this.$tip.find('.confirmation-buttons .btn-group');
+    var $active = $group.find('.active');
+    var $next;
+
+    switch (key) {
+      case 'Escape':
+        this.hide();
+        break;
+
+      case 'ArrowRight':
+        if ($active.length && $active.next().length) {
+          $next = $active.next();
+        }
+        else {
+          $next = $group.children().first();
+        }
+        $active.removeClass('active');
+        $next.addClass('active').focus();
+        break;
+
+      case 'ArrowLeft':
+        if ($active.length && $active.prev().length) {
+          $next = $active.prev();
+        }
+        else {
+          $next = $group.children().last();
+        }
+        $active.removeClass('active');
+        $next.addClass('active').focus();
+        break;
+    }
+  };
+
+  /**
+   * Gets the on-confirm callback
+   * @returns {function}
+   */
+  Confirmation.prototype.getOnConfirm = function() {
+    if (this.$element.attr('data-on-confirm')) {
+      return getFunctionFromString(this.$element.attr('data-on-confirm'));
+    }
+    else {
+      return this.options.onConfirm;
+    }
+  };
+
+  /**
+   * Gets the on-cancel callback
+   * @returns {function}
+   */
+  Confirmation.prototype.getOnCancel = function() {
+    if (this.$element.attr('data-on-cancel')) {
+      return getFunctionFromString(this.$element.attr('data-on-cancel'));
+    }
+    else {
+      return this.options.onCancel;
+    }
+  };
+
+  /**
+   * Generates an anonymous function from a function name
+   * function name may contain dots (.) to navigate through objects
+   * root context is window
+   */
+  function getFunctionFromString(functionName) {
+    var context = window;
+    var namespaces = functionName.split('.');
+    var func = namespaces.pop();
+
+    for (var i = 0, l = namespaces.length; i < l; i++) {
+      context = context[namespaces[i]];
+    }
+
+    return function() {
+      context[func].call(this);
+    };
+  }
+
+
+  // CONFIRMATION PLUGIN DEFINITION
+  // =========================
+
+  var old = $.fn.confirmation;
+
+  $.fn.confirmation = function(option) {
+    var options = (typeof option == 'object' && option) || {};
+    options.rootSelector = this.selector || options.rootSelector; // this.selector removed in jQuery > 3
+
+    return this.each(function() {
+      var $this = $(this);
+      var data = $this.data('bs.confirmation');
+
+      if (!data && option == 'destroy') {
+        return;
+      }
+      if (!data) {
+        $this.data('bs.confirmation', (data = new Confirmation(this, options)));
+      }
+      if (typeof option == 'string') {
+        data[option]();
+
+        if (option == 'hide' && data.inState) { //data.inState doesn't exist in Bootstrap < 3.3.5
+          data.inState.click = false;
+        }
+      }
+    });
+  };
+
+  $.fn.confirmation.Constructor = Confirmation;
+
+
+  // CONFIRMATION NO CONFLICT
+  // ===================
+
+  $.fn.confirmation.noConflict = function() {
+    $.fn.confirmation = old;
+    return this;
+  };
+
+}(jQuery));
+
 
 /***/ }),
 /* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(18);
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30814,7 +31275,7 @@ module.exports = __webpack_require__(17);
 
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(3);
-var Axios = __webpack_require__(19);
+var Axios = __webpack_require__(20);
 var defaults = __webpack_require__(1);
 
 /**
@@ -30849,14 +31310,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(7);
-axios.CancelToken = __webpack_require__(34);
+axios.CancelToken = __webpack_require__(35);
 axios.isCancel = __webpack_require__(6);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(35);
+axios.spread = __webpack_require__(36);
 
 module.exports = axios;
 
@@ -30865,7 +31326,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /*!
@@ -30892,7 +31353,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30900,10 +31361,10 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(1);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(29);
-var dispatchRequest = __webpack_require__(30);
-var isAbsoluteURL = __webpack_require__(32);
-var combineURLs = __webpack_require__(33);
+var InterceptorManager = __webpack_require__(30);
+var dispatchRequest = __webpack_require__(31);
+var isAbsoluteURL = __webpack_require__(33);
+var combineURLs = __webpack_require__(34);
 
 /**
  * Create a new instance of Axios
@@ -30985,7 +31446,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -31175,7 +31636,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31194,7 +31655,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31227,7 +31688,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31255,7 +31716,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31330,7 +31791,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31374,7 +31835,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31449,7 +31910,7 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31492,7 +31953,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31552,7 +32013,7 @@ module.exports = (
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31611,14 +32072,14 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(31);
+var transformData = __webpack_require__(32);
 var isCancel = __webpack_require__(6);
 var defaults = __webpack_require__(1);
 
@@ -31697,7 +32158,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31724,7 +32185,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31745,7 +32206,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31766,7 +32227,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31830,7 +32291,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31864,7 +32325,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

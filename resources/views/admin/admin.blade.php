@@ -16,12 +16,14 @@
     @if (Auth::guard('admin')->check())
         @include('admin.nav')
     @endif
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-2">
                 @yield('left-column')
             </div>
-            <div class="col-lg-10 content">
+            <div class="col-md-10 content">
+                @include('layouts.error')
                 @yield('content')
             </div>
         </div>
@@ -34,8 +36,12 @@
 </div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<!--
-<script src="{{asset('js/admin_script.js')}}"></script>
--->
+<script>
+    $('[data-toggle=confirmation-singleton]').confirmation({
+        rootSelector: '[data-toggle=confirmation-singleton]',
+        singleton: true,
+        container: 'body'
+    });
+</script>
 </body>
 </html>
