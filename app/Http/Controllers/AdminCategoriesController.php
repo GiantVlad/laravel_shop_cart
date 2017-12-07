@@ -39,28 +39,44 @@ class AdminCategoriesController extends Controller
 
     public function showEditForm($id=null)
     {
-        $categories = Catalog::all('id', 'name');
-        return view('admin.edit-category', ['categories_names' => $categories]);
+        $parentCategories = Catalog::all('id', 'name');
+        $category = null;
+        if ($id) $category = Catalog::find($id);
+
+        return view('admin.edit-category', ['category'=> $category, 'parent_categories_names' => $parentCategories]);
     }
 
     public function update(Request $request)
     {
-        //ToDO check return if not valid
         $this->validate($request, [
             'name' => 'required | min:3 | max:30',
-            'priority' => 'max:99'
+            'priority' => 'max:99',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
+        if ($request->id) {
+            $category = Catalog::find($request->id);
+            $message = 'Category '. $request->name .' was changed!';
+        } else {
+            $category = new Catalog;
+            $message = 'Category '. $request->name .' was added!';
+        }
 
-        $category = new Catalog;
         $category->name = $request->name;
         $category->priority = $request->priority;
         $category->description = $request->description;
         if ($request->parent) $category->parent_id = $request->parent;
-        //ToDO image upload
-        //$category->parent = $request->image;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = 'cat_'.time().'.'.$image->getClientOriginalExtension();
+            $imageDestinationPath = public_path('images/categories/');
+            $image->move($imageDestinationPath, $imageName);
+            $category->image = 'images/categories/'.$imageName;
+        }
+        //todo image resize
+
         $category->save();
 
-        //$categories = Catalog::all('name');
-        return redirect(url('admin/categories'))->with('message', 'Catalog was added!');
+        return redirect(url('admin/categories'))->with('message', $message);
     }
 }

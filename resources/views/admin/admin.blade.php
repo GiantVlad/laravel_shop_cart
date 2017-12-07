@@ -9,7 +9,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
 </head>
 <body style="padding-top: 70px;">
 <div id="app">
@@ -36,12 +35,6 @@
 </div>
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
-<script>
-    $('[data-toggle=confirmation-singleton]').confirmation({
-        rootSelector: '[data-toggle=confirmation-singleton]',
-        singleton: true,
-        container: 'body'
-    });
-</script>
+<script src="{{ asset('js/admin_script.js') }}"></script>
 </body>
 </html>

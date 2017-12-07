@@ -51,5 +51,6 @@ Route::prefix('admin')->group( function() {
     Route::get('/categories', 'AdminCategoriesController@list')->name('admin.categories');
     Route::delete('/categories/{id}', 'AdminCategoriesController@delete');
     Route::get('/add-category', 'AdminCategoriesController@showEditForm')->name('add-category');
+    Route::get('/edit-category/{id}', 'AdminCategoriesController@showEditForm');
     Route::post('/categories', 'AdminCategoriesController@update');
 });

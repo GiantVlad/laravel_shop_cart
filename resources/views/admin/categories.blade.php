@@ -16,12 +16,15 @@
     @php $i=0; @endphp
     @foreach ($categories as $category)
         @php $i++; @endphp
-        <div class="row">
+        <div class="row" style="margin-bottom: 5px;">
             <div class="col-md-1">{{$i}}</div>
+            <div class="col-md-1">
+                <img src="{{ url($category->image) }}" class="img-thumbnail" alt="image" width="152" height="118">
+            </div>
             <div class="col-md-2">{{$category->name}}</div>
             <div class="col-md-1">{{$category->priority}}</div>
             <div class="col-md-2">{{$category->parent_name}}</div>
-            <div class="col-md-1">edit</div>
+            <div class="col-md-1"><a href="{{ url('/admin/edit-category/'.$category->id) }}">edit</a></div>
             <div class="col-md-1">
                 <form method="POST" action="{{ url('/admin/categories/'.$category->id) }}">
                     <input type="hidden" name="id" value="{{ $category->id }}">
@@ -30,7 +33,8 @@
                     <button class="btn btn-xs btn-default"  type="submit" data-toggle="confirmation-singleton">
                         remove
                     </button>
-                </form></div>
+                </form>
+            </div>
         </div>
     @endforeach
 
