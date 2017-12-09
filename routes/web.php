@@ -47,10 +47,18 @@ Route::prefix('admin')->group( function() {
     Route::post('/password/reset', 'Auth\AdminResetPasswordController@reset');
     Route::get('/password/reset/{token}', 'Auth\AdminResetPasswordController@showResetForm')->name('admin.password.reset');
 
-
+    //Admin categories management
     Route::get('/categories', 'AdminCategoriesController@list')->name('admin.categories');
     Route::delete('/categories/{id}', 'AdminCategoriesController@delete');
     Route::get('/add-category', 'AdminCategoriesController@showEditForm')->name('add-category');
     Route::get('/edit-category/{id}', 'AdminCategoriesController@showEditForm');
     Route::post('/categories', 'AdminCategoriesController@update');
+
+    //Admin products management
+    Route::get('/products', 'AdminProductsController@list')->name('admin.products');
+    Route::delete('/products', 'AdminProductsController@delete')->name('product.delete');
+    Route::get('/add-product', 'AdminProductsController@showEditForm')->name('add-product');
+    Route::get('/edit-product/{id}', 'AdminProductsController@showEditForm');
+    Route::post('/products', 'AdminProductsController@update');
+    Route::get('/products/category/{id}', 'AdminProductsController@categoryFilter');
 });
