@@ -61,4 +61,7 @@ Route::prefix('admin')->group( function() {
     Route::get('/edit-product/{id}', 'AdminProductsController@showEditForm');
     Route::post('/products', 'AdminProductsController@update');
     Route::get('/products/category/{id}', 'AdminProductsController@categoryFilter');
+
+    //Admin add and remove products properties
+    Route::delete('/product/{product_id}/property', 'AdminProductsController@deleteProperty');
 });

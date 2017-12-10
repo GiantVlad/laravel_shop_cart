@@ -71,4 +71,24 @@ $(function () {
         window.history.pushState("", "", url);
     });
     //******************
+
+    //Remove property from Product
+    $(document).on('click', '#removeProperty', function() {
+        $('div[id^=product-property]').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="'+baseUrl+'/images/loading.gif" />');
+
+        $.post(baseUrl + '/admin/product/' + $(this).data('product_id') + '/property', {
+            value_id: $(this).data('value'),
+            _token: token,
+            _method: 'delete'
+        }).done(function (data) {
+            $('div#product-property'+data).remove();
+        }).fail(function(data) {
+            if (data.statusText === "Unauthorized") {
+                window.location.href = baseUrl + '/admin/login';
+            } else {
+                console.log(data);
+            }
+        });
+
+    });
 });

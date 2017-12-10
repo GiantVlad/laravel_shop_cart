@@ -16,7 +16,7 @@ class Product extends Model
 
     public function properties()
     {
-        return $this->belongsToMany('App\PropertyValue', 'product_property', 'product_id');
+        return $this->belongsToMany('App\PropertyValue', 'product_property', 'product_id', 'property_value_id')->withTimestamps();
     }
 
     public function catalogs()

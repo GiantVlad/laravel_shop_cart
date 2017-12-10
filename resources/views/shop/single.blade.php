@@ -6,7 +6,7 @@
             <h3 class="display-3">{{ $product->name }}</h3>
         </div>
     </div>
-    <div class="container">
+
         <div class="row">
             <div class="col-md-4">
                 <form method="post" action="/cart/add-to-cart">
@@ -31,6 +31,11 @@
                      src="{{ asset('images/'.$product->image) }}">
             </div>
         </div>
+    @foreach($product->properties as $property)
+    <div class="row">
+        <div class="col-md-5">
+            {{$property->properties->name}}&nbsp;:&nbsp;{{$property->value}}
+        </div>
     </div>
-
+    @endforeach
 @stop

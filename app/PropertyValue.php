@@ -10,7 +10,7 @@ class PropertyValue extends Model
 
     public function products()
     {
-        return $this->belongsToMany('App\Product', 'product_property', 'property_value_id');
+        return $this->belongsToMany('App\Product', 'product_property', 'property_value_id')->withTimestamps();
     }
 
     public function properties()
