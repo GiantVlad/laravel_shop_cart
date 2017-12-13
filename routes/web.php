@@ -64,4 +64,9 @@ Route::prefix('admin')->group( function() {
 
     //Admin add and remove products properties
     Route::delete('/product/{product_id}/property', 'AdminProductsController@deleteProperty');
+    Route::get('/product/{product_id}/properties', 'AdminProductsController@getProperties');
+
+    Route::get('/products/property-types', 'AdminPropertiesController@getProperties');
+    Route::get('/products/property/{id}/values', 'AdminPropertiesController@getPropertyValues');
+    Route::post('/product/property-type', 'AdminPropertiesController@addPropertyToProduct');
 });

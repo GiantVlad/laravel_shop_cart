@@ -5,6 +5,10 @@
 @stop
 
 @section('content')
+    <!-- Add Property Modal -->
+    <div id="propertyModal" class="modal fade" role="dialog">
+        {{-- content "admin.property-modal" included  by AJAX --}}
+    </div>
 
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -77,38 +81,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-6">
-                    <p>Properties</p>
-                    <button class="btn btn-primary" id="removeProperty" type="button">Add property</button>
-                    </div>
-                </div>
-                @foreach($product->properties as $property)
-
-                <div class="form-group" id="product-property{{$property->id}}">
-                    <input type="text" hidden name="propertyIds[]" readonly value="{{$property->properties->id}}">
-                    <input type="text" hidden name="propertyTypes[]" readonly value="{{$property->properties->type}}">
-                    <label for="propertyValue" class="col-sm-2 control-label">{{$property->properties->name}}:</label>
-                    <div class="col-sm-3">
-                        @if ($property->properties->selectProperties)
-                            <select class="form-control" id="product-category" name="propertyValues[]">
-                                @foreach( $property->properties->selectProperties as $key => $selectProperty )
-                                    <option value="{{$key}}" @if ($property->value === $selectProperty) selected @endif>
-                                        {{$selectProperty}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        @else
-                        <input type="text" class="form-control" name="propertyValues[]" value="{{$property->value}}">
-                        @endif
-                    </div>
-                    <div class="col-sm-1" style="padding-top: 7px;">
-                        <button class="btn btn-xs btn-default" type="button" id="removeProperty" data-value="{{$property->id}}" data-product_id="{{$product->id}}" data-toggle="confirmation-singleton">
-                            remove
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button class="btn btn-default" type="submit">
                             @if ($product) Update
@@ -116,6 +88,17 @@
                             @endif
                         </button>
                     </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6">
+                        <h4>Properties:</h4>
+                        <button class="btn btn-primary" type="button" data-product-id="{{$product->id}}" data-toggle="modal" data-target="#propertyModal">
+                            Add property
+                        </button>
+                    </div>
+                </div>
+                <div id="propertiesContent">
+                    @include('admin.product-properties')
                 </div>
             </form>
         </div>

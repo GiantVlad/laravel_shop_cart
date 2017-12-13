@@ -13,6 +13,7 @@
     "axios": "^0.16.2",
     "bootstrap-confirmation2": "^2.4.0",
     "bootstrap-sass": "^3.3.7",
+    "bootstrap-select": "^1.12.4",
     "cross-env": "^5.0.1",
     "jquery": "^3.1.1",
     "jquery.easing": "^1.4.1",

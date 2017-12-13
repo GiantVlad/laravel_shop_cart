@@ -59,7 +59,7 @@ class AdminProductsController extends Controller
 
         if (!$product) return back()->withErrors('Server Error... Product not found');
 
-        $product->properties($request->value_id)->sync([]);
+        $product->properties()->detach($request->value_id);
 
         return $request->value_id;
     }
@@ -108,8 +108,9 @@ class AdminProductsController extends Controller
                     'propertyValues.'.$key.'.numeric' => 'The property '.Property::find($propertyId)->name.' must be a number',
                 ]);
             }
+
             $propertyValues = PropertyValue::firstOrCreate(
-                ['value' => $request->propertyValues[$key]], ['property_id' => $propertyId]
+                ['value' => $request->propertyValues[$key], 'property_id' => $propertyId]
             );
             $propertyValueIds[] = $propertyValues->id;
         }
@@ -134,4 +135,17 @@ class AdminProductsController extends Controller
 
         return redirect(url('admin/products'))->with('message', $message);
     }
+
+    public function getProperties (Request $request, $product_id)
+    {
+        $product = Product::find($product_id);
+
+        if (!$product) return back()->withErrors('Server Error... Product not found');
+
+        if ($request->ajax()) {
+            return view('admin.product-properties', compact('product'))->render();
+        }
+    }
+
+
 }

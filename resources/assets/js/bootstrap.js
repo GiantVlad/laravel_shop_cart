@@ -12,6 +12,7 @@ try {
     require('bootstrap-sass');
     require('jquery.easing');
     require('bootstrap-confirmation');
+    require('bootstrap-select');
 } catch (e) {}
 
 /**

@@ -7,3 +7,39 @@ Stack trace:
 #4 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php(110): Illuminate\Foundation\Application->make('config', Array)
 #5 E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\helpers.php(272): app('config')
 #6 E:\lerning\php_ii\vendor\laravel\framework\sr in E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php on line 752
+[13-Dec-2017 07:42:09 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connectors\MySqlConnector.php on line 3
+[13-Dec-2017 07:42:09 UTC] PHP Stack trace:
+[13-Dec-2017 07:42:09 UTC] PHP   1. {main}() E:\lerning\php_ii\public\index.php:0
+[13-Dec-2017 07:42:09 UTC] PHP   2. App\Http\Kernel->handle() E:\lerning\php_ii\public\index.php:55
+[13-Dec-2017 07:42:09 UTC] PHP   3. App\Http\Kernel->sendRequestThroughRouter() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php:116
+[13-Dec-2017 07:42:09 UTC] PHP   4. App\Http\Kernel->bootstrap() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php:146
+[13-Dec-2017 07:42:09 UTC] PHP   5. Illuminate\Foundation\Application->bootstrapWith() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php:162
+[13-Dec-2017 07:42:09 UTC] PHP   6. Illuminate\Foundation\Bootstrap\BootProviders->bootstrap() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:213
+[13-Dec-2017 07:42:09 UTC] PHP   7. Illuminate\Foundation\Application->boot() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\BootProviders.php:17
+[13-Dec-2017 07:42:09 UTC] PHP   8. array_walk() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:776
+[13-Dec-2017 07:42:09 UTC] PHP   9. Illuminate\Foundation\Application->Illuminate\Foundation\{closure}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:776
+[13-Dec-2017 07:42:09 UTC] PHP  10. Illuminate\Foundation\Application->bootProvider() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:775
+[13-Dec-2017 07:42:09 UTC] PHP  11. Illuminate\Foundation\Application->call() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Foundation\Application.php:792
+[13-Dec-2017 07:42:10 UTC] PHP  12. Illuminate\Container\BoundMethod::call() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\Container.php:549
+[13-Dec-2017 07:42:10 UTC] PHP  13. Illuminate\Container\BoundMethod::callBoundMethod() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:31
+[13-Dec-2017 07:42:10 UTC] PHP  14. Illuminate\Container\BoundMethod::Illuminate\Container\{closure}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:87
+[13-Dec-2017 07:42:10 UTC] PHP  15. call_user_func_array:{E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:29}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:29
+[13-Dec-2017 07:42:10 UTC] PHP  16. App\Providers\AppServiceProvider->boot() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php:29
+[13-Dec-2017 07:42:10 UTC] PHP  17. Illuminate\Database\Eloquent\Builder->get() E:\lerning\php_ii\app\Providers\AppServiceProvider.php:19
+[13-Dec-2017 07:42:10 UTC] PHP  18. Illuminate\Database\Eloquent\Builder->getModels() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:463
+[13-Dec-2017 07:42:10 UTC] PHP  19. Illuminate\Database\Query\Builder->get() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:479
+[13-Dec-2017 07:42:10 UTC] PHP  20. Illuminate\Database\Query\Builder->runSelect() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:1690
+[13-Dec-2017 07:42:10 UTC] PHP  21. Illuminate\Database\MySqlConnection->select() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:1705
+[13-Dec-2017 07:42:10 UTC] PHP  22. Illuminate\Database\MySqlConnection->run() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:333
+[13-Dec-2017 07:42:10 UTC] PHP  23. Illuminate\Database\MySqlConnection->runQueryCallback() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:624
+[13-Dec-2017 07:42:10 UTC] PHP  24. Illuminate\Database\MySqlConnection->Illuminate\Database\{closure}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:657
+[13-Dec-2017 07:42:10 UTC] PHP  25. Illuminate\Database\MySqlConnection->getPdoForSelect() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:325
+[13-Dec-2017 07:42:10 UTC] PHP  26. Illuminate\Database\MySqlConnection->getReadPdo() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:399
+[13-Dec-2017 07:42:10 UTC] PHP  27. Illuminate\Database\MySqlConnection->getPdo() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:940
+[13-Dec-2017 07:42:10 UTC] PHP  28. call_user_func:{E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:915}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:915
+[13-Dec-2017 07:42:10 UTC] PHP  29. Illuminate\Database\Connectors\ConnectionFactory->Illuminate\Database\Connectors\{closure}() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connection.php:915
+[13-Dec-2017 07:42:10 UTC] PHP  30. Illuminate\Database\Connectors\ConnectionFactory->createConnector() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:183
+[13-Dec-2017 07:42:10 UTC] PHP  31. spl_autoload_call() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:245
+[13-Dec-2017 07:42:10 UTC] PHP  32. Composer\Autoload\ClassLoader->loadClass() E:\lerning\php_ii\vendor\laravel\framework\src\Illuminate\Database\Connectors\ConnectionFactory.php:245
+[13-Dec-2017 07:42:10 UTC] PHP  33. Composer\Autoload\includeFile() E:\lerning\php_ii\vendor\composer\ClassLoader.php:322
+[13-Dec-2017 07:42:10 UTC] PHP  34. include() E:\lerning\php_ii\vendor\composer\ClassLoader.php:444
