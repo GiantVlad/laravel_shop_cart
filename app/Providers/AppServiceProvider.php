@@ -16,13 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /*$catalogs = Catalog::where('parent_id', NULL)->get();
+        View::share('catalogs', Catalog::where('parent_id', NULL)->get());
 
-        View::share('catalogs', $catalogs);*/
-
-        //Delete record from "product_property" table
+        //Delete records from "product_property" table
         Product::deleting(function ($product) {
-            $product->properties()->sync([]);
+            $product->properties()->detach();
         });
     }
 
