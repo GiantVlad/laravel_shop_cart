@@ -21,7 +21,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" id="add-property-modal-button">
+            <button type="button" class="btn btn-default pull-left" id="new-property-modal-button">
+                NEW property
+            </button>
+            <button type="button" class="btn btn-primary" id="add-property-modal-button">
                 Add property
             </button>
         </div>

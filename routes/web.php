@@ -69,4 +69,5 @@ Route::prefix('admin')->group( function() {
     Route::get('/products/property-types', 'AdminPropertiesController@getProperties');
     Route::get('/products/property/{id}/values', 'AdminPropertiesController@getPropertyValues');
     Route::post('/product/property-type', 'AdminPropertiesController@addPropertyToProduct');
+    Route::post('/properties', 'AdminPropertiesController@createProperty');
 });

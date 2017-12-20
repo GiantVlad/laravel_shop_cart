@@ -10,6 +10,10 @@
         {{-- content "admin.property-modal" included  by AJAX --}}
     </div>
 
+    <div id="newPropertyModal" class="modal fade" role="dialog">
+        @include('admin.new-property-modal')
+    </div>
+
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <h3 class="display-3">

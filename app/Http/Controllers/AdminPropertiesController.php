@@ -27,6 +27,8 @@ class AdminPropertiesController extends Controller
     {
         $propertyValues = PropertyValue::where('property_id', $id)->get();
 
+        if ($propertyValues->isEmpty()) $propertyValues = ['property_id' => $id, 'type' => 'number'];
+
         if ($request->ajax()) {
             return view('admin.property-values', compact('propertyValues'))->render();
         }
@@ -54,6 +56,28 @@ class AdminPropertiesController extends Controller
         $propertyValue->products()->syncWithoutDetaching([$request->product_id]);
         if ($request->ajax()) {
             return $request->product_id;
+        }
+    }
+    public function createProperty(Request $request)
+    {
+        $this->validate($request, [
+            'property_name' => 'required | min:2 | max:50',
+            'property_priority' => 'max:999',
+            'property_type' => 'required | min:2 | max:30',
+            'property_value' => 'min:2 | max:150'
+        ]);
+        $property = Property::firstOrCreate(
+            ['name' => $request->property_name], ['priority' => $request->property_priority, 'type' => $request->property_type]
+        );
+        if ($property->id && $request->property_value) {
+            //ToDo Units
+            PropertyValue::firstOrCreate(
+                ['value' => $request->property_value, 'property_id' => $property->id], [ 'unit_id' => null ]
+            );
+        }
+
+        if ($request->ajax()) {
+            return 'jr';$property->id;
         }
     }
 }
