@@ -224,4 +224,34 @@ $(function () {
             valueTypeSelector.closest('.form-group').show();
         }
     });
+
+    var fillChangeStatusLinkText = function () {
+        $('.shipping-method-change-status').each(function (){
+            var status = $(this).data('status') ? 'disable' : 'enable';
+            $(this).text(status);
+        });
+    }
+
+    if ($('.shipping-method-change-status').length) {
+        fillChangeStatusLinkText();
+    }
+
+    $(document).on('click', '.shipping-method-change-status', function () {
+        var status = $(this).data('status') > 0 ? 0 : 1;
+        $.post(baseUrl + '/admin/shipping-method/', {
+            method_id: $(this).data('method-id'),
+            status: status,
+            _token: token,
+            _method: 'PUT'
+        }).done(function (data) {
+            $('div.shipping-methods-list').html(data);
+            fillChangeStatusLinkText();
+        }).fail(function (data) {
+            if (data.statusText === "Unauthorized") {
+                window.location.href = baseUrl + '/admin/login';
+            } else {
+                console.log(data);
+            }
+        });
+    });
 });

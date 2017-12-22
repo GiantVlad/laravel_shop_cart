@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
                 PropertiesTableSeeder::class,
                 PropertyValuesTableSeeder::class,
                 ProductPropertiesTableSeeder::class,
-                AdminsTableSeeder::class
+                AdminsTableSeeder::class,
+                ShippingMethodsTableSeeder::class,
             ]
         );
     }

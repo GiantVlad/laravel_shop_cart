@@ -74,6 +74,14 @@ Route::prefix('admin')->group( function() {
     Route::get('/users', 'AdminUsersController@list')->name('admin.users');
     Route::get('/edit-user/{id}', 'AdminUsersController@showEditForm');
     Route::put('/user', 'AdminUsersController@update')->name('user.update');
-    Route::post('/users', 'AdminUsersController@search')->name('users.search');;
+    Route::post('/users', 'AdminUsersController@search')->name('users.search');
     Route::put('/users/', 'AdminUsersController@deleteCart')->name('cart.delete');
+
+    Route::get('/orders', 'AdminOrdersController@list')->name('admin.orders');
+    Route::get('/show-order/{id}', 'AdminOrdersController@showEditForm');
+    Route::put('/order', 'AdminOrdersController@update')->name('order.update');
+    Route::post('/orders', 'AdminOrdersController@search')->name('order.search');
+
+    Route::get('/shipping-methods', 'AdminShippingMethodsController@list')->name('admin.shipping-methods');
+    Route::put('/shipping-method', 'AdminShippingMethodsController@changeStatus');
 });
