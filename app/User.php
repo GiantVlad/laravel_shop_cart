@@ -26,4 +26,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function markForLogoutById(int $userId)
+    {
+        return User::where('id', $userId)
+            ->update(['cart' => '', 'force_logout' => true]);
+    }
 }

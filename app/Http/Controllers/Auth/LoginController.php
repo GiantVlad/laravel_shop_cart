@@ -40,17 +40,16 @@ class LoginController extends Controller
     }
 
     public function logout (Request $request) {
-
         if (session()->has('cartProducts')) {
-            $cartProductsString = serialize(session()->get('cartProducts'));
-            $user = auth()->user();
-            $user->cart = $cartProductsString;
-            $user->save();
+            $user = Auth::user();
+            if (empty($user->force_logout)) {
+                $cartProductsString = serialize(session()->get('cartProducts'));
+                $user->cart = $cartProductsString;
+                $user->save();
+            }
         }
 
         Auth::guard('web')->logout();
-        $request->session()->flush();
-        $request->session()->regenerate();
 
         return redirect('/');
     }

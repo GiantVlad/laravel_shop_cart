@@ -70,4 +70,10 @@ Route::prefix('admin')->group( function() {
     Route::get('/products/property/{id}/values', 'AdminPropertiesController@getPropertyValues');
     Route::post('/product/property-type', 'AdminPropertiesController@addPropertyToProduct');
     Route::post('/properties', 'AdminPropertiesController@createProperty');
+
+    Route::get('/users', 'AdminUsersController@list')->name('admin.users');
+    Route::get('/edit-user/{id}', 'AdminUsersController@showEditForm');
+    Route::put('/user', 'AdminUsersController@update')->name('user.update');
+    Route::post('/users', 'AdminUsersController@search')->name('users.search');;
+    Route::put('/users/', 'AdminUsersController@deleteCart')->name('cart.delete');
 });

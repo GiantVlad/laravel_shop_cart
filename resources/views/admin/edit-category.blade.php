@@ -21,7 +21,7 @@
             <form method="POST" action="{{ url('/admin/categories/') }}" enctype="multipart/form-data" class="form-horizontal">
                 {{ csrf_field() }}
                 @if ($category)
-                    <input type="text" name="id" hidden value="{{$category->id}}">
+                    <input type="hidden" name="id" value="{{$category->id}}">
                 @endif
                 <div class="form-group required">
                     <label for="inputName" class="col-sm-2 control-label">Name</label>

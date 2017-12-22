@@ -30,7 +30,6 @@ class LogSuccessfulLogin
         $user = auth()->user();
         if (!$user) return;
         $cart = unserialize($user->cart);
-        if ($cart) session()->put('cartProducts', $cart);
-
+        session()->put('cartProducts', $cart);
     }
 }

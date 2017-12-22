@@ -29,7 +29,7 @@
             <form method="POST" action="{{ url('/admin/products/') }}" enctype="multipart/form-data" class="form-horizontal">
                 {{ csrf_field() }}
                 @if ($product)
-                    <input type="text" name="id" hidden value="{{$product->id}}">
+                    <input type="hidden" name="id" value="{{$product->id}}">
                 @endif
                 <div class="form-group required">
                     <label for="inputName" class="col-sm-2 control-label">Name:</label>

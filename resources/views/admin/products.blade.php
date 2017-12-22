@@ -7,7 +7,7 @@
 @section('content')
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h3 class="display-3">Categories</h3>
+            <h3 class="display-3">Products</h3>
             <a class="btn bg-primary" href="{{route('add-product')}}">Add New Product</a>
         </div>
     </div>
