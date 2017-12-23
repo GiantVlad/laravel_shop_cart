@@ -5,23 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>WG-Shop  v0.01</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
 </head>
-<body style="padding-top: 70px;">
+<body class="general-body">
 <div id="app">
     @include('layouts.nav')
     @include('layouts.categories')
     @include('layouts.modal')
     <div class="container">
         <div class="row">
-            <div class="col-lg-2">
+            <div class="col-xs-4 col-sm-3 col-lg-2">
                 @yield('left-column')
             </div>
-            <div class="col-lg-10 content">
+            <div class="col-xs-8 col-sm-9 col-lg-10 content">
                 @yield('content')
             </div>
         </div>

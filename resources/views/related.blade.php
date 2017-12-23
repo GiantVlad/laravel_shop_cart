@@ -1,5 +1,5 @@
 <hr/>
-<div class="container">
+
     <h3 class="text-center">We also recommend:</h3>
     <div class="row">
         <input type="hidden" name="related_product_id" value="{{$relatedProduct['related_product_id']}}">
@@ -21,4 +21,3 @@
             </button>
         </div>
     </div>
-</div>

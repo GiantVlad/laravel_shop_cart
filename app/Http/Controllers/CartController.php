@@ -122,6 +122,7 @@ class CartController extends Controller
         if (!session()->has('cartProducts')) return view('empty-cart');
 
         $cartProducts = session('cartProducts');
+
         $products = [];
         $index = 0;
         $productsIds = [];

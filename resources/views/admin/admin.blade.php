@@ -10,7 +10,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body style="padding-top: 70px;">
+<body style="padding-top: 100px;">
 <div id="app">
     @if (Auth::guard('admin')->check())
         @include('admin.nav')

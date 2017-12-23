@@ -10,7 +10,7 @@
     </div>
     <div class="row product-list">
         @foreach ($products as $product)
-            <div class="col-md-4 col-sm-6 product-cart">
+            <div class="col-lg-4 col-sm-6 product-cart">
                 <div class="cart-wrapper">
                     <div class="cart-header">
                         <a href="{{ asset('shop/'.$product->id) }}">

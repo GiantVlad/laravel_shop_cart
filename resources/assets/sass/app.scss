@@ -6,6 +6,23 @@
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import "~bootstrap-select/dist/css/bootstrap-select.css";
 
+body.general-body {
+  padding-top: 60px;
+  div.general-nav-col {
+    padding: 0px 4px;
+    .navbar-form{
+      padding: 0px 3px;
+    }
+  }
+  ul.general-nav li a {
+    padding: 7px;
+  }
+  .jumbotron {
+    padding-bottom: 30px;
+    padding-top: 30px;
+  }
+}
+
 div.nav-search {
   padding-top: 7px;
   padding-bottom: 7px;
@@ -74,4 +91,24 @@ div.nav-search {
 
 .footer {
   background-color: #eeeeee;
+}
+
+@media (max-width: 767px) {
+  body.general-body {
+    padding-top: 110px;
+  }
+}
+//xs-sm-md
+@media (min-width: 768px) and (max-width: 1199px) {
+  body.general-body {
+    padding-top: 80px;
+  }
+  ul.general-nav{
+    li {
+      width: 100%;
+      a {
+        float: right;
+      }
+    }
+  }
 }
