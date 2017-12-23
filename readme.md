@@ -7,6 +7,8 @@
 
 There is [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 
+<p><img src="https://photos.app.goo.gl/bgDVWGUz8q7ajC182"></p>
+
 1. Setup (install/create) Database and PHP server.
 2. Install [Composer](https://getcomposer.org/doc/00-intro.md)
 3. Install [npm](https://docs.npmjs.com/getting-started/installing-node). 
