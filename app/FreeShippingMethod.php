@@ -7,7 +7,7 @@ class FreeShippingMethod extends ShippingMethod
 {
 
 
-    public function getRate()
+    static function getRate()
     {
         return 0;
     }
@@ -15,5 +15,10 @@ class FreeShippingMethod extends ShippingMethod
     static function getLabel()
     {
         return 'Free Shipping';
+    }
+
+    static function getDeliveryTime ()
+    {
+        return '1-2 weeks';
     }
 }

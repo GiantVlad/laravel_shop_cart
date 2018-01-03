@@ -6,8 +6,10 @@ use App\Order;
 use App\OrderData;
 use App\Product;
 use App\RelatedProduct;
+use App\ShippingMethod;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -17,11 +19,18 @@ class CartController extends Controller
      * @return void
      */
     private $product;
+    private $shippingMethod;
+    private $relatedProduct;
 
-    public function __construct (Product $product)
+    public function __construct (Product $product,
+                                 ShippingMethod $shippingMethod,
+                                 RelatedProduct $relatedProduct)
     {
-        $this->middleware('auth')->except('logout');
         $this->product = $product;
+        $this->shippingMethod = $shippingMethod;
+        $this->relatedProduct = $relatedProduct;
+
+        $this->middleware('auth')->except('logout');
     }
 
     public function post (Request $request)
@@ -37,7 +46,7 @@ class CartController extends Controller
                 $productId = $request->get('productId');
 
                 if ($request->get('isRelated') > 0) {
-                    RelatedProduct::where('related_product_id', $productId)->increment('points', -3);
+                    $this->relatedProduct->where('id', $productId)->increment('points', -3);
                 }
 
                 if ($request->session()->has('cartProducts')) {
@@ -47,13 +56,34 @@ class CartController extends Controller
                     if (array_key_exists($productId, $cartProducts)) {
 
                         unset($cartProducts[$productId]);
+                        if (count($cartProducts) <= 2) {
+                            $request->session()->forget('cartProducts');
+                            return redirect('cart');
+                        }
                         $cartProducts['total'] = $request->get('subtotal');
                         $request->session()->forget('cartProducts');
                         $request->session()->put('cartProducts', $cartProducts);
                     }
-                    return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
+                    return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
                 }
                 return 0;
+            } elseif ($request->get('input') == 'changeShipping') {
+
+                if ($request->session()->has('cartProducts')) {
+
+                    $cartProducts = $request->session()->get('cartProducts');
+
+                    if (array_key_exists('total', $cartProducts)) {
+                        $cartProducts['total'] = $request->subtotal;
+                        $cartProducts['shippingMethodId'] = $request->shippingMethodId;
+                        $request->session()->forget('cartProducts');
+                        $request->session()->put('cartProducts', $cartProducts);
+                    }
+                    return ['total' => $cartProducts['total']];
+                }
+            } elseif ($request->get('input') == 'addRelated') {
+                $this->addRelatedProduct($request);
+                return 'ok';
             }
         }
 
@@ -73,25 +103,24 @@ class CartController extends Controller
 
         $result = $request->all();
 
-        if ($request->has('addRelated')) {  // submit add Related Product
-            return view('cart', $this->addRelatedProduct($request));
-        } else {                                // submit pay
+            // submit pay
             $length = count($result['productId']);
-            if ($result['related_product_id'] > 0) {
-                RelatedProduct::where('related_product_id', $result['related_product_id'])->increment('points', -1);
+            if (!empty($result['related_product_id']) && $result['related_product_id'] > 0) {
+                $this->relatedProduct->find($result['related_product_id'])->increment('points', -1);
             }
             $orderId = Order::insertGetId(
                 [
                     'commentary' => '',
                     'total' => 0,
                     'status' => 'process',
+                    'user_id' => Auth::user()->id,
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
                 ]
             );
             $subtotal = 0;
             for ($i = 0; $i < $length; $i++) {
-                $price = Product::find($result['productId'][$i])->price;
+                $price = $this->product->find($result['productId'][$i])->price;
                 OrderData::insert(
                     [
                         'order_id' => $orderId,
@@ -105,8 +134,7 @@ class CartController extends Controller
                 );
                 $subtotal += $price * $result['productQty'][$i];
                 if ($result['isRelatedProduct'][$i] == 1) {
-                    RelatedProduct::where('related_product_id', $result['productId'][$i])
-                        ->increment('points', 5);
+                    $this->relatedProduct->find($result['productId'][$i])->increment('points', 5);
                 }
             }
             Order::where('id', $orderId)->update(['total' => $subtotal]);
@@ -114,32 +142,35 @@ class CartController extends Controller
             if (session()->has('cartProducts')) session()->forget('cartProducts');
 
             return view('success');
-        }
     }
 
     public function index ()
     {
-        if (!session()->has('cartProducts')) return view('empty-cart');
-
         $cartProducts = session('cartProducts');
+
+        if (empty($cartProducts)) return view('empty-cart');
 
         $products = [];
         $index = 0;
         $productsIds = [];
 
+        $shippingMethods = $this->shippingMethod->getAllEnabled();
+        $shippingMethods->selected = '';
         foreach ($cartProducts as $key => $cartProduct) {
             if ($key === 'total') continue;
-
-            $products[$index] = Product::find($key);
+            if ($key === 'shippingMethodId') {
+                $shippingMethods->selected = $cartProducts[$key];
+                continue;
+            }
+            $products[$index] = $this->product->find($key);
             $products[$index]->is_related = $cartProduct['isRelatedProduct'];
             $products[$index]->qty = $cartProduct['productQty'];
             $productsIds[] = $products[$index]->id;
             $index++;
         }
-        $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
-            ->whereIn('product_id', $productsIds)->orderBy('points', 'desc')->first();
+        $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
 
-        return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct]);
+        return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct, 'shippingMethods' => $shippingMethods]);
     }
 
     public function addToCart (Request $request)
@@ -168,7 +199,6 @@ class CartController extends Controller
                 $cartProducts['total'] = $total;
                 $qty += $cartProducts[$productId]['productQty'];
                 $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
-                //dd($cartProducts);
                 $request->session()->forget('cartProducts');
                 $request->session()->put('cartProducts', $cartProducts);
                 if ($request->ajax()) return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
@@ -178,37 +208,28 @@ class CartController extends Controller
 
         $total += $this->product->getProductPriceById($request->get('productId')) * $qty;
         $request->session()->put('cartProducts.total', $total);
+        $request->session()->put('cartProducts.shippingMethodId', '');
         $request->session()->put('cartProducts.' . $request->get('productId'),
             ['productQty' => $qty, 'isRelatedProduct' => 0]
         );
-        if ($request->ajax()) return ['items' => (count($request->session()->get('cartProducts')) - 1), 'total' => $request->session()->get('cartProducts.total')];
+        if ($request->ajax()) return ['items' => (count($request->session()->get('cartProducts')) - 2), 'total' => $request->session()->get('cartProducts.total')];
         return redirect('cart');
     }
 
     private function addRelatedProduct (Request $request)
     {
-        $result = $request->all();
-        array_push($result['productId'], $result['related_product_id']);
-        array_push($result['productQty'], 1);
-        array_push($result['isRelatedProduct'], 1);
-
-        $products = Product::whereIn('id', $result['productId'])->get();
-        foreach ($products as $key => $product) {
-            $product['is_related'] = $result['isRelatedProduct'][$key];
-            $product['qty'] = $result['productQty'][$key];
+        //add to session
+        $request->session()->put('cartProducts.' . $request->related_product_id,
+            ['productQty' => 1, 'isRelatedProduct' => 1]
+        );
+        $cartProducts = session('cartProducts');
+        foreach ($cartProducts as $key => $cartProduct) {
+            if ($key === 'total' || $key === 'shippingMethodId') continue;
+            $productsIds[] = $key;
         }
 
-        //add to session
-        $request->session()->push('cartProducts',
-            ['productId' => $result['productId'], 'productQty' => $result['productQty'], 'isRelatedProduct' => $result['isRelatedProduct']]
-        );
+        $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
 
-        $relatedProduct = RelatedProduct::leftJoin('products', 'products.id', '=', 'related_product_id')
-            ->whereNotIn('products.id', $result['productId'])
-            ->whereIn('product_id', $result['productId'])
-            ->orderBy('points', 'desc')
-            ->first();
-
-        return ['products' => $products, 'relatedProduct' => $relatedProduct];
+        return $relatedProduct;
     }
 }

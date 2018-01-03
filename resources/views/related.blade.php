@@ -2,8 +2,6 @@
 
     <h3 class="text-center">We also recommend:</h3>
     <div class="row">
-        <input type="hidden" name="related_product_id" value="{{$relatedProduct['related_product_id']}}">
-
         <div class="col-md-2">
             <a href="#">
                 <img class="img-thumbnail" width="304" height="236"
@@ -17,7 +15,7 @@
 
         <div class="col-md-2"><p>Price: {{ $relatedProduct['price'] }}</p></div>
         <div class="col-md-2">
-            <button type="submit" name="addRelated" value="addRelated" class="btn btn-primary">Add to Cart
+            <button type="button" id="addRelated" value="{{$relatedProduct['id']}}" class="btn btn-primary">Add to Cart
             </button>
         </div>
     </div>

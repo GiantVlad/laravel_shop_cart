@@ -43,7 +43,7 @@
                                 <li><a href="/cart"><img height="22" width="25"
                                                          src="{{ asset('images/cart-icon.png') }}">
                                         Items: <span
-                                                id="nav-items">{{ session('cartProducts') ? count(session('cartProducts'))-1 : 0 }}</span>
+                                                id="nav-items">{{ session('cartProducts') ? count(session('cartProducts'))-2 : 0 }}</span>
                                         Total: <span
                                                 id="nav-total">{{ session('cartProducts') ? session('cartProducts')['total'] : 0 }}</span>
                                     </a>

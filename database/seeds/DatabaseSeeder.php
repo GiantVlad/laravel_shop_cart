@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
                 UnitsTableSeeder::class,
                 ProductsTableSeeder::class,
                 RelatedProductsTableSeeder::class,
+                ProductsRelatedProductsTableSeeder::class,
                 PropertiesTableSeeder::class,
                 PropertyValuesTableSeeder::class,
                 ProductPropertiesTableSeeder::class,

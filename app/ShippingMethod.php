@@ -12,17 +12,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShippingMethod extends Model
 {
-    protected $fillable = array('label', 'status');
+    protected $fillable = array('class_name', 'enable', 'priority');
 
     public function getAllEnabled() {
-        return $this->where('enable', 1)->get();
+        $shippingMethods = $this->where('enable', 1)->orderBy('priority')->get();
+        return $this->getParams($shippingMethods);
     }
 
-    public function getRate() {
+    static function getRate()
+    {
 
     }
 
-    static function getLabel() {
+    static function getLabel()
+    {
+
+    }
+    static function getDeliveryTime ()
+    {
 
     }
 
@@ -39,13 +46,19 @@ class ShippingMethod extends Model
     public function list ()
     {
         $shippingMethods = $this->orderBy('priority')->get();
+        return $this->getParams($shippingMethods);
+    }
+
+    private function getParams($shippingMethods)
+    {
         if (!empty($shippingMethods)) {
             foreach ($shippingMethods as $shippingMethod) {
                 $shippingMethod->class_name = 'App\\'.$shippingMethod->class_name;
                 $shippingMethod->label = $shippingMethod->class_name::getLabel();
+                $shippingMethod->rate = $shippingMethod->class_name::getRate();
+                $shippingMethod->time = $shippingMethod->class_name::getDeliveryTime();
             }
         }
         return $shippingMethods;
     }
-
 }

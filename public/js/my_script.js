@@ -64,11 +64,8 @@ $(document).ready(function () {
             subtotal: totalAmount,
             _token: token
         }).done(function (data) {
-            //ToDo redirect to empty Cart
             if (!$('div').is('.product-row')) {
-                $.post(baseUrl + '/cart', {input: "emptyCart", _token: token}, function (data) {
-                    $("div.product-form").replaceWith(data);
-                });
+                window.location.href = baseUrl + '/cart';
             }
             $('span#nav-items').text(data.items);
             $('span#nav-total').text(data.total);
@@ -86,8 +83,36 @@ $(document).ready(function () {
         $('span[id^=total]').each(function () {
             totalAmount = Math.round(100 * (totalAmount + parseFloat($(this).text()))) / 100;
         });
+        if ($('#shipping-select option:selected').data('rate') > 0) {
+            totalAmount += $('#shipping-select option:selected').data('rate');
+        }
         return totalAmount;
     }
+
+    $(document).on('change','#shipping-select', function () {
+        $('option#empty-option', this).remove();
+        var totalAmount = subtotal();
+        var id = $('option:selected', this).val();
+        $.post(baseUrl + '/cart', {
+            input: "changeShipping",
+            shippingMethodId: id,
+            subtotal: totalAmount,
+            _token: token
+        }).done(function (data) {
+            $('span#nav-total').text(data.total);
+            $('#subtotal').text(data.total);
+        });
+    });
+
+    $(document).on('click','button#addRelated', function () {
+        $.post(baseUrl + '/cart', {
+            input: "addRelated",
+            related_product_id: $(this).val(),
+            _token: token
+        }).done(function (data) {
+            window.location.href = baseUrl + '/cart';
+        });
+    });
 
     //search
     $('button#nav-search-btn').on('click', function () {

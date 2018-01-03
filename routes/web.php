@@ -14,7 +14,7 @@
 Route::get('/', 'ShopController@list');
 
 Route::prefix('cart')->group( function() {
-    Route::post('/', 'CartController@post');
+    Route::post('/', 'CartController@post')->name('post.cart');
     Route::post('/add-to-cart', 'CartController@addToCart');
     Route::get('/', 'CartController@index');
 });

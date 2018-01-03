@@ -7,7 +7,7 @@ class FixRateShippingMethod extends ShippingMethod
 {
 
 
-    public function getRate()
+    static function getRate()
     {
         return 15;
     }
@@ -15,5 +15,10 @@ class FixRateShippingMethod extends ShippingMethod
     static function getLabel()
     {
         return 'Fix Rate Shipping';
+    }
+
+    static function getDeliveryTime ()
+    {
+        return '5-7 days';
     }
 }

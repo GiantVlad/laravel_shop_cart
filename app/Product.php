@@ -11,7 +11,12 @@ class Product extends Model
 
     public function relatedProducts()
     {
-        return $this->hasMany('App\RelatedProduct', 'related_product_id', 'id');
+        return $this->belongsToMany('App\Product', 'products_related_products', 'related_product_id', 'product_id');
+    }
+
+    public function relatedProductData()
+    {
+        return $this->hasOne('App\RelatedProduct', 'id', 'id');
     }
 
     public function properties()
