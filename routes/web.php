@@ -19,6 +19,11 @@ Route::prefix('cart')->group( function() {
     Route::get('/', 'CartController@index');
 });
 
+Route::prefix('checkout')->group( function() {
+    Route::post('/', 'CheckoutController@sendPayment')->name('post.checkout');
+    Route::post('/success', 'CheckoutController@success')->name('checkout.success');
+});
+
 
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list');

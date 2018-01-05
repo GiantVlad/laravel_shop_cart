@@ -7,7 +7,7 @@
     </div>
 
     <div class="product-form">
-        <form name="productCart" class="form-horizontal" action="{{route('post.cart')}}" method="POST"
+        <form name="productCart" class="form-horizontal" action="{{route('post.checkout')}}" method="POST"
               data-toggle="validator">
 
             @include('layouts.error')
@@ -39,9 +39,10 @@
             <div class="row">
                 <div class="col-md-10">
                     <p class="text-right">Subtotal: <span id="subtotal"></span></p>
+                    <input type="hidden" name="subtotal" value="">
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">Pay</button>
+                    <button type="submit" id="checkout" class="btn btn-primary" disabled="disabled">Pay</button>
                 </div>
             </div>
 

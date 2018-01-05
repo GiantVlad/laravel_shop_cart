@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
-use App\OrderData;
 use App\Product;
 use App\RelatedProduct;
 use App\ShippingMethod;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -86,62 +82,6 @@ class CartController extends Controller
                 return 'ok';
             }
         }
-
-        $request->validate(
-            [
-                'productId.*' => 'required|integer|min:1|max:99999',
-                'related_product_id' => 'integer|max:99999',
-                'isRelatedProduct.*' => 'required|boolean',
-                'productQty.*' => 'required|integer|min:1|max:99'
-            ],
-            [
-                'productQty.*.required' => 'The Quantity field can not be blank.',
-                'productQty.*.integer' => 'Quantity must be integer.',
-                'productQty.*.min' => 'Minimum of Quantity is 1 psc.',
-                'productQty.*.max' => 'Maximum of Quantity is 99 psc.'
-            ]);
-
-        $result = $request->all();
-
-            // submit pay
-            $length = count($result['productId']);
-            if (!empty($result['related_product_id']) && $result['related_product_id'] > 0) {
-                $this->relatedProduct->find($result['related_product_id'])->increment('points', -1);
-            }
-            $orderId = Order::insertGetId(
-                [
-                    'commentary' => '',
-                    'total' => 0,
-                    'status' => 'process',
-                    'user_id' => Auth::user()->id,
-                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                ]
-            );
-            $subtotal = 0;
-            for ($i = 0; $i < $length; $i++) {
-                $price = $this->product->find($result['productId'][$i])->price;
-                OrderData::insert(
-                    [
-                        'order_id' => $orderId,
-                        'product_id' => $result['productId'][$i],
-                        'is_related_product' => $result['isRelatedProduct'][$i],
-                        'price' => $price,
-                        'qty' => $result['productQty'][$i],
-                        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-                    ]
-                );
-                $subtotal += $price * $result['productQty'][$i];
-                if ($result['isRelatedProduct'][$i] == 1) {
-                    $this->relatedProduct->find($result['productId'][$i])->increment('points', 5);
-                }
-            }
-            Order::where('id', $orderId)->update(['total' => $subtotal]);
-
-            if (session()->has('cartProducts')) session()->forget('cartProducts');
-
-            return view('success');
     }
 
     public function index ()
