@@ -22,11 +22,14 @@ Route::prefix('cart')->group( function() {
 Route::prefix('checkout')->group( function() {
     Route::post('/', 'CheckoutController@sendPayment')->name('post.checkout');
     Route::post('/success', 'CheckoutController@success')->name('checkout.success');
+    Route::get('/success', function () {
+        return view('shop.order-success');
+    });
 });
 
 
 Route::prefix('shop')->group( function() {
-    Route::get('/', 'ShopController@list');
+    Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@get_child_catalogs');
     Route::get('/{id}', 'ShopController@get_product');
 });

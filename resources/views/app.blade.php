@@ -16,12 +16,14 @@
     @include('layouts.nav')
     @include('layouts.categories')
     @include('layouts.modal')
+
     <div class="container">
         <div class="row">
             <div class="col-xs-4 col-sm-3 col-lg-2">
                 @yield('left-column')
             </div>
             <div class="col-xs-8 col-sm-9 col-lg-10 content">
+                @include('layouts.error')
                 @yield('content')
             </div>
         </div>

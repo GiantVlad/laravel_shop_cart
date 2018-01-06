@@ -102,7 +102,7 @@ class CheckoutController extends Controller
 
         $data = $this->ipsp->call('checkout',array(
             'order_id'    => $order_label,
-            'order_desc'  => 'order # '.$order_label,
+            'order_desc'  => 'order #'.$order_label. '. Test Cart Number: 4444555511116666',
             'currency'    => $this->ipsp::USD,
             'amount'      => $subtotal*100,
             'response_url'=> url('checkout/success').'?_token='.csrf_token()
@@ -116,10 +116,11 @@ class CheckoutController extends Controller
 
     public function success (Request $request)
     {
-        if (!empty($request->response_status) && ($request->response_status === 'success')) {
-            Order::where('order_label', $request->order_id)->update(['status' => 'process']);
-            return view('order-success', ['orderLabel' =>$request->order_id]);
+        if (!empty($request->get('response_status')) && ($request->get('response_status') === 'success')) {
+            Order::where('order_label', $request->get('order_id'))->update(['status' => 'process']);
+            return redirect('checkout/success')->with('message', 'Payment for order #'.$request->get('order_id').' is successful!');
         }
-        return view('order-not-success');
+        return redirect('checkout/success')->with('error', 'Payment is NOT successful. PLS, try again');
+
     }
 }

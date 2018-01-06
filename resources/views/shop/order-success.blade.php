@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <p>Payment is NOT successful. PLS, try again</p>
+        <a href="{{route('shop')}}" class="btn btn-primary btn-lg">Back to shop</a>
     </div>
 </div>
 @stop

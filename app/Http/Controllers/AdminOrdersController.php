@@ -24,7 +24,8 @@ class AdminOrdersController extends Controller
 
     public function list ()
     {
-        $orders = $this->order->paginate(15);
+        $orders = $this->order->orderBy('created_at', 'desc')->paginate(15);
+
         return view('admin.orders', ['orders' => $orders]);
     }
 
@@ -35,22 +36,17 @@ class AdminOrdersController extends Controller
 
     public function search(Request $request)
     {
-        $keyword = $request->keyword;
+        $keyword = $request->get('keyword');
 
-        if ($keyword!='') {
-            $selectedOrder = $this->order->getOrderByID($keyword);
+        if (empty($keyword)) return back();
 
-            return view('admin.orders', ['orders' => $selectedOrder]);
-        }
-
-        return back();
+        $selectedOrder = $this->order->getOrderByLabel($keyword)->paginate(15);
+        return view('admin.orders', ['orders' => $selectedOrder]);
     }
 
 
     public function showEditForm (int $id)
     {
-
-
     }
 
     public function update (Request $request)
@@ -58,8 +54,6 @@ class AdminOrdersController extends Controller
         $this->validate($request, [
 
         ]);
-
-
     }
 
 }

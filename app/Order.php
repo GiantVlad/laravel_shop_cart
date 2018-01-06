@@ -15,13 +15,13 @@ class Order extends Model
         return $this->hasMany('App\OrderData', 'order_id', 'id');
     }
 
-    public function users ()
+    public function user()
     {
-        return $this->belongsTo('User', 'user_id', 'id');
+        return $this->belongsTo('App\User', 'user_id', 'id');
     }
 
-    public function getOrderByID(int $id)
+    public function getOrderByLabel(string $label)
     {
-        return $this->find($id);
+        return $this->where('order_label', 'like' ,  '%'.$label.'%');
     }
 }
