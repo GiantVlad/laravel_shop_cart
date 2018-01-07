@@ -8,7 +8,7 @@ use App\User;
 
 class Order extends Model
 {
-    protected $fillable = array('commentary', 'total', 'status');
+    protected $fillable = array('commentary', 'total', 'status', 'order_label');
 
     public function orderData ()
     {
@@ -23,5 +23,10 @@ class Order extends Model
     public function getOrderByLabel(string $label)
     {
         return $this->where('order_label', 'like' ,  '%'.$label.'%');
+    }
+
+    public function getOrdersByUserId(int $id)
+    {
+        return $this->where('user_id', $id);
     }
 }

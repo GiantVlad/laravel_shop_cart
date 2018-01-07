@@ -25,7 +25,9 @@ class ShopController extends Controller
     {
         $products = Product::all();
         $catalogs = Catalog::where('parent_id', NULL)->get();
-        return view('shop', ['products' => $products, 'catalogs' => $catalogs]);
+        $view = View::make('shop', ['products' => $products, 'catalogs' => $catalogs]);
+        $view->nest('links', 'layouts.links');
+        return $view;
     }
 
     public function get_product ($id)
@@ -53,7 +55,7 @@ class ShopController extends Controller
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
         $properties = Property::orderBy('priority')->get();
         $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
-        $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
+        $view->nest('filter', 'layouts.links', ['properties' => $properties]);
 
         return $view;
     }

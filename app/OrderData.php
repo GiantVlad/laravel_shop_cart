@@ -8,8 +8,9 @@ class OrderData extends Model
 {
     protected $fillable = array('order_id', 'product_id', 'is_related_product', 'price', 'qty');
     protected $table = 'order_data';
-    public function products()
+
+    public function product()
     {
-        return $this->belongsTo('App\Order', 'id','order_id');
+        return $this->belongsTo('App\Product', 'product_id','id');
     }
 }

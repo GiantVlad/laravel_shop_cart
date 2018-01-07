@@ -27,11 +27,13 @@ Route::prefix('checkout')->group( function() {
     });
 });
 
+Route::get('/orders', 'OrderController@list')->name('orders');
+Route::get('/order/{id}', 'OrderController@getOrder')->name('order');
 
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@get_child_catalogs');
-    Route::get('/{id}', 'ShopController@get_product');
+    Route::get('/{id}', 'ShopController@get_product')->name('product');
 });
 
 Route::post('search', 'SearchController@search');
