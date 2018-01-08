@@ -15,9 +15,10 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot (Catalog $catalog)
+    public function boot ()
     {
         if (Schema::hasTable('catalogs')) {
+            $catalog = new Catalog;
             $catalogs = $catalog->parentsNode();
         }
         if (isset($catalogs)) {
