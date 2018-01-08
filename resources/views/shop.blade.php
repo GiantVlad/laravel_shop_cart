@@ -16,12 +16,8 @@
                         <a href="{{ asset('shop/'.$product->id) }}">
                             <h4 class="header">{{$product->name}}</h4>
                         </a>
-                        <p>Catalog: {{$product->catalogs->name}}</p>
-                        <p>Property:
-                            @foreach ($product->properties as $productProperty)
-                                {{$productProperty->value}}<br/>
-                            @endforeach
-                        </p>
+                        <p>Category: {{$product->catalogs->name}}</p>
+                        <p class="product-shop-desc">Description:<br>{{$product->description}}</p>
                         <div class="effect">
                             <div class="spacer">
                                 <span class="glyphicon glyphicon-triangle-bottom"></span>

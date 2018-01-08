@@ -98,7 +98,11 @@ class CheckoutController extends Controller
             }
         }
 
-        if (session()->has('cartProducts')) session()->forget('cartProducts');
+        if (session()->has('cartProducts')) {
+            session()->forget('cartProducts');
+        }
+        Auth::user()->cart = '';
+        Auth::user()->save();
 
         $data = $this->ipsp->call('checkout',array(
             'order_id'    => $order_label,

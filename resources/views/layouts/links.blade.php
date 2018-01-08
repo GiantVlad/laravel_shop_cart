@@ -1,6 +1,5 @@
 @extends('app')
 
 @section('left-column')
-    <h4 class="header">Links:</h4>
-    <a href="{{route('orders')}}">Orders</a>
+    <a href="{{route('orders')}}">My orders</a>
 @stop

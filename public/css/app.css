@@ -8686,6 +8686,11 @@ div.nav-search {
   position: relative;
 }
 
+.product-list .product-cart .cart-wrapper .cart-header .product-shop-desc {
+  text-align: justify;
+  padding: 0px 7px;
+}
+
 .product-list .product-cart .cart-wrapper .cart-header .effect {
   top: 55px;
   position: absolute;

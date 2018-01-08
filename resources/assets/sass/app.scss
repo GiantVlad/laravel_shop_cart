@@ -38,6 +38,10 @@ div.nav-search {
       .cart-header {
         height: 6em;
         position: relative;
+        .product-shop-desc {
+          text-align: justify;
+          padding: 0px 7px;
+        }
         .effect {
           top: 55px;
           position: absolute;
