@@ -17,12 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot ()
     {
-        if (Schema::hasTable('catalogs')) {
+        if (!$this->app->runningInConsole()) {
             $catalog = new Catalog;
-            $catalogs = $catalog->parentsNode();
-        }
-        if (isset($catalogs)) {
-            View::share('catalogs', $catalogs);
+            View::share('catalogs', $catalog->parentsNode());
         }
 
         //Delete records from "product_property" table
