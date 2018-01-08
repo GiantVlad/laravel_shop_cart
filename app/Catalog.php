@@ -24,5 +24,10 @@ class Catalog extends Model
         while ($child_ids);
         return $catalog_ids;
     }
+
+    public function parentsNode()
+    {
+        return $this->where('parent_id', NULL)->get();
+    }
 }
 

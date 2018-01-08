@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Catalog;
 use App\Product;
+use App\Catalog;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,9 +15,14 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot (Catalog $catalog)
     {
-        View::share('catalogs', Catalog::where('parent_id', NULL)->get());
+        if (Schema::hasTable('catalogs')) {
+            $catalogs = $catalog->parentsNode();
+        }
+        if (isset($catalogs)) {
+            View::share('catalogs', $catalogs);
+        }
 
         //Delete records from "product_property" table
         Product::deleting(function ($product) {
@@ -29,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register ()
     {
         //
     }
