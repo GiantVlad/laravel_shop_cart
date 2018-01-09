@@ -26,8 +26,8 @@ class RemoveColumnsFromRelatedProductsTable extends Migration
     public function down()
     {
         Schema::table('related_products', function (Blueprint $table) {
-            $table->integer('product_id');
-            $table->integer('related_product_id');
+            $table->integer('product_id')->default(0);
+            $table->integer('related_product_id')->default(0);
         });
     }
 }

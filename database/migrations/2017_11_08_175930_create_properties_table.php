@@ -15,7 +15,7 @@ class CreatePropertiesTable extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('property_name_id');
+            $table->integer('property_name_id')->default(0);
             $table->string('name', 100);
             $table->string('value');
             $table->integer('prop_group_id')->nullable();

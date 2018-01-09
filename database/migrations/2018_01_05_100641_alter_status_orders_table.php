@@ -17,8 +17,8 @@ class AlterStatusOrdersTable extends Migration
             $table->dropColumn('status');
         });
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['pending payment', 'process', 'completed', 'deleted']);
-            $table->string('order_label');
+            $table->enum('status', ['pending payment', 'process', 'completed', 'deleted'])->default('pending payment');
+            $table->string('order_label')->default('');
         });
     }
 
@@ -33,7 +33,7 @@ class AlterStatusOrdersTable extends Migration
             $table->dropColumn('status');
         });
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['process', 'completed', 'deleted']);
+            $table->enum('status', ['process', 'completed', 'deleted'])->default('process');
             $table->dropColumn('order_label');
         });
     }

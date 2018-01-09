@@ -26,8 +26,8 @@ class AlterFirstPropertiesTable extends Migration
     public function down()
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->integer('property_name_id');
-            $table->string('value');
+            $table->integer('property_name_id')->default(0);
+            $table->string('value')->default('');
             $table->integer('unit_id')->nullable();
         });
     }

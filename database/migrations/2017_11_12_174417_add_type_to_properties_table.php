@@ -14,7 +14,7 @@ class AddTypeToPropertiesTable extends Migration
     public function up()
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->enum('type', ['number', 'selector']);;
+            $table->enum('type', ['number', 'selector'])->default('number');
         });
     }
 

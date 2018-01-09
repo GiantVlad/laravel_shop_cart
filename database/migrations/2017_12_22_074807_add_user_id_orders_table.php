@@ -14,7 +14,7 @@ class AddUserIdOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function(Blueprint $table) {
-            $table->integer('user_id');
+            $table->integer('user_id')->default(1);
         });
     }
 

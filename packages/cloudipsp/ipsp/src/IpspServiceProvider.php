@@ -13,9 +13,9 @@ class IpspServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        define('MERCHANT_ID' , '1396424');
-        define('MERCHANT_PASSWORD' , 'test');
-        define('IPSP_GATEWAY' , 'api.fondy.eu');
+        defined('MERCHANT_ID') or define('MERCHANT_ID' , '1396424');
+        defined('MERCHANT_PASSWORD') or define('MERCHANT_PASSWORD' , 'test');
+        defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
     }
 
     /**
