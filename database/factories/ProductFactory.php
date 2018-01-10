@@ -13,11 +13,13 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\Catalog::class, function (Faker $faker) {
+$factory->define(App\Product::class, function (Faker $faker) {
     return [
-        'name' => $faker->words(15, true),
+        'name' => $faker->word,
+        'catalog_id' => random_int(1, 10),
         'description' => $faker->paragraph,
-        'parent_id' => null,
+        'price' => $faker->randomFloat(2, 0.01, 9999999.99),
+        'image' => 'product_img.jpg'
     ];
 });
 

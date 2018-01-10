@@ -24,16 +24,14 @@ class ShopController extends Controller
     public function list ()
     {
         $products = Product::all();
-        $catalogs = Catalog::where('parent_id', NULL)->get();
-        $view = View::make('shop', ['products' => $products, 'catalogs' => $catalogs]);
+        $view = View::make('shop', ['products' => $products]);
         $view->nest('links', 'layouts.links');
         return $view;
     }
 
     public function get_product ($id)
     {
-        $product = Product::where('id', $id)->first();
-
+        $product = Product::find($id)->first();
         return view('shop.single', ['product' => $product]);
     }
 

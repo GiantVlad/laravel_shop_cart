@@ -43,8 +43,6 @@ Route::post('filter', 'PropertyController@filter');
 Auth::routes();
 Route::post('/users/logout', 'Auth\LoginController@logout')->name('user.logout');
 
-Route::get('/test', function () {return view('test');} );
-
 Route::prefix('admin')->group( function() {
     Route::get('/', 'AdminController@index')->name('admin.dashboard');
     Route::get('/login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
