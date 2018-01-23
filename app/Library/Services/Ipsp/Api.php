@@ -23,6 +23,10 @@ class Api
      */
     public function __construct ()
     {
+        defined('MERCHANT_ID') or define('MERCHANT_ID' , '1396424');
+        defined('MERCHANT_PASSWORD') or define('MERCHANT_PASSWORD' , 'test');
+        defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
+
         $this->client = new Client(MERCHANT_ID, MERCHANT_PASSWORD, IPSP_GATEWAY);
         set_error_handler(array($this, 'handleError'));
         set_exception_handler(array($this, 'handleException'));

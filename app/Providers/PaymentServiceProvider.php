@@ -1,10 +1,10 @@
 <?php
 
-namespace Ipsp;
+namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class IpspServiceProvider extends ServiceProvider
+class PaymentServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,9 +13,7 @@ class IpspServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        defined('MERCHANT_ID') or define('MERCHANT_ID' , '1396424');
-        defined('MERCHANT_PASSWORD') or define('MERCHANT_PASSWORD' , 'test');
-        defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
+        //
     }
 
     /**

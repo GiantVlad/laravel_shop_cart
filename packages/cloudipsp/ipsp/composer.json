@@ -1,7 +1,0 @@
-{
-    "name": "cloudipsp/ipsp",
-    "description": "payment gateway",
-    "keywords": ["payment"],
-    "license": "MIT",
-    "type": "project"
-}
