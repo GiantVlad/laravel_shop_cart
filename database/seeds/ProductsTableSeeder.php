@@ -17,7 +17,7 @@ class ProductsTableSeeder extends Seeder
         $productsArray = [];
         for ($i=1; $i< 200; $i++) {
             $productsArray[] = [
-                'name' => $faker->realText(rand(10,15)),
+                'name' => $faker->sentence,
                 'image' => 'prod'.$faker->numberBetween(1,6).'.jpg',
                 'description' => $faker->paragraph(2, true),
                 'price' => $faker->numberBetween(100,100000)/100,

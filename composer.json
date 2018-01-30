@@ -24,8 +24,7 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/",
-            "Ipsp\\": "packages/cloudipsp/ipsp/src/"
+            "App\\": "app/"
         }
     },
     "autoload-dev": {

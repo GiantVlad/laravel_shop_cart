@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Library\Services\IpspPaymentService;
+use App\Library\Services\Ipsp\Api as IspsApi;
 use Illuminate\Support\ServiceProvider;
+use App\Library\Services\PaymentServiceInterface;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,8 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(PaymentServiceInterface::class, function ($app) {
+            return new IpspPaymentService(new IspsApi());
+        });
     }
 }

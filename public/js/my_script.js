@@ -47,11 +47,11 @@ $(document).ready(function () {
         }).done(function (data) {
             $('span#nav-items').text(data.items);
             $('span#nav-total').text(Math.round(100 * parseFloat(data.total)) / 100);
-        }).fail(function(data) {
-            if (data.statusText === "Unauthorized") {
+        }).fail(function (xhr, status) {
+            if (xhr.statusText === "Unauthorized") {
                 window.location.href = baseUrl + '/login';
             } else {
-                console.log(data);
+                alert(ajaxError (xhr, status));
             }
         });
     });
@@ -97,7 +97,7 @@ $(document).ready(function () {
         return totalAmount;
     }
 
-    $(document).on('change','#shipping-select', function () {
+    $(document).on('change', '#shipping-select', function () {
         $('option#empty-option', this).remove();
         $('button#checkout').removeAttr('disabled');
         var totalAmount = subtotal();
@@ -114,7 +114,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click','button#addRelated', function () {
+    $(document).on('click', 'button#addRelated', function () {
         $.post(baseUrl + '/cart', {
             input: "addRelated",
             related_product_id: $(this).val(),
@@ -218,5 +218,67 @@ $(document).ready(function () {
             $(this).data('status', false);
         }
     });
+
+    var orders = {
+        $actionSelector: $('select#order-status-actions'),
+
+        init: function () {
+            this.$actionSelector.on('change', function (event) {
+                event.preventDefault();
+                var selector = this;
+                if (selector.value) {
+                    var id = $('option:selected', selector).data('order-id');
+                    $.ajax({
+                        method: 'POST',
+                        url: baseUrl + '/order/status/',
+                        data: {
+                            id: id,
+                            status: this.value,
+                            _token: token,
+                            _method: 'PUT'
+                        },
+                        success: function (data) {
+                            if (data === 'redirect_to_cart') {
+                                window.location.href = baseUrl + '/cart';
+                            }
+                            $(selector).closest('.row').find('.order-status').text(selector.value);
+                            $(selector).
+                                find('option')
+                                .remove()
+                                .end()
+                                .append(
+                                    data.html
+                                );
+                        },
+                        error: function (jqXHR, exception) {
+                            alert(ajaxError (jqXHR, exception));
+                        }
+                    });
+                }
+            })
+        }
+    }
+
+    orders.init();
+
+    var ajaxError = function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        return msg;
+    }
 
 });

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\Services\PaymentServiceInterface;
 use Illuminate\Http\Request;
-use Ipsp\Api;
 use App\Order;
 use App\OrderData;
 use Carbon\Carbon;
@@ -18,18 +18,15 @@ class CheckoutController extends Controller
      *
      * @return void
      */
-    private $ipsp;
     private $product;
     private $relatedProduct;
 
 
-    public function __construct(Api $ipsp,
-                                Product $product,
+    public function __construct(Product $product,
                                 RelatedProduct $relatedProduct)
     {
         $this->product = $product;
         $this->relatedProduct = $relatedProduct;
-        $this->ipsp = $ipsp;
 
         $this->middleware('auth')->except('logout');
     }
@@ -39,7 +36,7 @@ class CheckoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendPayment(Request $request)
+    public function sendPayment(Request $request, PaymentServiceInterface $paymentService)
     {
         $request->validate(
             [
@@ -104,16 +101,18 @@ class CheckoutController extends Controller
         Auth::user()->cart = '';
         Auth::user()->save();
 
-        $data = $this->ipsp->call('checkout',array(
+        $requestData = array(
             'order_id'    => $order_label,
             'order_desc'  => 'order #'.$order_label. '. Test Cart Number: 4444555511116666',
-            'currency'    => $this->ipsp::USD,
+            'currency'    => 'USD',
             'amount'      => $subtotal*100,
             'response_url'=> url('checkout/success').'?_token='.csrf_token()
-        ))->getResponse();
+        );
+
+        $responseData = $paymentService->pay($requestData);
         // redirect to checkoutpage
-        //ToDo check if $data->checkout_url exist
-        return redirect($data->checkout_url);
+        //ToDo check if $responseData->checkout_url exist
+        return redirect($responseData->checkout_url);
 
         //return view('order-not-success');
     }

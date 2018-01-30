@@ -15,7 +15,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Product::class, function (Faker $faker) {
     return [
-        'name' => $faker->word,
+        'name' => $faker->sentence,
         'catalog_id' => random_int(1, 10),
         'description' => $faker->paragraph,
         'price' => $faker->randomFloat(2, 0.01, 9999999.99),

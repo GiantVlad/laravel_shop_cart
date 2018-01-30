@@ -8,11 +8,21 @@
 
 namespace App\Library\Services;
 
+use App\Library\Services\Ipsp\Api;
 
-class SelfPaymentService implements PaymentServiceInterface
+
+
+class IpspPaymentService implements PaymentServiceInterface
 {
-    public function getName () : string
+    private $api;
+    public function __construct (Api $api)
     {
-        return 'Hello';
+        $this->api = $api;
+    }
+
+    public function pay (array $requestData)
+    {
+        $requestData['currency'] = constant(get_class ($this->api).'::'.$requestData['currency']);
+        return $this->api->call('checkout', $requestData)->getResponse();
     }
 }

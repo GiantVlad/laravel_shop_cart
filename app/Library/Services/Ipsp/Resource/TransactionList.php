@@ -1,8 +1,8 @@
 <?php
 
-namespace Ipsp\Resource;
+namespace App\Library\Services\Ipsp\Resource;
 
-use Ipsp\Resource;
+use App\Library\Services\Ipsp\Resource;
 /**
  * Class Transaction_List
  */

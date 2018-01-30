@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\RelatedProduct;
 use App\ShippingMethod;
+use App\Library\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -17,14 +18,17 @@ class CartController extends Controller
     private $product;
     private $shippingMethod;
     private $relatedProduct;
+    private $cartService;
 
     public function __construct (Product $product,
                                  ShippingMethod $shippingMethod,
-                                 RelatedProduct $relatedProduct)
+                                 RelatedProduct $relatedProduct,
+                                 CartService $cartService)
     {
         $this->product = $product;
         $this->shippingMethod = $shippingMethod;
         $this->relatedProduct = $relatedProduct;
+        $this->cartService = $cartService;
 
         $this->middleware('auth')->except('logout');
     }
@@ -127,31 +131,11 @@ class CartController extends Controller
                 'productQty.max' => 'Maximum of Quantity is 99 psc.'
             ]);
 
-        $cartProducts = $request->session()->get('cartProducts');
         $productId = $request->get('productId');
         $qty = $request->get('productQty');
-        $total = 0;
-        //If product exist in the cart
-        if (!empty($cartProducts)) {
-            $total = $cartProducts['total'];
-            if (array_key_exists($productId, $cartProducts)) {
-                $total += $this->product->getProductPriceById($productId) * $qty;
-                $cartProducts['total'] = $total;
-                $qty += $cartProducts[$productId]['productQty'];
-                $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
-                $request->session()->forget('cartProducts');
-                $request->session()->put('cartProducts', $cartProducts);
-                if ($request->ajax()) return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
-                return redirect('cart');
-            }
-        }
 
-        $total += $this->product->getProductPriceById($request->get('productId')) * $qty;
-        $request->session()->put('cartProducts.total', $total);
-        $request->session()->put('cartProducts.shippingMethodId', '');
-        $request->session()->put('cartProducts.' . $request->get('productId'),
-            ['productQty' => $qty, 'isRelatedProduct' => 0]
-        );
+        $this->cartService->addToCart($productId, $qty);
+
         if ($request->ajax()) return ['items' => (count($request->session()->get('cartProducts')) - 2), 'total' => $request->session()->get('cartProducts.total')];
         return redirect('cart');
     }

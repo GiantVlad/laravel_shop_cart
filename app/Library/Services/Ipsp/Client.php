@@ -1,6 +1,6 @@
 <?php
 
-namespace Ipsp;
+namespace App\Library\Services\Ipsp;
 /**
  * Class PaymentClient
  */

@@ -9,7 +9,8 @@
 namespace App\Library\Services;
 
 
-class PaymentServiceInterface
+interface PaymentServiceInterface
 {
-
+    public function pay(array $requestData);
 }
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ipsp;
+namespace App\Library\Services\Ipsp;
 /**
  * Class Api
  */
@@ -38,7 +38,7 @@ class Api
      */
     public function initResource ($name)
     {
-        $class = 'Ipsp\\Resource\\' . ucfirst($name);
+        $class = __NAMESPACE__.'\\Resource\\' . ucfirst($name);
         if (!class_exists($class)) new \Exception(sprintf('ipsp resource "%s" not found', $class));
         $resource = new $class;
         return $resource;

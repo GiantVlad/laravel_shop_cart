@@ -29,6 +29,7 @@ Route::prefix('checkout')->group( function() {
 
 Route::get('/orders', 'OrderController@list')->name('orders');
 Route::get('/order/{id}', 'OrderController@getOrder')->name('order');
+Route::put('/order/status', 'OrderController@changeOrderStatus')->name('change.order.status');
 
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
@@ -93,3 +94,5 @@ Route::prefix('admin')->group( function() {
     Route::get('/shipping-methods', 'AdminShippingMethodsController@list')->name('admin.shipping-methods');
     Route::put('/shipping-method', 'AdminShippingMethodsController@changeStatus');
 });
+
+Route::get('/test', 'TestController@test');
