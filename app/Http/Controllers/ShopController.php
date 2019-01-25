@@ -31,7 +31,7 @@ class ShopController extends Controller
 
     public function get_product ($id)
     {
-        $product = Product::find($id)->first();
+        $product = Product::find($id);
         return view('shop.single', ['product' => $product]);
     }
 
