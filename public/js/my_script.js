@@ -13,20 +13,7 @@ $(document).ready(function () {
         var $subtotal = subtotal();
         $('#subtotal').text($subtotal);
         $('input[name=subtotal]').val($subtotal);
-        //Single product page
-        singleTotal(1);
     }
-
-    //Single product page
-    $('input#single-productQty').on('change', function () {
-        singleTotal($(this).val());
-    });
-
-    var singleTotal = function (qty) {
-        var total = qty * +$('#single-price').text();
-        $('span#single-total').text(Math.round(total * 100) / 100);
-    }
-
 
     $('input[id^=productQty]').on('change', function () {
         var id = $(this).prop('id').replace("productQty", "");

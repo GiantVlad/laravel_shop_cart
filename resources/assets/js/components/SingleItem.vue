@@ -11,12 +11,12 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="single-productQty">QTY</label>
                             <input type="number" class="form-control" name="productQty"
-                                   id="single-productQty" placeholder="QTY" value="1"
+                                   id="single-productQty" placeholder="QTY" v-model="qty"
                                    min="1" max="99" required>
                         </div>
 
                     </div>
-                    <div>Total: <span id="single-total"></span></div>
+                    <div>Total: {{total}}</div>
                     <button class="btn btn-primary" type="submit">ADD TO CART</button>
                 </form>
             </div>
@@ -42,6 +42,12 @@
             return {
                 baseUrl: '',
                 csrf: '',
+                qty: 1
+            }
+        },
+        computed: {
+            total () {
+                return this.itemData.price * this.qty;
             }
         },
         mounted() {

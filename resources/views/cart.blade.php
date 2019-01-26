@@ -11,7 +11,7 @@
               data-toggle="validator">
 
             @include('layouts.error')
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            @csrf
             @if(!empty($products))
                 @foreach ($products as $product)
                     @include('product')
