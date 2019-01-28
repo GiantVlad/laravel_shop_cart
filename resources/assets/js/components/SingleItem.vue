@@ -47,7 +47,7 @@
         },
         computed: {
             total () {
-                return this.itemData.price * this.qty;
+                return Math.round(this.itemData.price*100)* this.qty/100;
             }
         },
         mounted() {

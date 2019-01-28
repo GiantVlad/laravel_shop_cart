@@ -7,22 +7,39 @@
     "watch-poll": "npm run watch -- --watch-poll",
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "test": "cross-env NODE_ENV=test mocha-webpack --webpack-config tests/webpack.config.js --require tests/js/setup.js tests/js/**/*.spec.js"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@vue/babel-preset-app": "^3.3.0",
+    "@vue/test-utils": "^1.0.0-beta.28",
     "axios": "^0.18.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-istanbul": "^4.1.5",
     "bootstrap-confirmation2": "^2.4.0",
     "bootstrap-sass": "^3.3.7",
     "bootstrap-select": "^1.12.4",
     "cross-env": "^5.2.0",
+    "expect": "^23.6.0",
     "jquery": "^3.1.1",
     "jquery.easing": "^1.4.1",
+    "jsdom": "^13.1.0",
+    "jsdom-global": "^3.0.2",
     "laravel-mix": "^4.0",
     "lodash": "^4.17.4",
+    "mocha": "^5.2.0",
+    "mocha-webpack": "^2.0.0-beta.0",
+    "moxios": "^0.4.0",
     "resolve-url-loader": "^2.3.1",
     "sass": "^1.16.1",
     "sass-loader": "^7.1.0",
     "vue": "^2.5",
-    "vue-template-compiler": "^2.5.22"
-  }
+    "vue-loader": "^15.6.2",
+    "vue-template-compiler": "^2.5.22",
+    "webpack-node-externals": "^1.6.0",
+    "prettier": "^1.16"
+  },
+  "dependencies": {}
 }
