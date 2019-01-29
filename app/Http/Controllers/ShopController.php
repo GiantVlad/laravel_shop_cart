@@ -41,7 +41,7 @@ class ShopController extends Controller
 
         $catalog_ids = $this->catalog->get_catalog_ids_tree((int) $id);
 
-        $products = Product::whereIn('catalog_id', $catalog_ids)->get();
+        $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->get();
 
         $parent_id = $id;
         $parent_catalogs_array = [];
