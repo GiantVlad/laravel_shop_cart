@@ -10,36 +10,7 @@
     </div>
     <div class="row product-list">
         @foreach ($products as $product)
-            <div class="col-lg-4 col-sm-6 product-cart">
-                <div class="cart-wrapper">
-                    <div class="cart-header">
-                        <a href="{{ asset('shop/'.$product->id) }}">
-                            <h4 class="header">{{$product->name}}</h4>
-                        </a>
-                        <p>Category: {{$product->catalogs->name}}</p>
-                        <p class="product-shop-desc">Description:<br>{{$product->description}}</p>
-                        <div class="effect">
-                            <div class="spacer">
-                                <span class="glyphicon glyphicon-triangle-bottom"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="thumbnail">
-                        <a href="{{ asset('shop/'.$product->id) }}">
-                            <div class="img-wrapper">
-                                <img class="center-block" alt="product id {{ $product->id }}"
-                                     src="{{ asset('images/'.$product->image) }}">
-                            </div>
-                        </a>
-                    </div>
-                    <p>Price: {{$product->price}}
-                        <button class="btn btn-link" name="addFromShop{{ $product->id }}" value="{{ $product->id }}">
-                            ADD TO CART
-                        </button>
-                    </p>
-                </div>
-            </div>
-
+            <product :product="{{ $product }}"></product>
         @endforeach
     </div>
 

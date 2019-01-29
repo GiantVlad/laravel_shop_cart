@@ -41,5 +41,7 @@
     "webpack-node-externals": "^1.6.0",
     "prettier": "^1.16"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vue-slide-up-down": "^1.6.0"
+  }
 }

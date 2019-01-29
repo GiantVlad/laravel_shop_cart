@@ -23,7 +23,7 @@ class ShopController extends Controller
 
     public function list ()
     {
-        $products = Product::all();
+        $products = Product::with('catalogs')->get();
         $view = View::make('shop', ['products' => $products]);
         $view->nest('links', 'layouts.links');
         return $view;
