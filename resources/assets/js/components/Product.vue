@@ -15,11 +15,11 @@
                 <a :href="baseUrl+'/shop/' + product.id">
                     <div class="img-wrapper">
                         <vue-slide-up-down :active="active">
-                        <img class="center-block" :alt="'product id '+product.id"
-                             :src="baseUrl+'/images/'+product.image">
+                            <img class="center-block" :alt="'product id '+product.id"
+                                 :src="baseUrl+'/images/'+product.image" :class="{'is-displayed':active}">
                         </vue-slide-up-down>
                         <vue-slide-up-down :active="!active">
-                            <p class="product-shop-desc">Description:<br>{{product.description}}</p>
+                            <p class="product-shop-desc" :class="{'is-displayed':!active}">Description:<br>{{product.description}}</p>
                         </vue-slide-up-down>
                     </div>
                 </a>
