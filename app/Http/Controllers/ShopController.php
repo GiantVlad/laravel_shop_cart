@@ -23,7 +23,7 @@ class ShopController extends Controller
 
     public function list ()
     {
-        $products = Product::with('catalogs')->get();
+        $products = Product::with('catalogs')->with('properties')->get();
         $view = View::make('shop', ['products' => $products]);
         $view->nest('links', 'layouts.links');
         return $view;
@@ -41,7 +41,7 @@ class ShopController extends Controller
 
         $catalog_ids = $this->catalog->get_catalog_ids_tree((int) $id);
 
-        $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->get();
+        $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->with('properties')->get();
 
         $parent_id = $id;
         $parent_catalogs_array = [];
@@ -51,7 +51,7 @@ class ShopController extends Controller
             $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
-        $properties = Property::orderBy('priority')->get();
+        $properties = Property::with('propertyValues')->orderBy('priority')->get();
         $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
         $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 

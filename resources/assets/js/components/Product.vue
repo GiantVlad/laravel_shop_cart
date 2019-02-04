@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-4 col-sm-6 product-cart">
+    <div v-if="inFilter" class="col-lg-4 col-sm-6 product-cart">
         <div class="cart-wrapper">
             <div class="cart-header">
                 <a :href="baseUrl+'/shop/' + product.id">
@@ -44,11 +44,57 @@
             return {
                 baseUrl: '',
                 csrf: '',
-                active: true
+                active: true,
+                filters: {},
+                fl: true
             }
         },
         computed: {
+            inFilter() {
+                if (this.fl === true) {}
+                let toReturn = true;
 
+                //filters are not defined
+                if (Object.keys(this.filters).length === 0) {
+                    return true;
+                }
+
+                // else if
+                // The product has no one property
+                if (this.product.properties.length === 0) {
+                    return false
+                }
+
+                // The product hasn't property in filter
+                Object.keys(this.filters).forEach(key => {
+                    if (typeof this.product.properties.find(pr => +pr.property_id === +key) === 'undefined') {
+                        toReturn = false;
+                    }
+                })
+
+                if (!toReturn)
+                    return false;
+
+                this.product.properties.forEach(property => {
+                    if (typeof this.filters[property.property_id] !== 'undefined') {
+                        if (typeof this.filters[property.property_id].checked !== 'undefined') {
+                            if (typeof this.filters[property.property_id].checked.find(el => (el.name === property.value && el.value)) === 'undefined') {
+                                toReturn = false;
+                            }
+                        }
+                        if (toReturn && this.filters[property.property_id].min) {
+                            toReturn = +property.value >= +this.filters[property.property_id].min
+                        }
+                        if (toReturn && this.filters[property.property_id].max) {
+                            toReturn = +property.value <= +this.filters[property.property_id].max
+                        }
+
+                    } else {
+                        toReturn = false;
+                    }
+                })
+                return toReturn;
+            }
         },
         methods: {
             slide () {
@@ -58,6 +104,31 @@
         mounted() {
             this.baseUrl = window.location.origin;
             this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
+            this.$root.$on('product_filter', data => {
+
+                if ( data.option === 'checked' ) {
+                    if (typeof this.filters[data.property_id] === 'undefined') {
+                        this.$set(this.filters, data.property_id, {checked: []});
+                    }
+                    if (typeof data.value.find(el => el.value) === 'undefined') {
+                        delete this.filters[data.property_id];
+                    } else  {
+                        this.$set(this.filters[data.property_id], data.option, data.value);
+                    }
+                } else {
+                    if (typeof this.filters[data.property_id] === 'undefined') {
+                        this.$set(this.filters, data.property_id, {min: null, max: null});
+                    }
+                    if (!data.value) {
+                        data.value = null;
+                    }
+                    this.$set(this.filters[data.property_id], data.option, data.value);
+                    if (!this.filters[data.property_id].min && !this.filters[data.property_id].max) {
+                        delete this.filters[data.property_id];
+                    }
+                }
+                this.fl = !this.fl;
+            });
         }
     }
 </script>

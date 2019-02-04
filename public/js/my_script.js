@@ -177,7 +177,7 @@ $(document).ready(function () {
         });
     }
 
-    $('input[id^=filter], input[id^=select-property-]').on('change', propertyFilter);
+    //$('input[id^=filter], input[id^=select-property-]').on('change', propertyFilter);
 
     init();
 

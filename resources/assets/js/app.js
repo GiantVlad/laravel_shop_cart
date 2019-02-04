@@ -17,9 +17,9 @@ window.Vue = require('vue');
 
 import SingleItem from './components/SingleItem'
 import Product from './components/Product'
-
+import ProductFilter from './components/ProductFilter'
 
 const app = new Vue({
     el: '#app',
-    components: {SingleItem, Product},
+    components: {SingleItem, Product, ProductFilter},
 });
