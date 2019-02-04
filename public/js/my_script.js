@@ -23,25 +23,6 @@ $(document).ready(function () {
         $('#nav-total').text($subtotal);
         $('input[name=subtotal]').val($subtotal);
     });
-    //add to cart from product list
-    $(document).on('click', 'button[name^=addFromShop]', function () {
-        var id = $(this).val();
-        $.post(baseUrl + '/cart/add-to-cart', {
-            productId: id,
-            isRelated: 0,
-            productQty: 1,
-            _token: token
-        }).done(function (data) {
-            $('span#nav-items').text(data.items);
-            $('span#nav-total').text(Math.round(100 * parseFloat(data.total)) / 100);
-        }).fail(function (xhr, status) {
-            if (xhr.statusText === "Unauthorized") {
-                window.location.href = baseUrl + '/login';
-            } else {
-                alert(ajaxError (xhr, status));
-            }
-        });
-    });
 
     $('button[name^=delete]').on('click', function () {
         var id = $(this).val();
@@ -122,62 +103,6 @@ $(document).ready(function () {
             $("#searchModal").modal('toggle');
         });
     });
-
-    //filter
-    function propertyFilter() {
-        var properties = $('input:checked[id^=filter]').map(function () {
-            var dataFilter = {};
-            dataFilter.property_value_id = $(this).data('filter');
-            return dataFilter;
-        }).get();
-        var propertiesData =
-            $('input[id^=select-property-min-]')
-                .filter(function () {
-                    return this.value.length !== 0;
-                })
-                .map(function () {
-                    var dataFilter = {};
-                    dataFilter.property_id = $(this).data('filter');
-                    dataFilter.minValue = $(this).val();
-                    return dataFilter;
-                }).get();
-        if (propertiesData.length > 0) $.merge(properties, propertiesData);
-
-        propertiesData =
-            $('input[id^=select-property-max-][value!=""]')
-                .filter(function () {
-                    return this.value.length !== 0;
-                })
-                .map(function () {
-                    var dataFilter = {};
-                    dataFilter.property_id = $(this).data('filter');
-                    dataFilter.maxValue = $(this).val();
-                    return dataFilter;
-                }).get();
-
-        if (propertiesData.length > 0) {
-            $.each(properties, function (i, val) {
-                var result = $.grep(propertiesData, function (e) {
-                    return e.property_id == val.property_id;
-                });
-                if (result.length > 0) {
-                    $.extend(true, val, result[0]);
-                    //remove this form propertiesData
-                    propertiesData.splice($.inArray(result[0], propertiesData), 1);
-                }
-            });
-            $.merge(properties, propertiesData);
-        }
-
-        if (properties.length < 1) properties = [];
-        var category = $('.active-catalog').data('id');
-        $.post(baseUrl + '/filter', {_token: token, properties: properties, category: category}, function (data) {
-            var products = $($.parseHTML(data.html)).find('div.product-list');
-            $('div.product-list').replaceWith(products);
-        });
-    }
-
-    //$('input[id^=filter], input[id^=select-property-]').on('change', propertyFilter);
 
     init();
 

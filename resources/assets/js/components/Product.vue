@@ -25,7 +25,7 @@
                 </a>
             </div>
             <p>Price: {{product.price}}
-                <button type="button" class="btn btn-link" :name="'addFromShop'+product.id" :value="product.id">
+                <button type="button" class="btn btn-link" :value="product.id" @click="addToCart(product.id)">
                     ADD TO CART
                 </button>
             </p>
@@ -36,6 +36,8 @@
 
 <script>
     import VueSlideUpDown from 'vue-slide-up-down'
+    import axios from 'axios'
+
     export default {
         name: 'Product',
         components: {VueSlideUpDown},
@@ -99,6 +101,19 @@
         methods: {
             slide () {
                 this.active = !this.active
+            },
+            addToCart(product_id) {
+                axios.post(this.baseUrl+'/cart/add-to-cart', {
+                    productId: product_id,
+                    isRelated: 0,
+                    productQty: 1,
+                    _token: this.csrf
+                }).then(response => {
+                    this.$root.$emit('nav_cart', response.data)
+                }).catch(e => {
+                    console.log(e)
+                    //this.errors.push(e)
+                })
             },
         },
         mounted() {
