@@ -25,7 +25,7 @@
                 </a>
             </div>
             <p>Price: {{product.price}}
-                <button type="button" class="btn btn-link" :value="product.id" @click="addToCart(product.id)">
+                <button type="button" class="btn btn-link add-to-cart" @click="addToCart(product.id)">
                     ADD TO CART
                 </button>
             </p>

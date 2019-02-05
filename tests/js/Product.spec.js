@@ -1,5 +1,6 @@
 import {createWrapper, shallowMount} from '@vue/test-utils'
 import Product from '../../resources/assets/js/components/Product.vue'
+import moxios from 'moxios';
 
 describe('Product.vue', () => {
     let  wrapper;
@@ -210,5 +211,33 @@ describe('Product.vue', () => {
         emitData = {property_id: 1, option: 'checked', value: checkbox_values}
         wrapper.vm.$root.$emit('product_filter', emitData)
         expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
+    })
+
+    it('checks "add to cart" button', (done) => {
+
+        //productData.product.properties[0] = {property_id: 1, value: "Bosch"}
+        wrapper = shallowMount(Product, {
+            propsData: productData
+        })
+
+        moxios.install()
+        moxios.stubRequest(/cart\/add-to-cart/, {
+            status: 200,
+            response: {
+                items: 5,
+                total: 1267.89
+            }
+        });
+
+        const rootWrapper = createWrapper(wrapper.vm.$root)
+
+        wrapper.find('button.add-to-cart').trigger('click')
+
+        moxios.wait(()=>{
+            expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(5)
+            expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(1267.89)
+            moxios.uninstall()
+            done()
+        })
     })
 })
