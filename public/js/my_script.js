@@ -4,18 +4,18 @@ $(document).ready(function () {
     var token = $('meta[name="csrf-token"]').attr('content');
 
     function init() {
-        $('input[name^=productId]').each(function () {
+       /* $('input[name^=productId]').each(function () {
             totalFunc($(this).val());
         });
         if (typeof $('#shipping-select option:selected').data('rate') !== "undefined") {
-            $('button#checkout').removeAttr('disabled');
+            //$('button#checkout').removeAttr('disabled');
         }
         var $subtotal = subtotal();
         $('#subtotal').text($subtotal);
-        $('input[name=subtotal]').val($subtotal);
+        $('input[name=subtotal]').val($subtotal);*/
     }
 
-    $('input[id^=productQty]').on('change', function () {
+    /*$('input[id^=productQty]').on('change', function () {
         var id = $(this).prop('id').replace("productQty", "");
         totalFunc(id);
         var $subtotal = subtotal();
@@ -47,7 +47,7 @@ $(document).ready(function () {
             $('#subtotal').text(data.total);
             $('input[name=subtotal]').val(data.total);
         });
-    });
+    });*/
 
     function totalFunc(id) {
         var total = +$('#productQty' + id).val() * (+$('#price' + id).text());
@@ -65,9 +65,9 @@ $(document).ready(function () {
         return totalAmount;
     }
 
-    $(document).on('change', '#shipping-select', function () {
-        $('option#empty-option', this).remove();
-        $('button#checkout').removeAttr('disabled');
+    /*$(document).on('change', '#shipping-select', function () {
+        //$('option#empty-option', this).remove();
+        //$('button#checkout').removeAttr('disabled');
         var totalAmount = subtotal();
         var id = $('option:selected', this).val();
         $.post(baseUrl + '/cart', {
@@ -80,7 +80,7 @@ $(document).ready(function () {
             $('#subtotal').text(data.total);
             $('input[name=subtotal]').val(data.total);
         });
-    });
+    });*/
 
     $(document).on('click', 'button#addRelated', function () {
         $.post(baseUrl + '/cart', {
