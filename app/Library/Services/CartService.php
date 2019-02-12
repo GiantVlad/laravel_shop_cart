@@ -48,6 +48,23 @@ class CartService
             ['productQty' => $qty, 'isRelatedProduct' => 0]
         );
         //Todo return ok
-        return;
+        return true;
+    }
+
+    public function updateQty(int $productId, $qty)
+    {
+        $cartProducts = $this->request->session()->get('cartProducts');
+        if (!empty($cartProducts)) {
+            if (array_key_exists($productId, $cartProducts)) {
+                $oldQty = $cartProducts[$productId]['productQty'];
+                $price = $this->product->getProductPriceById($productId);
+                $diff = $price * ($qty - $oldQty);
+                $cartProducts['total'] = $cartProducts['total'] + $diff;
+                $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
+                $this->request->session()->forget('cartProducts');
+                $this->request->session()->put('cartProducts', $cartProducts);
+                return true;
+            }
+        }
     }
 }

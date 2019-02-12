@@ -19,8 +19,9 @@ import SingleItem from './components/SingleItem'
 import Product from './components/Product'
 import ProductFilter from './components/ProductFilter'
 import NavCart from './components/NavCart'
+import Cart from './components/Cart'
 
 const app = new Vue({
     el: '#app',
-    components: {SingleItem, Product, ProductFilter, NavCart},
+    components: {SingleItem, Product, ProductFilter, NavCart, Cart},
 });
