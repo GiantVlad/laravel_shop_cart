@@ -12,13 +12,19 @@
             @include('layouts.error')
 
             @if(!empty($products))
-                <cart :products="{{json_encode($products)}}" :shipping="{{json_encode($shippingMethods)}}"></cart>
+                <cart
+                    :products="{{json_encode($products)}}"
+                    :shipping="{{json_encode($shippingMethods)}}"
+
+                    @if (!empty($relatedProduct))
+                        :related-product="{{json_encode($relatedProduct)}}"
+                    @else
+                        :related-product="{}"
+                    @endif
+                    >
+                </cart>
             @endif
 
-
-            @if (isset($relatedProduct))
-                @include('related')
-            @endif
         </form>
     </div>
 @stop

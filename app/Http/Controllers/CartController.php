@@ -58,7 +58,7 @@ class CartController extends Controller
                         unset($cartProducts[$productId]);
                         if (count($cartProducts) <= 2) {
                             $request->session()->forget('cartProducts');
-                            return redirect('cart');
+                            return ['items' => 0, 'total' => 0];
                         }
                         $cartProducts['total'] = $request->get('subtotal');
                         $request->session()->forget('cartProducts');
@@ -79,7 +79,7 @@ class CartController extends Controller
                         $request->session()->forget('cartProducts');
                         $request->session()->put('cartProducts', $cartProducts);
                     }
-                    return ['total' => $cartProducts['total']];
+                    return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
                 }
             } elseif ($request->get('input') == 'addRelated') {
                 $this->addRelatedProduct($request);
@@ -99,11 +99,21 @@ class CartController extends Controller
         $productsIds = [];
 
         $shippingMethods = $this->shippingMethod->getAllEnabled();
-        $shippingMethods->selected = '';
+
         foreach ($cartProducts as $key => $cartProduct) {
-            if ($key === 'total') continue;
+            if ($key === 'total') {
+                continue;
+            }
             if ($key === 'shippingMethodId') {
-                $shippingMethods->selected = $cartProducts[$key];
+                $shippingMethods->map(function($method) use ($cartProducts) {
+                    if ($method->id == $cartProducts['shippingMethodId']) {
+                        $method['selected'] = true;
+                    } else {
+                        $method['selected'] = false;
+                    }
+                    return $method;
+                });
+
                 continue;
             }
             $products[$index] = $this->product->find($key);
@@ -113,7 +123,6 @@ class CartController extends Controller
             $index++;
         }
         $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
-
         return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct, 'shippingMethods' => $shippingMethods]);
     }
 
@@ -134,9 +143,16 @@ class CartController extends Controller
         $productId = $request->get('productId');
         $qty = $request->get('productQty');
 
-        $this->cartService->addToCart($productId, $qty);
+        if ($request->get('updateQty')) {
+            $this->cartService->updateQty($productId, $qty);
+        } else {
+            $this->cartService->addToCart($productId, $qty);
+        }
 
-        if ($request->ajax()) return ['items' => (count($request->session()->get('cartProducts')) - 2), 'total' => $request->session()->get('cartProducts.total')];
+        if ($request->ajax()) {
+            return ['items' => (count($request->session()->get('cartProducts')) - 2), 'total' => $request->session()->get('cartProducts.total')];
+        }
+
         return redirect('cart');
     }
 
@@ -146,6 +162,11 @@ class CartController extends Controller
         $request->session()->put('cartProducts.' . $request->related_product_id,
             ['productQty' => 1, 'isRelatedProduct' => 1]
         );
+
+        $price = $this->product->getProductPriceById($request->related_product_id);
+        $total = $request->session()->get('cartProducts.total') + $price;
+        $request->session()->put('cartProducts.total', $total);
+
         $cartProducts = session('cartProducts');
         foreach ($cartProducts as $key => $cartProduct) {
             if ($key === 'total' || $key === 'shippingMethodId') continue;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="product-row" v-for="item in items">
+        <div class="product-row" v-for="item, idx in items">
             <div class="row">
                 <input type="hidden" name="productId" :value="item.id">
                 <div class="col-md-2"><a :href="'/product/'+ item.id"><img class="img-thumbnail" :alt="'product id '+item.id"
@@ -9,7 +9,7 @@
                 <div class="col-md-5">
                     <h4>{{item.name}}</h4>
                     <p>{{item.description}}</p>
-                    <button class="btn btn-link" type="button" @click="remove(item.id, item.is_related)">
+                    <button class="btn btn-link" type="button" @click="remove(item)">
                         Remove
                     </button>
                 </div>
@@ -17,12 +17,12 @@
                     <label class="control-label" :for="'productQty'+item.id">QTY</label>
                     <input type="number" class="form-control" :name="'productQty'+item.id"
                            :id="'productQty'+item.id" placeholder="QTY" :value="item.qty"
-                           min="1" max="99" required>
+                           min="1" max="99" required @change="onChangeQty(idx, $event)">
                 </div>
                 <div class="col-md-1"><p>Price: <span :id="'price'+item.id">{{item.price}}</span></p>
                 </div>
-                <div class="col-md-1"><p>Total: <span :id="'total'+item.id"></span></p></div>
-                <input type="hidden" name="isRelatedProduct" :value="item.is_related">
+                <div class="col-md-1"><p>Total: {{item.rowTotal}}</p></div>
+                <input type="hidden" name="isRelatedProduct" v-model="item.is_related">
             </div>
             <hr/>
         </div>
@@ -45,9 +45,33 @@
                 <input type="hidden" name="subtotal" value="">
             </div>
             <div class="col-md-2">
-                <button type="submit" id="checkout" class="btn btn-primary" :disabled="disableSubmit">Pay</button>
+                <button type="submit" id="checkout" class="btn btn-primary" :disabled="!selected_shipping">Pay</button>
             </div>
         </div>
+        <template v-if="Object.keys(relatedProduct).length > 0">
+        <hr/>
+
+        <h3 class="text-center">We also recommend:</h3>
+        <div class="row">
+            <div class="col-md-2">
+                <a href="#">
+                    <img class="img-thumbnail" width="304" height="236"
+                         :src="'images/'+relatedProduct.image">
+                </a>
+            </div>
+            <div class="col-md-5">
+                <h4>{{relatedProduct.name}}</h4>
+                <p>{{relatedProduct.description}}</p>
+            </div>
+
+            <div class="col-md-2"><p>Price: {{ relatedProduct.price }}</p></div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary" @click="addRelated">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+        </template>
     </div>
 </template>
 
@@ -56,12 +80,11 @@
 
     export default {
         name: "Cart",
-        props: ['products', 'shipping'],
+        props: ['products', 'shipping', 'related-product'],
         data() {
             return {
                 baseUrl: '',
                 total: 0,
-                disableSubmit: true,
                 csrf: '',
                 selected_shipping: null,
                 items: []
@@ -79,15 +102,50 @@
                     _token: this.csrf
                 }).then(response => {
                     this.$root.$emit('nav_cart', response.data)
-                    console.log(response.data)
-                    //$('input[name=subtotal]').val(data.total);
                 }).catch(e => {
                     console.log(e)
                     //this.errors.push(e)
                 })
             },
         },
+        computed: {
+
+        },
         methods: {
+            addRelated () {
+                axios.post(this.baseUrl + '/cart', {
+                    input: "addRelated",
+                    related_product_id: this.relatedProduct.id,
+                    _token: this.csrf
+                }).then(response => {
+                    window.location.reload()
+                }).catch(e => {
+                    console.log(e)
+                    //this.errors.push(e)
+                });
+            },
+            onChangeQty(idx, e) {
+
+                if (e.target.value < 1 || e.target.value > 99) {
+                    e.target.value = this.items[idx].qty;
+                    return;
+                }
+                axios.post(this.baseUrl + '/cart/add-to-cart', {
+                    productId: this.items[idx].id,
+                    productQty: e.target.value,
+                    subtotal: this.total,
+                    updateQty: true,
+                    _token: this.csrf
+                }).then(response => {
+                    console.log(response.data)
+                    this.$root.$emit('nav_cart', response.data)
+                    this.items[idx].qty = e.target.value;
+                    this.subtotal(this.selected_shipping)
+                }).catch(e => {
+                    console.log(e)
+                    //this.errors.push(e)
+                })
+            },
             subtotal(val) {
                 this.total = 0;
                 if (this.selected_shipping) {
@@ -95,25 +153,29 @@
                 }
 
                 this.items.forEach(item=>{
-                    this.total += +item.price
+                    this.total += (+item.price * +item.qty)
+                    item.rowTotal = Math.round(+item.price * +item.qty *100)/100
                 })
                 this.total = Math.round(this.total*100)/100
                 return this.total;
             },
 
-            remove(item_id, isRelated) {
+            remove (item) {
+                let total = this.total - (+item.price * +item.qty)
                 axios.post(this.baseUrl + '/cart', {
                     input: "removeRow",
-                    productId: item_id,
-                    isRelated: isRelated,
-                    subtotal: this.total,
+                    productId: item.id,
+                    isRelated: item.is_related,
+                    subtotal: total,
                     _token: this.csrf
                 }).then(response => {
-                    console.log(response.data)
+                    this.items = this.items.filter(i=>i.id !== item.id)
+                    if (response.data.items === 0) {
+                        window.location.reload();
+                    }
                     this.$root.$emit('nav_cart', response.data)
                     this.subtotal(this.selected_shipping)
-                    arr = arr.filter(item => item !== value)
-                   // $('input[name=subtotal]').val(data.total);
+
                 }).catch(e => {
                     console.log(e)
                     //this.errors.push(e)
@@ -121,14 +183,14 @@
             }
         },
         created() {
-            this.selected_shipping = !this.shipping.selected ? null : this.shipping.selected
-            this.items = Object.assign({}, this.products)
+            let method = this.shipping.filter(method=>method.selected === true)
+            this.selected_shipping = method.length > 0 ? method[0].id : null;
+            this.items = this.products
             this.subtotal(this.selected_shipping)
         },
         mounted() {
             this.baseUrl = window.location.origin;
             this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
-            console.log(this.items)
         },
     }
 </script>

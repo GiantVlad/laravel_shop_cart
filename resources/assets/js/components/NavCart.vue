@@ -30,7 +30,7 @@
         },
         created() {
             this.productCount()
-            this.total = Math.round(this.cart.total*100)/100
+            this.total = Object.keys(this.cart).length > 0 ? Math.round(this.cart.total*100)/100 : 0
         },
         mounted() {
             this.baseUrl = window.location.origin;
