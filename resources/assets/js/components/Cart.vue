@@ -9,7 +9,7 @@
                 <div class="col-md-5">
                     <h4>{{item.name}}</h4>
                     <p>{{item.description}}</p>
-                    <button class="btn btn-link" type="button" @click="remove(item)">
+                    <button class="btn btn-link" :id="'remove-'+item.id" type="button" @click="remove(item)">
                         Remove
                     </button>
                 </div>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-1"><p>Price: <span :id="'price'+item.id">{{item.price}}</span></p>
                 </div>
-                <div class="col-md-1"><p>Total: {{item.rowTotal}}</p></div>
+                <div class="col-md-1"><p :id="'row-total-'+item.id">Total: {{item.rowTotal}}</p></div>
                 <input type="hidden" name="isRelatedProduct" v-model="item.is_related">
             </div>
             <hr/>
@@ -49,28 +49,27 @@
             </div>
         </div>
         <template v-if="Object.keys(relatedProduct).length > 0">
-        <hr/>
+            <hr/>
+            <h3 class="text-center">We also recommend:</h3>
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="#">
+                        <img class="img-thumbnail" width="304" height="236"
+                             :src="'images/'+relatedProduct.image">
+                    </a>
+                </div>
+                <div class="col-md-5">
+                    <h4>{{relatedProduct.name}}</h4>
+                    <p>{{relatedProduct.description}}</p>
+                </div>
 
-        <h3 class="text-center">We also recommend:</h3>
-        <div class="row">
-            <div class="col-md-2">
-                <a href="#">
-                    <img class="img-thumbnail" width="304" height="236"
-                         :src="'images/'+relatedProduct.image">
-                </a>
+                <div class="col-md-2"><p>Price: {{ relatedProduct.price }}</p></div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" @click="addRelated">
+                        Add to Cart
+                    </button>
+                </div>
             </div>
-            <div class="col-md-5">
-                <h4>{{relatedProduct.name}}</h4>
-                <p>{{relatedProduct.description}}</p>
-            </div>
-
-            <div class="col-md-2"><p>Price: {{ relatedProduct.price }}</p></div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn-primary" @click="addRelated">
-                    Add to Cart
-                </button>
-            </div>
-        </div>
         </template>
     </div>
 </template>
@@ -125,21 +124,20 @@
                 });
             },
             onChangeQty(idx, e) {
-
-                if (e.target.value < 1 || e.target.value > 99) {
+                let new_val = e.target.value;
+                if (new_val < 1 || new_val > 99) {
                     e.target.value = this.items[idx].qty;
                     return;
                 }
                 axios.post(this.baseUrl + '/cart/add-to-cart', {
                     productId: this.items[idx].id,
-                    productQty: e.target.value,
+                    productQty: new_val,
                     subtotal: this.total,
                     updateQty: true,
                     _token: this.csrf
                 }).then(response => {
-                    console.log(response.data)
                     this.$root.$emit('nav_cart', response.data)
-                    this.items[idx].qty = e.target.value;
+                    this.items[idx].qty = new_val;
                     this.subtotal(this.selected_shipping)
                 }).catch(e => {
                     console.log(e)
@@ -169,7 +167,7 @@
                     subtotal: total,
                     _token: this.csrf
                 }).then(response => {
-                    this.items = this.items.filter(i=>i.id !== item.id)
+                    this.items = this.items.filter( i => i.id !== item.id)
                     if (response.data.items === 0) {
                         window.location.reload();
                     }

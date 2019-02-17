@@ -1,7 +1,7 @@
 import {shallowMount} from '@vue/test-utils'
 import NavCart from '../../resources/assets/js/components/NavCart.vue'
 
-describe('ProductFilter.vue', () => {
+describe('NavCart.vue', () => {
     let wrapper;
     beforeEach(() => {
         wrapper = shallowMount(NavCart, {
