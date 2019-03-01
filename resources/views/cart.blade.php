@@ -6,9 +6,7 @@
     </div>
 
     <div class="product-form">
-        <form name="productCart" class="form-horizontal" action="{{route('post.checkout')}}" method="POST"
-              data-toggle="validator">
-            @csrf
+        <form name="productCart" class="form-horizontal">
             @include('layouts.error')
 
             @if(!empty($products))

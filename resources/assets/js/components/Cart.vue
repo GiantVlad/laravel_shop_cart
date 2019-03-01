@@ -42,10 +42,15 @@
         <div class="row">
             <div class="col-md-10">
                 <p class="text-right">Subtotal: <span id="subtotal">{{total}}</span></p>
-                <input type="hidden" name="subtotal" value="">
+                <input type="hidden" name="subtotal" :value="total">
             </div>
             <div class="col-md-2">
-                <button type="submit" id="checkout" class="btn btn-primary" :disabled="!selected_shipping">Pay</button>
+                <button type="button" id="checkout" class="btn btn-primary"
+                        :disabled="!selected_shipping"
+                        @click="pay"
+                >
+                    Pay
+                </button>
             </div>
         </div>
         <template v-if="Object.keys(relatedProduct).length > 0">
@@ -112,6 +117,31 @@
 
         },
         methods: {
+            pay () {
+                let itemsInfo = {
+                    productId: [],
+                    productQty: [],
+                    isRelatedProduct: [],
+                    subtotal: this.total,
+                    related_product_id: this.relatedProduct.id
+                };
+                this.items.forEach(pr=>{
+                    itemsInfo.productId.push( pr.id);
+                    itemsInfo.productQty.push( pr.qty);
+                    itemsInfo.isRelatedProduct.push( pr.is_related);
+                })
+
+                //console.log(this.items)
+                //return;
+                axios.post(this.baseUrl + '/checkout',
+                    itemsInfo
+                ).then(response => {
+                    window.location.reload()
+                }).catch(e => {
+                    console.log(e)
+                    //this.errors.push(e)
+                });
+            },
             addRelated () {
                 axios.post(this.baseUrl + '/cart', {
                     input: "addRelated",

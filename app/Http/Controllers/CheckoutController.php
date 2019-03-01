@@ -38,6 +38,7 @@ class CheckoutController extends Controller
      */
     public function sendPayment(Request $request, PaymentServiceInterface $paymentService)
     {
+
         $request->validate(
             [
                 'productId.*' => 'required|integer|min:1|max:99999',
@@ -57,9 +58,11 @@ class CheckoutController extends Controller
 
         // submit pay
         $length = count($result['productId']);
+
         if (!empty($result['related_product_id']) && $result['related_product_id'] > 0) {
             $this->relatedProduct->find($result['related_product_id'])->increment('points', -1);
         }
+
         $order_label = env('APP_ORDERS_PREFIX', 'ule').'_'.time();
 
         $subtotal = $request->get('subtotal');
@@ -94,7 +97,7 @@ class CheckoutController extends Controller
                 $this->relatedProduct->find($result['productId'][$i])->increment('points', 5);
             }
         }
-
+        return response()->json('test',400);
         if (session()->has('cartProducts')) {
             session()->forget('cartProducts');
         }

@@ -1,5 +1,5 @@
 <template>
-    <li><a href="/cart"><img height="22" width="25" :src="baseUrl + '/images/cart-icon.png'">
+    <li><a :href="baseUrl +'/cart'"><img height="22" width="25" :src="baseUrl + '/images/cart-icon.png'">
         Items: <span
                 id="nav-items">{{ count }}</span>
         Total: <span
