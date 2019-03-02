@@ -97,7 +97,7 @@ class CheckoutController extends Controller
                 $this->relatedProduct->find($result['productId'][$i])->increment('points', 5);
             }
         }
-        return response()->json('test',400);
+
         if (session()->has('cartProducts')) {
             session()->forget('cartProducts');
         }
@@ -113,9 +113,13 @@ class CheckoutController extends Controller
         );
 
         $responseData = $paymentService->pay($requestData);
+        $responseData = $responseData->getData();
         // redirect to checkoutpage
         //ToDo check if $responseData->checkout_url exist
-        return redirect($responseData->checkout_url);
+        if (isset($responseData['checkout_url'])) {
+            return response()->json(['redirect_to'=>$responseData['checkout_url']], 200);
+        }
+        return response()->json(['redirect_to'=>route('orders')], 200);
 
         //return view('order-not-success');
     }
@@ -124,7 +128,7 @@ class CheckoutController extends Controller
     {
         if (!empty($request->get('response_status')) && ($request->get('response_status') === 'success')) {
             Order::where('order_label', $request->get('order_id'))->update(['status' => 'process']);
-            return redirect('checkout/success')->with('message', 'Payment for order #'.$request->get('order_id').' is successful!');
+            return redirect('checkout/success')->with('message', "Thank's. Your payment has been successfully completed! The Order #".$request->get('order_id')." has been created.");
         }
         return redirect('checkout/success')->with('error', 'Payment is NOT successful. PLS, try again');
 

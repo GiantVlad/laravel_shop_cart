@@ -136,10 +136,17 @@
                 axios.post(this.baseUrl + '/checkout',
                     itemsInfo
                 ).then(response => {
-                    window.location.reload()
+                    console.log(response.data)
+                    if (typeof response.data !== 'undefined') {
+
+                        if (typeof response.data.redirect_to !== 'undefined') {
+                            window.location = response.data.redirect_to;
+                        }
+                        //window.location.href = baseUrl+'/orders';
+                    }
+                    //window.location.reload()
                 }).catch(e => {
-                    console.log(e)
-                    //this.errors.push(e)
+                    //window.location.reload()
                 });
             },
             addRelated () {
