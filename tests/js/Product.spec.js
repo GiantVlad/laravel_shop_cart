@@ -26,7 +26,7 @@ describe('Product.vue', () => {
         wrapper = shallowMount(Product, {
             propsData: productData
         })
-        expect(wrapper.html()).toContain(description)
+        expect(wrapper.html()).toContain(description);
     })
 
     it('checks Up-Down Slider', () => {
@@ -40,14 +40,14 @@ describe('Product.vue', () => {
         triangleBtn.trigger('click')
 
         expect(wrapper.contains('.product-shop-desc.is-displayed')).toBe(true)
-        expect(wrapper.contains('.center-block.is-displayed')).toBe(false)
+        expect(wrapper.contains('.center-block.is-displayed')).toBe(false);
     })
 
     it('contains price', () => {
         wrapper = shallowMount(Product, {
             propsData: productData
         })
-        expect(wrapper.find('.cart-wrapper').html()).toContain('Price: 125.89')
+        expect(wrapper.find('.cart-wrapper').html()).toContain('Price: 125.89');
     })
 
     it('The product is NOT displayed if the filter is set and the product has no property', () => {
@@ -59,7 +59,7 @@ describe('Product.vue', () => {
 
         expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
         wrapper.vm.$root.$emit('product_filter', emitData)
-        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false)
+        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false);
     })
 
     it('The product is NOT displayed if the filter is set and the product has no same property', () => {
@@ -71,7 +71,7 @@ describe('Product.vue', () => {
 
         expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
         wrapper.vm.$root.$emit('product_filter', emitData)
-        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false)
+        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false);
     })
 
     it('The product is displayed if the filter is set in min=15 and the product has property value=20', () => {
@@ -86,7 +86,7 @@ describe('Product.vue', () => {
         expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
         wrapper.vm.$root.$emit('product_filter', emitData)
         expect(rootWrapper.emitted().product_filter[0][0].value).toEqual(15)
-        expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
+        expect(wrapper.find('div.cart-wrapper').exists()).toBe(true);
     })
 
     it('The product is NOT displayed if the filter is set in min=15 and the product has property value=10', () => {
@@ -101,7 +101,7 @@ describe('Product.vue', () => {
         expect(wrapper.find('div.cart-wrapper').exists()).toBe(true)
         wrapper.vm.$root.$emit('product_filter', emitData)
         expect(rootWrapper.emitted().product_filter[0][0].value).toEqual(15)
-        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false)
+        expect(wrapper.find('div.cart-wrapper').exists()).toBe(false);
     })
 
     it('The product is displayed if the filter is set in max=25 and the product has property with value=20', () => {
