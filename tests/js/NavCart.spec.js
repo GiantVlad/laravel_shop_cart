@@ -15,20 +15,29 @@ describe('NavCart.vue', () => {
 
                 }
             }
-        })
-    })
+        });
+    });
 
     it('finds count of items and total sum in nav bar', () => {
-        expect(wrapper.find('span#nav-items').text()).toBe('4')
-        expect(wrapper.find('span#nav-total').text()).toBe('4523.75')
-    })
+        expect(wrapper.find('span#nav-items').text()).toBe('4');
+        expect(wrapper.find('span#nav-total').text()).toBe('4523.75');
+    });
 
-    it('finds count of items and total after ".add-to-cart" button click', () => {
-        wrapper.vm.$root.$emit('nav_cart', {
+    it('finds count of items and total after ".add-to-cart" button click', async () => {
+        await wrapper.vm.$root.$emit('nav_cart', {
             items: 7,
             total: 8567.89
-        })
-        expect(wrapper.find('span#nav-items').text()).toBe('7')
-        expect(wrapper.find('span#nav-total').text()).toBe('8567.89')
-    })
-})
+        });
+        expect(wrapper.find('span#nav-items').text()).toBe('7');
+        expect(wrapper.find('span#nav-total').text()).toBe('8567.89');
+    });
+
+    it('finds count of items and total after "remove" button click', async () => {
+        await wrapper.vm.$root.$emit('nav_cart', {
+            items: 1,
+            total: 0
+        });
+        expect(wrapper.find('span#nav-items').text()).toBe('1');
+        expect(wrapper.find('span#nav-total').text()).toBe('0');
+    });
+});
