@@ -130,22 +130,21 @@
                     itemsInfo.isRelatedProduct.push( pr.is_related);
                 })
 
-                //console.log(this.items)
-                //return;
                 axios.post(this.baseUrl + '/checkout',
                     itemsInfo
                 ).then(response => {
-                    console.log(response.data)
                     if (typeof response.data !== 'undefined') {
 
                         if (typeof response.data.redirect_to !== 'undefined') {
-                            window.location = response.data.redirect_to;
+                            window.location.href = this.baseUrl+response.data.redirect_to;
+                        } else {
+                            window.location.href = this.baseUrl+'/orders';
                         }
-                        //window.location.href = baseUrl+'/orders';
                     }
-                    //window.location.reload()
+                    window.location.reload()
                 }).catch(e => {
-                    //window.location.reload()
+                    console.log(e);
+                    window.location.reload()
                 });
             },
             addRelated () {

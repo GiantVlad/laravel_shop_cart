@@ -49,11 +49,14 @@ describe('Cart.vue', () => {
             }
         })
         moxios.install()
+        wrapper.setData({ baseUrl: 'https://my-site.com' })
+
     })
 
-    afterEach(() => {
+    //it doesn't work
+    /*afterEach(() => {
         moxios.uninstall()
-    })
+    })*/
 
     it('find props data (product, related product and shipping method) in HTML', () => {
         expect(wrapper.html()).toContain('it is description of related product')
@@ -86,6 +89,7 @@ describe('Cart.vue', () => {
             expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2)
             expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15)
             done()
+
         })
     })
 
@@ -100,6 +104,23 @@ describe('Cart.vue', () => {
             expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15) // total from request
             expect(wrapper.find('input#productQty85').exists()).toBe(false)
             expect(wrapper.find('span#subtotal').text()).toEqual(""+(99.99+15.25)) // total of first product + shipping cost
+            done()
+        })
+    })
+
+    it('payment', (done) => {
+
+        delete global.window.location
+        global.window.location = {href: ''};
+
+        moxios.stubRequest(/\/checkout/,
+        { status: 200, response: {redirect_to: '/payment_url'}}
+        );
+
+        wrapper.find('button#checkout').trigger('click');
+
+        moxios.wait(()=>{
+            expect(global.window.location.href).toEqual('https://my-site.com/payment_url')
             done()
         })
     })
