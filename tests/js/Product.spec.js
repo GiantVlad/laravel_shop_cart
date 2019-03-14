@@ -215,11 +215,10 @@ describe('Product.vue', () => {
 
     it('checks "add to cart" button', (done) => {
 
-        //productData.product.properties[0] = {property_id: 1, value: "Bosch"}
         wrapper = shallowMount(Product, {
             propsData: productData
         })
-
+        moxios.uninstall()
         moxios.install()
         moxios.stubRequest(/cart\/add-to-cart/, {
             status: 200,
@@ -236,7 +235,6 @@ describe('Product.vue', () => {
         moxios.wait(()=>{
             expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(5)
             expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(1267.89)
-            moxios.uninstall()
             done()
         })
     })
