@@ -20,8 +20,10 @@ import Product from './components/Product'
 import ProductFilter from './components/ProductFilter'
 import NavCart from './components/NavCart'
 import Cart from './components/Cart'
+import NavSearch from './components/NavSearch'
+import Modal from './components/Modal'
 
 const app = new Vue({
     el: '#app',
-    components: {SingleItem, Product, ProductFilter, NavCart, Cart},
+    components: {SingleItem, Product, ProductFilter, NavCart, Cart, NavSearch, Modal},
 });

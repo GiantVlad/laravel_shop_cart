@@ -4,7 +4,7 @@ $(document).ready(function () {
     var token = $('meta[name="csrf-token"]').attr('content');
 
     //search
-    $('button#nav-search-btn').on('click', function () {
+    /*$('button#nav-search-btn').on('click', function () {
 
         var keyword = $('input#nav-search').val();
         $.post(baseUrl + '/search', {_token: token, keyword: keyword}, function (data) {
@@ -13,7 +13,7 @@ $(document).ready(function () {
 
             $("#searchModal").modal('toggle');
         });
-    });
+    });*/
 
     var orders = {
         $actionSelector: $('select#order-status-actions'),
