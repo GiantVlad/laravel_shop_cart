@@ -1,4 +1,3 @@
-<modal></modal>
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header col-sm-4 col-md-3 general-nav-col">
@@ -58,3 +57,4 @@
         </div>
     </div>
 </nav>
+<modal-wrapper></modal-wrapper>

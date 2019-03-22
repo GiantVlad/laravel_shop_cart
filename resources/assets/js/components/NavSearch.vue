@@ -34,9 +34,7 @@
                     keyword: this.keyword,
                     _token: this.csrf
                 }).then(response => {
-                    //this.$root.$emit('nav_cart', response.data)
-                    console.log('Hello!')
-                    this.$root.$emit('open-model', [])
+                    this.$root.$emit('open-model', response.data)
                 }).catch(e => {
                     console.log(e)
                     //this.errors.push(e)
