@@ -98,6 +98,9 @@ describe('Cart.vue', () => {
         const rootWrapper = createWrapper(wrapper.vm.$root)
         moxios.stubRequest(/\/cart$/, response);
 
+        delete global.window.location
+        global.window.location = {href: '', reload () {return true}};
+
         nodeQty.trigger('click')
         moxios.wait(()=>{
             expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2)
@@ -111,7 +114,7 @@ describe('Cart.vue', () => {
     it('payment', (done) => {
 
         delete global.window.location
-        global.window.location = {href: ''};
+        global.window.location = {href: '', reload () {return true}};
 
         moxios.stubRequest(/\/checkout/,
         { status: 200, response: {redirect_to: '/payment_url'}}

@@ -44,6 +44,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "uiv": "^0.31.4",
     "vue-slide-up-down": "^1.6.0"
   },
   "jshintConfig": {

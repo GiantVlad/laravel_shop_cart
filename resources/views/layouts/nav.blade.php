@@ -16,18 +16,7 @@
                 {{ config('app.name', 'Laravel') }}
             </a>
         </div>
-        <div class="col-sm-4 col-md-5 col-lg-4 general-nav-col">
-            <form role="search" class="navbar-form">
-                <div class="input-group col-xs-12">
-                    <input type="text" class="form-control" placeholder="Search" id="nav-search">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="nav-search-btn">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+        <nav-search :search-url="{{json_encode(route('search'))}}"></nav-search>
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
 
@@ -68,3 +57,4 @@
         </div>
     </div>
 </nav>
+<modal-wrapper></modal-wrapper>

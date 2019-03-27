@@ -20,8 +20,14 @@ import Product from './components/Product'
 import ProductFilter from './components/ProductFilter'
 import NavCart from './components/NavCart'
 import Cart from './components/Cart'
+import NavSearch from './components/NavSearch'
+import ModalWrapper from './components/ModalWrapper'
+
+//bootstrap 3 plugin
+import * as uiv from 'uiv'
+Vue.use(uiv)
 
 const app = new Vue({
     el: '#app',
-    components: {SingleItem, Product, ProductFilter, NavCart, Cart},
+    components: {SingleItem, Product, ProductFilter, NavCart, Cart, NavSearch, ModalWrapper},
 });

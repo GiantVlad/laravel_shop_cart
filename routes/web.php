@@ -37,7 +37,7 @@ Route::prefix('shop')->group( function() {
     Route::get('/{id}', 'ShopController@get_product')->name('product');
 });
 
-Route::post('search', 'SearchController@search');
+Route::post('search', 'SearchController@search')->name('search');
 
 Route::post('filter', 'PropertyController@filter');
 
