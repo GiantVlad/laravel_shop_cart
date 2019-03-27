@@ -29,7 +29,6 @@
         },
         methods: {
             search() {
-                console.log(this.searchUrl)
                 axios.post(this.searchUrl, {
                     keyword: this.keyword,
                     _token: this.csrf
