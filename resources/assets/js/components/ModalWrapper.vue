@@ -8,11 +8,12 @@
 
 <script>
     export default {
-        name: "Modal1",
+        name: "ModalWrapper",
         data() {
             return {
                 showModal: false,
                 modalHtml: '',
+                callback: ()=>{},
             }
         },
         mounted() {

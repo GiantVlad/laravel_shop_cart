@@ -67,7 +67,7 @@ class OrderController extends Controller
     public function getOrder(int $id)
     {
         $userId = Auth::user()->id;
-        $selectedOrder = $this->order->where([['id', '=', $id],['user_id', '=', $userId]])->first();
+        $selectedOrder = $this->order->where([['id', '=', $id],['user_id', '=', $userId]])->with('orderData.product')->first();
         if (empty($selectedOrder)) return  back()->with('error', 'Order not found');
 
         return view('shop.order',['order' => $selectedOrder]);
