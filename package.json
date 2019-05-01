@@ -44,6 +44,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "moment": "^2.24.0",
     "uiv": "^0.31.5",
     "vue-slide-up-down": "^1.7.2"
   },

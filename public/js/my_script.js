@@ -3,18 +3,6 @@ $(document).ready(function () {
     var baseUrl = document.location.origin;
     var token = $('meta[name="csrf-token"]').attr('content');
 
-    //search
-    /*$('button#nav-search-btn').on('click', function () {
-
-        var keyword = $('input#nav-search').val();
-        $.post(baseUrl + '/search', {_token: token, keyword: keyword}, function (data) {
-
-            $('div.modal-body').html(data.html);
-
-            $("#searchModal").modal('toggle');
-        });
-    });*/
-
     var orders = {
         $actionSelector: $('select#order-status-actions'),
 
@@ -55,7 +43,7 @@ $(document).ready(function () {
         }
     }
 
-    orders.init();
+    //orders.init();
 
     var ajaxError = function (jqXHR, exception) {
         var msg = '';
