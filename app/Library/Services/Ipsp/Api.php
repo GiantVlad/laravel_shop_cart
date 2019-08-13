@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
+use mysql_xdevapi\Exception;
+
 /**
  * Class Api
  */
@@ -53,6 +55,7 @@ class Api
     public function call ($name = NULL, $params = array())
     {
         $resource = $this->initResource($name);
+
         $resource->setClient($this->client);
         return $resource->call(array_merge($this->params, $params));
     }

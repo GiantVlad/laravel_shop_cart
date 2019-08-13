@@ -20,6 +20,7 @@ There is [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 9. Run "php artisan migrate" [Laravel Migrations](https://laravel.com/docs/5.5/migrations).
 10. Important! It's correct way to seeding: "php artisan db:seed --class=DatabaseSeeder" [Laravel Seeding](https://laravel.com/docs/5.5/seeding).
 11. Setup "Document root" for your project on server like ".../my_example_shop/public".
-12. For testing App: copy and rename .env.testing.example to .env.testing, then add your app_key from .env file
+12. For testing back-end: copy and rename .env.testing.example to .env.testing, then add your app_key from .env file
+13. For testing Vue.js run npm run test
 
 Uladzimir Sadkou: hofirma@gmail.com
