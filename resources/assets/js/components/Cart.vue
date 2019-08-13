@@ -134,16 +134,16 @@
                     itemsInfo
                 ).then(response => {
                     if (typeof response.data !== 'undefined') {
-
+                        //todo implement payment error
                         if (typeof response.data.redirect_to !== 'undefined') {
-                            window.location.href = this.baseUrl+response.data.redirect_to;
+                            window.location.href = response.data.redirect_to;
                         } else {
                             window.location.href = this.baseUrl+'/orders';
                         }
                     }
                     window.location.reload()
                 }).catch(e => {
-                    console.log(e);
+                    //console.log(e);
                     window.location.reload()
                 });
             },

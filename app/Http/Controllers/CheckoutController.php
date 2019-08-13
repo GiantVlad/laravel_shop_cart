@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Library\Services\PaymentServiceInterface;
+use App\Library\Services\IpspPaymentService;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderData;
@@ -32,13 +32,12 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param IpspPaymentService $paymentService
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function sendPayment(Request $request, PaymentServiceInterface $paymentService)
+    public function sendPayment(Request $request, IpspPaymentService $paymentService)
     {
-
         $request->validate(
             [
                 'productId.*' => 'required|integer|min:1|max:99999',
