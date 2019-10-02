@@ -133,6 +133,7 @@
                 axios.post(this.baseUrl + '/checkout',
                     itemsInfo
                 ).then(response => {
+                    //console.warn(response.data);
                     if (typeof response.data !== 'undefined') {
                         //todo implement payment error
                         if (typeof response.data.redirect_to !== 'undefined') {
@@ -141,10 +142,10 @@
                             window.location.href = this.baseUrl+'/orders';
                         }
                     }
-                    window.location.reload()
+                    //window.location.reload()
                 }).catch(e => {
-                    //console.log(e);
-                    window.location.reload()
+                    console.log(e);
+                    //window.location.reload()
                 });
             },
             addRelated () {
