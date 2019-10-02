@@ -117,7 +117,7 @@ describe('Cart.vue', () => {
         global.window.location = {href: '', reload () {return true}};
 
         moxios.stubRequest(/\/checkout/,
-        { status: 200, response: {redirect_to: '/payment_url'}}
+        { status: 200, response: {redirect_to: wrapper.vm.baseUrl+'/payment_url'}}
         );
 
         wrapper.find('button#checkout').trigger('click');

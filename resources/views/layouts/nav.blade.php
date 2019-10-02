@@ -16,11 +16,13 @@
                 {{ config('app.name', 'Laravel') }}
             </a>
         </div>
+
         <nav-search :search-url="{{json_encode(route('search'))}}"></nav-search>
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
 
                 <div class="col-sm-4 col-lg-5 general-nav-col pull-right">
+
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right general-nav">
                         <!-- Authentication Links -->
@@ -28,6 +30,7 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
                             @else
+                            <li><a href="/orders" target="_blank">Orders</a></li>
                                 <nav-cart :cart="@if (session()->has('cartProducts')) {{json_encode(session('cartProducts'))}} @else {{json_encode([])}} @endif">
                                 </nav-cart>
 
@@ -40,8 +43,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
                                             <a href="{{ route('user.logout') }}"
-                                               onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
+                                               onclick="document.getElementById('logout-form').submit();">
                                                 Logout
                                             </a>
                                         </li>
