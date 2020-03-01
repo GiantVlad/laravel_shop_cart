@@ -12,7 +12,7 @@ class OrderTest extends TestCase
     use DatabaseMigrations;
 
     private $order;
-    public function setUp ()
+    public function setUp (): void
     {
         parent::setUp();
         $this->order = new Order;
