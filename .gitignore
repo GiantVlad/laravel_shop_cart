@@ -12,7 +12,6 @@ yarn-error.log
 .env
 .env.testing
 *.log
-composer.lock
-package-lock.json
 
 /Vagrantfile
+/.phpunit.result.cache

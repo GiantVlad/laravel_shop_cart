@@ -13,7 +13,7 @@ class CatalogTest extends TestCase
 
     private $catalog;
 
-    public function setUp ()
+    public function setUp (): void
     {
         parent::setUp();
         factory(Catalog::class, 5)->create();
