@@ -42,8 +42,7 @@
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="{{ route('user.logout') }}"
-                                               onclick="document.getElementById('logout-form').submit();">
+                                            <a onclick="document.getElementById('logout-form').submit();" style="cursor: pointer">
                                                 Logout
                                             </a>
                                         </li>
@@ -53,8 +52,9 @@
                     </ul>
 
                 </div>
-            <form style="display: none" id="logout-form" name="logout-form" action="{{ route('user.logout') }}" method="POST">
-                {{ csrf_field() }}
+            <form style="display: none" id="logout-form" name="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                @method('POST')
             </form>
         </div>
     </div>
