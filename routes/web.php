@@ -42,7 +42,6 @@ Route::post('search', 'SearchController@search')->name('search');
 Route::post('filter', 'PropertyController@filter');
 
 Auth::routes();
-Route::post('/users/logout', 'Auth\LoginController@logout')->name('user.logout');
 
 Route::prefix('admin')->group( function() {
     Route::get('/', 'AdminController@index')->name('admin.dashboard');
