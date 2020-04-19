@@ -1,11 +1,9 @@
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
-## ULE-shop on Laravel by Sadkou
-
-[Laravel](https://laravel.com/docs/routing) is a web application framework with expressive, elegant syntax.
+## It is an E-commerce template on Laravel + Vue.js to easy start your own e-shop.
 
 
-There is [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
+There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 
 <p><img src="https://preview.ibb.co/dyyGMb/sshot_shop.png" alt="sshot_shop" border="0"></p>
 
