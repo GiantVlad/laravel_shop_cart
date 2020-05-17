@@ -19,6 +19,7 @@
         "fzaninotto/faker": "^1.9.1",
         "mockery/mockery": "^1.3",
         "nunomaduro/collision": "^4.1",
+        "nunomaduro/larastan": "^0.5.8",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
