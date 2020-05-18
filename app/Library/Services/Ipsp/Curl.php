@@ -152,8 +152,7 @@ class Curl {
                 $this->options[CURLOPT_FOLLOWLOCATION] = TRUE;
             }
         }
-        if ( ! empty($this->headers))
-        {
+        if ( ! empty($this->headers)) {
             $this->option(CURLOPT_HTTPHEADER, $this->headers);
         }
         $this->options();
