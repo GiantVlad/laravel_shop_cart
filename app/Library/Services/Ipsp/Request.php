@@ -64,11 +64,10 @@ class Request {
     /**
      * @param string $url
      * @param array $params
-     * @param string $format
      * @return bool|mixed
      */
     public function doGet( $url='', $params=array()){
-        $this->create($url.(empty($params) ? '' : '?'.http_build_query($params, NULL, '&')));
+        $this->curl->create($url.(empty($params) ? '' : '?'.http_build_query($params, NULL, '&')));
         $this->curl->ssl();
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength( $params ));

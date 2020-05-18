@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\ShippingMethod;
 use Illuminate\Http\Request;
 
@@ -9,11 +10,13 @@ use Illuminate\Http\Request;
 class AdminShippingMethodsController extends Controller
 {
     private $shippingMethod;
+    private $order;
 
     public function __construct (ShippingMethod $shippingMethod)
     {
         $this->middleware('auth:admin');
         $this->shippingMethod = $shippingMethod;
+        $this->order = new Order();
     }
 
     public function list ()
@@ -33,7 +36,7 @@ class AdminShippingMethodsController extends Controller
         $keyword = $request->keyword;
 
         if ($keyword!='') {
-            $selectedOrder = $this->order->getOrderByID($keyword);
+            $selectedOrder = $this->order->getOrderById($keyword);
 
             return view('admin.orders', ['orders' => $selectedOrder]);
         }
