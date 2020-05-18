@@ -5,7 +5,7 @@ parameters:
     paths:
         - app
     # The level 8 is the highest level
-    level: 0
+    level: 1
     ignoreErrors:
         - '#Unsafe usage of new static#'
     excludes_analyse:

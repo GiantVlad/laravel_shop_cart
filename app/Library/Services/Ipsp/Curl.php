@@ -16,8 +16,10 @@ class Curl {
     public $info;                   // Returned after request (elapsed time, etc)
     function __construct($url = '')
     {
-        if (!$this->is_enabled())
+        if (!$this->is_enabled()) {
             throw new \Exception('curl module not found');
+        }
+        $this->url = $url;
     }
     public function post($params=array(),$options=array())
     {
@@ -113,8 +115,9 @@ class Curl {
     }
     public function options($options = array())
     {
-        foreach ($options as $option_code => $option_value)
+        foreach ($options as $option_code => $option_value) {
             $this->option($option_code, $option_value);
+        }
         curl_setopt_array($this->session, $this->options);
         return $this;
     }

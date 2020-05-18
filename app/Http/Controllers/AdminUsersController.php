@@ -44,7 +44,15 @@ class AdminUsersController extends Controller
 
     public function showEditForm (int $id)
     {
-        if ($id) $user = $this->user->find($id);
+        $user = null;
+        if ($id) {
+            $user = $this->user->find($id);
+        } else {
+            return back()->withErrors('Invalid ID');
+        }
+        if (!$user instanceof User) {
+            return back()->withErrors('User not found');
+        }
 
         return view('admin.edit-user', ['user' => $user]);
 

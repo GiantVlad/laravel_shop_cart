@@ -6,7 +6,8 @@ namespace App\Library\Services\Ipsp;
  */
 class Response
 {
-    private $data = array();
+    private $data;
+    protected $response_status = '';
 
     public function __construct($data = array())
     {
