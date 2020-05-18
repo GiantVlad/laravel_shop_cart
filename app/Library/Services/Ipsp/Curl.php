@@ -33,8 +33,9 @@ class Curl {
     }
     public function put($params = array(), $options = array())
     {
-        if (is_array($params))
+        if (is_array($params)) {
             $params = http_build_query($params, NULL, '&');
+        }
         $this->options($options);
         $this->http_method('put');
         $this->option(CURLOPT_POSTFIELDS, $params);
@@ -42,9 +43,9 @@ class Curl {
     }
     public function patch($params = array(), $options = array())
     {
-        if (is_array($params))
+        if (is_array($params)) {
             $params = http_build_query($params, NULL, '&');
-
+        }
         $this->options($options);
         $this->http_method('patch');
         $this->option(CURLOPT_POSTFIELDS, $params);
@@ -52,16 +53,16 @@ class Curl {
     }
     public function delete($params, $options = array())
     {
-        if (is_array($params))
+        if (is_array($params)) {
             $params = http_build_query($params, NULL, '&');
+        }
         $this->options($options);
         $this->http_method('delete');
         $this->option(CURLOPT_POSTFIELDS, $params);
     }
     public function set_cookies($params = array())
     {
-        if (is_array($params))
-        {
+        if (is_array($params)) {
             $params = http_build_query($params, NULL, '&');
         }
         $this->option(CURLOPT_COOKIE, $params);
@@ -97,17 +98,14 @@ class Curl {
     //In original Class it was "$verify_peer = TRUE"
     public function ssl($verify_peer = false, $verify_host = 2, $path_to_cert = NULL)
     {
-        if ($verify_peer)
-        {
+        if ($verify_peer) {
             $this->option(CURLOPT_SSL_VERIFYPEER, TRUE);
             $this->option(CURLOPT_SSL_VERIFYHOST, $verify_host);
             if (isset($path_to_cert)) {
                 $path_to_cert = realpath($path_to_cert);
                 $this->option(CURLOPT_CAINFO, $path_to_cert);
             }
-        }
-        else
-        {
+        } else {
             $this->option(CURLOPT_SSL_VERIFYPEER, FALSE);
             $this->option(CURLOPT_SSL_VERIFYHOST, $verify_host);
         }
@@ -123,8 +121,9 @@ class Curl {
     }
     public function option($code, $value, $prefix = 'opt')
     {
-        if (is_string($code) && !is_numeric($code))
+        if (is_string($code) && !is_numeric($code)) {
             $code = constant('CURL' . strtoupper($prefix) . '_' . strtoupper($code));
+        }
         $this->options[$code] = $value;
         return $this;
     }
@@ -136,12 +135,10 @@ class Curl {
     }
     public function execute()
     {
-        if ( ! isset($this->options[CURLOPT_TIMEOUT]))
-        {
+        if ( ! isset($this->options[CURLOPT_TIMEOUT])) {
             $this->options[CURLOPT_TIMEOUT] = 60;
         }
-        if ( ! isset($this->options[CURLOPT_RETURNTRANSFER]))
-        {
+        if ( ! isset($this->options[CURLOPT_RETURNTRANSFER])) {
             $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
         }
         if ( ! isset($this->options[CURLOPT_FAILONERROR]))
@@ -166,8 +163,7 @@ class Curl {
         curl_setopt($this->session, CURLOPT_STDERR, $verbose);
         $this->response = curl_exec($this->session);
         $this->info = curl_getinfo($this->session);
-        if ($this->response === FALSE)
-        {
+        if ($this->response === FALSE) {
 
             $errno = curl_errno($this->session);
             $error = curl_error($this->session);
@@ -176,9 +172,7 @@ class Curl {
             $this->error_code = $errno;
             $this->error_string = $error;
             return FALSE;
-        }
-        else
-        {
+        } else {
             curl_close($this->session);
             $this->last_response = $this->response;
             $this->set_defaults();
