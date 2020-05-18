@@ -2,7 +2,7 @@ name: OnPushIntoAllBranches
 
 on:
   push:
-    branches: '**'
+    branches: '*'
   
 jobs:
   laravel-tests:
