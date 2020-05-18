@@ -29,4 +29,9 @@ class Order extends Model
     {
         return $this->where('user_id', $id);
     }
+
+    public function getOrderById(int $id)
+    {
+        return $this->find($id);
+    }
 }

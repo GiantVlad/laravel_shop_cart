@@ -108,7 +108,7 @@ class Resource {
     /**
      * @param $params
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     protected function buildParams($params){
         $callback = $this->formatter[$this->format];
@@ -116,7 +116,7 @@ class Resource {
             return call_user_func(array($this,$callback),$params);
         }
         else {
-            throw new Exception(sprintf('format %s not supported',$this->format));
+            throw new \Exception(sprintf('format %s not supported',$this->format));
         }
     }
     public function __construct(){

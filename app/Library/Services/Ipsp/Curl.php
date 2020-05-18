@@ -6,6 +6,7 @@ namespace App\Library\Services\Ipsp;
  */
 class Curl {
     protected $response = '';       // Contains the cURL response for debug
+    protected $last_response;
     protected $session;             // Contains the cURL handler for a session
     protected $url;                 // URL of the session
     protected $options = array();   // Populates curl_setopt_array
