@@ -1,4 +1,4 @@
-name: PRIntoMaster
+name: PrIntoMaster
 
 on:
   pull_request:
