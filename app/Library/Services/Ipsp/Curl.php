@@ -141,8 +141,7 @@ class Curl {
         if ( ! isset($this->options[CURLOPT_RETURNTRANSFER])) {
             $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
         }
-        if ( ! isset($this->options[CURLOPT_FAILONERROR]))
-        {
+        if ( ! isset($this->options[CURLOPT_FAILONERROR])) {
             $this->options[CURLOPT_FAILONERROR] = TRUE;
         }
         if ( ! ini_get('safe_mode') && ! ini_get('open_basedir'))
