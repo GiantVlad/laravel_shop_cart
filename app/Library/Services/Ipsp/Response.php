@@ -6,7 +6,8 @@ namespace App\Library\Services\Ipsp;
  */
 class Response
 {
-    private $data = array();
+    private $data;
+    protected $response_status = '';
 
     public function __construct($data = array())
     {
@@ -64,7 +65,9 @@ class Response
     {
         $data = $this->getCapturedTransAction();
 	
-        if (!array_key_exists('capture_status', $data)) throw new \Exception('invalid response');
+        if (!array_key_exists('capture_status', $data)) {
+            throw new \Exception('invalid response');
+        }
         return $data['capture_status'] != 'captured' ? false : true;
     }
 

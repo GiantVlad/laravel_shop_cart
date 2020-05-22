@@ -168,6 +168,7 @@ class CartController extends Controller
         $request->session()->put('cartProducts.total', $total);
 
         $cartProducts = session('cartProducts');
+        $productsIds = [];
         foreach ($cartProducts as $key => $cartProduct) {
             if ($key === 'total' || $key === 'shippingMethodId') continue;
             $productsIds[] = $key;
