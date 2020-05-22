@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": "^7.2",
-        "doctrine/dbal": "2.7.x-dev",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "~4.0",
-        "laravel/framework": "7.0.1",
+        "laravel/framework": "~7.11.0",
         "laravel/helpers": "^1.2",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",

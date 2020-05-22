@@ -18,27 +18,32 @@ class Request {
     public function __construct(){
         $this->curl = new Curl;
     }
+
     /**
      * @param $format
-     * @return $this
+     * @return Request $this
      */
     public function setFormat($format){
         $this->format = $format;
         return $this;
     }
+
     /**
+     * @param $format
      * @return string
      */
     private function getContentType($format){
         $type = $this->contentType[$format];
         return  sprintf('Content-Type: %s',$type);
     }
+
     /**
      * @return array
      */
     public function getContentTypes(){
         return $this->contentType;
     }
+
     /**
      * @param string $str
      * @return string
@@ -67,11 +72,12 @@ class Request {
      * @return bool|mixed
      */
     public function doGet( $url='', $params=array()){
-        $this->curl->create($url.(empty($params) ? '' : '?'.http_build_query($params, NULL, '&')));
+        $this->curl->create(
+            $url.(empty($params) ? '' : '?'.http_build_query($params, NULL, '&'))
+        );
         $this->curl->ssl();
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength( $params ));
         return $this->curl->execute();
     }
-
 }

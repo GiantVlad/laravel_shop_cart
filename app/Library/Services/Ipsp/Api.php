@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
-use mysql_xdevapi\Exception;
+use ErrorException;
+use Exception;
+use stdClass;
 
 /**
  * Class Api
@@ -20,9 +22,6 @@ class Api
     const RUB = 'RUB';
     const GBP = 'GBP';
 
-    /**
-     * @param Client $client
-     */
     public function __construct ()
     {
         defined('MERCHANT_ID') or define('MERCHANT_ID' , '1396424');
@@ -35,15 +34,14 @@ class Api
     }
 
     /**
-     * @param $name
-     * @return bool
+     * @param string $name
+     * @return Resource
      */
     public function initResource ($name)
     {
         $class = __NAMESPACE__.'\\Resource\\' . ucfirst($name);
-        if (!class_exists($class)) new \Exception(sprintf('ipsp resource "%s" not found', $class));
-        $resource = new $class;
-        return $resource;
+        if (!class_exists($class)) new Exception(sprintf('ipsp resource "%s" not found', $class));
+        return new $class;
     }
 
     /**
@@ -55,7 +53,6 @@ class Api
     public function call ($name = NULL, $params = array())
     {
         $resource = $this->initResource($name);
-
         $resource->setClient($this->client);
         return $resource->call(array_merge($this->params, $params));
     }
@@ -75,15 +72,15 @@ class Api
     }
 
     /**
-     * @param $errno
-     * @param $errstr
-     * @param $errfile
-     * @param $errline
+     * @param int $errno
+     * @param string errstr
+     * @param string $errfile
+     * @param int $errline
      * @throws ErrorException
      */
     public function handleError ($errno, $errstr, $errfile, $errline)
     {
-        throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
+        throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
     }
 
     public function hasAcsData ()
@@ -109,7 +106,7 @@ class Api
     /**
      * @param Exception $e
      */
-    public function handleException (\Exception $e)
+    public function handleException (Exception $e)
     {
         error_log($e->getMessage());
         $msg = sprintf('<h1>Ipsp PHP Error</h1>' .

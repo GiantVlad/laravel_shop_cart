@@ -10,4 +10,5 @@ parameters:
         - '#Unsafe usage of new static#'
     excludes_analyse:
         - ./*/*/FileToBeExcluded.php
+        - ./vendor/**
     checkMissingIterableValueType: false

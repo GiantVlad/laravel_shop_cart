@@ -51,7 +51,7 @@ class LoginController extends Controller
 
         Auth::guard('web')->logout();
 
-        return redirect('/');
+        return redirect($this->redirectTo);
     }
 
     protected function authenticated(Request $request, $user)
