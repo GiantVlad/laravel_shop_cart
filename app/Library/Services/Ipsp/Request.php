@@ -20,19 +20,19 @@ class Request {
     }
 
     /**
-     * @param $format
+     * @param string $format
      * @return Request $this
      */
-    public function setFormat($format){
+    public function setFormat(string $format){
         $this->format = $format;
         return $this;
     }
 
     /**
-     * @param $format
+     * @param string $format
      * @return string
      */
-    private function getContentType($format){
+    private function getContentType(string $format) {
         $type = $this->contentType[$format];
         return  sprintf('Content-Type: %s',$type);
     }

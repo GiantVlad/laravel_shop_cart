@@ -73,7 +73,7 @@ class Api
 
     /**
      * @param int $errno
-     * @param string errstr
+     * @param string $errstr
      * @param string $errfile
      * @param int $errline
      * @throws ErrorException

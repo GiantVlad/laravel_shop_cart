@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
+
+use Exception;
+
 /**
  * Class Resource
  */
@@ -67,7 +70,7 @@ class Resource {
         return $data;
     }
     /**
-     * @param $data
+     * @param mixed $data
      * @return mixed
      * @throws Exception
      */
@@ -77,7 +80,7 @@ class Resource {
             return call_user_func(array($this,$callback),$data);
         }
         else {
-            throw new \Exception(sprintf('parser %s not supported',$this->format));
+            throw new Exception(sprintf('parser %s not supported',$this->format));
         }
     }
     /**
@@ -106,17 +109,17 @@ class Resource {
         return $xml->asXML();
     }
     /**
-     * @param $params
+     * @param array $params
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function buildParams($params){
+    protected function buildParams(array $params){
         $callback = $this->formatter[$this->format];
         if( method_exists($this,$callback) ) {
             return call_user_func(array($this,$callback),$params);
         }
         else {
-            throw new \Exception(sprintf('format %s not supported',$this->format));
+            throw new Exception(sprintf('format %s not supported',$this->format));
         }
     }
     public function __construct(){
@@ -130,22 +133,24 @@ class Resource {
     public function setClient(Client $client){
         $this->client = $client;
     }
+
     /**
-     * @param $params
+     * @param array $params
      * @return bool
      */
-    public function isValid($params){
+    public function isValid(array $params) {
         $fields = $this->fields;
         return TRUE;
     }
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      * @return bool
      */
-    public function isValidParam($key,$value){
+    public function isValidParam(string $key, $value) {
         return true;
     }
+
     /**
      * @param array $params
      * @return $this
@@ -157,12 +162,12 @@ class Resource {
         return $this;
     }
     /**
-     * @param String $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      * @return $this
      */
-    public function setParam(String $key,$value){
-        if( $this->isValidParam($key,$value) ){
+    public function setParam(string $key, $value) {
+        if( $this->isValidParam($key, $value) ) {
             $this->params[$key] = $value;
         }
         return $this;
@@ -185,8 +190,10 @@ class Resource {
     public function getUrl(){
         return sprintf('%s%s',$this->client->getUrl(),$this->path);
     }
+
     /**
-     * @return $this
+     * @param array $params
+     * @return Resource $this
      * @throws Exception
      */
     public function call( $params=array() ){
