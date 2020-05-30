@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Support\Facades\View;
+use Illuminate\View\View as V;
 use App\Catalog;
 use App\Property;
-use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
@@ -24,6 +24,10 @@ class ShopController extends Controller
     public function list ()
     {
         $products = Product::with('catalogs')->with('properties')->get();
+
+        /**
+         * @var \Illuminate\View\View $view
+         */
         $view = View::make('shop', ['products' => $products]);
         $view->nest('links', 'layouts.links');
         return $view;
@@ -52,6 +56,10 @@ class ShopController extends Controller
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
         $properties = Property::with('propertyValues')->orderBy('priority')->get();
+
+        /**
+         * @var \Illuminate\View\View $view
+         */
         $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
         $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 

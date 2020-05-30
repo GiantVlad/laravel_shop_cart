@@ -15,10 +15,10 @@ class Response
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return null
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return isset($this->data[$name]) ? $this->data[$name] : NULL;
     }

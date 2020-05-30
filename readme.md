@@ -22,6 +22,6 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 11. Setup "Document root" for your project on server like ".../my_example_shop/public".
 12. For testing back-end: copy and rename .env.testing.example to .env.testing, then add your app_key from .env file and run the command "php artisan test"
 13. For testing Vue.js run the command "npm run test"
-14. To check code quality run: ./vendor/bin/phpstan analyse --memory-limit=2G
+14. To check code quality run: ./vendor/bin/phpstan analyse --memory-limit=2G. Setup code quality Level 0-8 in the file phpstan.neon.
 
 _Uladzimir Sadkou_: hofirma@gmail.com
