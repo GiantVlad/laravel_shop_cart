@@ -2,25 +2,28 @@
 
 namespace App\Library\Services\Ipsp;
 
-class XmlData extends \SimpleXMLElement{
+class XmlData extends \SimpleXMLElement {
     /**
      * @param array $array
      */
-    public function arrayToXml($array=array()){
+    public function arrayToXml($array=array())
+    {
         foreach($array as $key=>$val) {
             if(is_numeric($key)) continue;
             if( is_array($val) ) {
-                $node = $this->addChild($key);
-                $node->arrayToXml($val);
+                $this->addChild($key);
+                $this->arrayToXml($val);
             } else {
                 $this->addChild($key,$val);
             }
         }
     }
+
     /**
      * @return array
      */
-    public function xmlToArray(){
+    public function xmlToArray()
+    {
         $result   = array();
         $children = $this->children();
         foreach($children as $item){

@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
+
 use ErrorException;
 use Exception;
-use stdClass;
 
 /**
  * Class Api
@@ -35,13 +35,16 @@ class Api
 
     /**
      * @param string $name
-     * @return Resource
+     * @return mixed
+     * @throws Exception
      */
     public function initResource ($name)
     {
         $class = __NAMESPACE__.'\\Resource\\' . ucfirst($name);
-        if (!class_exists($class)) new Exception(sprintf('ipsp resource "%s" not found', $class));
-        return new $class;
+        if (!class_exists($class)) {
+            throw new Exception(sprintf('ipsp resource "%s" not found', $class));
+        }
+        return new $class();
     }
 
     /**
