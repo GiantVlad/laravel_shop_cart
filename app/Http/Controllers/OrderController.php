@@ -11,6 +11,7 @@ use App\Library\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use App\Product;
 use App\RelatedProduct;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
@@ -34,7 +35,7 @@ class OrderController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
     public function list()
     {

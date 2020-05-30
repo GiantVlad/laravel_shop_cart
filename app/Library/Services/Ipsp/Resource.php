@@ -193,7 +193,7 @@ class Resource {
 
     /**
      * @param array $params
-     * @return Resource $this
+     * @return $this
      * @throws Exception
      */
     public function call( $params=array() ){
