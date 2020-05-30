@@ -77,7 +77,7 @@ class AdminPropertiesController extends Controller
         }
 
         if ($request->ajax()) {
-            return 'jr';$property->id;
+            return $property->id;
         }
     }
 }

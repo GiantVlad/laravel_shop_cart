@@ -71,7 +71,7 @@ class Api
 
     public function getParam ($key = '')
     {
-        $this->params[$key];
+        return $this->params[$key];
     }
 
     /**
