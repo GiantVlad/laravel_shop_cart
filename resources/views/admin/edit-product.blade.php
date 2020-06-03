@@ -96,14 +96,22 @@
                 <div class="form-group">
                     <div class="col-sm-6">
                         <h4>Properties:</h4>
-                        <button class="btn btn-primary" type="button" data-product-id="{{$product->id}}" data-toggle="modal" data-target="#propertyModal">
+                        <button
+                                class="btn btn-primary"
+                                type="button"
+                                @if ($product) data-product-id="{{$product->id}}" @endif
+                                data-toggle="modal"
+                                data-target="#propertyModal"
+                        >
                             Add property
                         </button>
                     </div>
                 </div>
+                @if ($product)
                 <div id="propertiesContent">
                     @include('admin.product-properties')
                 </div>
+                @endif
             </form>
         </div>
     </div>
