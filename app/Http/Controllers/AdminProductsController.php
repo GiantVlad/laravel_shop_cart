@@ -68,9 +68,13 @@ class AdminProductsController extends Controller
     {
         $categories = Catalog::all('id', 'name');
         $product = null;
-        if ($id) $product = Product::find($id);
-        if ($id && !$product) return back()->withErrors('Server Error... Product not found');
-        if ($product->properties) {
+        if ($id) {
+            $product = Product::find($id);
+        }
+        if ($id && !$product) {
+            return back()->withErrors('Server Error... Product not found');
+        }
+        if (isset($product->properties)) {
             foreach ($product->properties as $property) {
                 if ($property->properties->type === 'selector') {
                     $property->properties->selectProperties = PropertyValue::where('property_id', $property->properties->id)->pluck( 'value', 'id');
@@ -98,21 +102,23 @@ class AdminProductsController extends Controller
 
         //update properties
         $propertyValueIds = [];
-        foreach ($request->propertyIds as $key => $propertyId) {
-            //validate if type of property is "number"
-            if ($request->propertyTypes[$key] === 'number') {
-                $this->validate($request, [
-                    'propertyValues.'.$key => 'numeric'
-                ],
-                [
-                    'propertyValues.'.$key.'.numeric' => 'The property '.Property::find($propertyId)->name.' must be a number',
-                ]);
-            }
+        if (isset($request->propertyIds)) {
+            foreach ($request->propertyIds as $key => $propertyId) {
+                //validate if type of property is "number"
+                if ($request->propertyTypes[$key] === 'number') {
+                    $this->validate($request, [
+                        'propertyValues.'.$key => 'numeric'
+                    ],
+                    [
+                        'propertyValues.'.$key.'.numeric' => 'The property '.Property::find($propertyId)->name.' must be a number',
+                    ]);
+                }
 
-            $propertyValues = PropertyValue::firstOrCreate(
-                ['value' => $request->propertyValues[$key], 'property_id' => $propertyId]
-            );
-            $propertyValueIds[] = $propertyValues->id;
+                $propertyValues = PropertyValue::firstOrCreate(
+                    ['value' => $request->propertyValues[$key], 'property_id' => $propertyId]
+                );
+                $propertyValueIds[] = $propertyValues->id;
+            }
         }
 
         $product->properties()->sync($propertyValueIds);

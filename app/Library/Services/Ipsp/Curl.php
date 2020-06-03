@@ -24,7 +24,7 @@ class Curl {
     public function post($params=array(),$options=array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, NULL, '&');
+            $params = http_build_query($params, null, '&');
         }
         $this->options($options);
         $this->http_method('post');
