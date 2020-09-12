@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\User;
 use App\Order;
@@ -13,18 +12,18 @@ use App\Product;
 
 class HttpGetShopTest extends TestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, RefreshDatabase;
 
-    private $user, $category, $product;
+    private $user;
 
     public function setUp () :void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        $this->category = factory(Catalog::class, 10)->create();
+        Catalog::factory()->count(10)->create();
 
-        $this->products = factory(Product::class, 20)->create();
+        Product::factory()->count(20)->create();
 
         $order = new Order;
         $order->id = 1;
@@ -42,7 +41,6 @@ class HttpGetShopTest extends TestCase
     public function testGetHomePage()
     {
         $response = $this->get('/');
-        //dd($response);
         $response->assertStatus(200);
     }
 
@@ -75,6 +73,7 @@ class HttpGetShopTest extends TestCase
      */
     public function testGetProductByIdPage()
     {
+        $this->withoutExceptionHandling();
         $response = $this->get('/shop/1');
         $response->assertStatus(200);
     }
