@@ -46,13 +46,15 @@ class ShopController extends Controller
         $catalog_ids = $this->catalog->get_catalog_ids_tree((int) $id);
 
         $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->with('properties')->get();
-
         $parent_id = $id;
         $parent_catalogs_array = [];
-        while ($parent_id !== NULL) {
+        while ($parent_id !== null) {
             $parent_catalog = $this->catalog::find($parent_id);
-            $parent_id = $parent_catalog->parent_id;
-            $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
+            $parent_id = null;
+            if ($parent_catalog) {
+                $parent_id = $parent_catalog->parent_id;
+                $parent_catalogs_array[] = ['id' => $parent_catalog->id, 'name' => $parent_catalog->name];
+            }
         }
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
         $properties = Property::with('propertyValues')->orderBy('priority')->get();

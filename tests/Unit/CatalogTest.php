@@ -9,14 +9,14 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CatalogTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     private $catalog;
 
     public function setUp (): void
     {
         parent::setUp();
-        factory(Catalog::class, 5)->create();
+        Catalog::factory()->count(5)->create();
         $this->catalog = new Catalog;
     }
 
