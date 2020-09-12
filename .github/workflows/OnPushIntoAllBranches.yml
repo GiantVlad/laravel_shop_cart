@@ -17,6 +17,8 @@ jobs:
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
+    - name: Refresh composer dump
+      run: composer dumpautolad
     - name: code analise
       run: ./vendor/bin/phpstan analyse --memory-limit=2G 
     
