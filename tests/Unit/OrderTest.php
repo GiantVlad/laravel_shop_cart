@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class OrderTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     private $order;
     public function setUp (): void

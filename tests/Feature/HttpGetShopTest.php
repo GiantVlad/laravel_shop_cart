@@ -12,7 +12,7 @@ use App\Product;
 
 class HttpGetShopTest extends TestCase
 {
-    use DatabaseMigrations, RefreshDatabase;
+    use RefreshDatabase;
 
     private $user;
 
