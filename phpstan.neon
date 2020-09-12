@@ -12,3 +12,4 @@ parameters:
         - ./*/*/FileToBeExcluded.php
         - ./vendor/**
     checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
