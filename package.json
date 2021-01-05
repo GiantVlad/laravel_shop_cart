@@ -15,7 +15,7 @@
     "@babel/preset-env": "^7.4.2",
     "@vue/babel-preset-app": "^3.5.3",
     "@vue/test-utils": "^1.0.0-beta.28",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-istanbul": "^6.0.0",
     "bootstrap-confirmation2": "^2.4.4",
