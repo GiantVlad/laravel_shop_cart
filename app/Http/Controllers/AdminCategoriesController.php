@@ -28,7 +28,7 @@ class AdminCategoriesController extends Controller
 
         if (!$category) return back()->withErrors('Server Error... Category not found');
 
-        if ($category->products->first()) return back()->withErrors('Canceled. Category '.$category->name.' has a children Products!');
+        if ($category->products()->first()) return back()->withErrors('Canceled. Category '.$category->name.' has a children Products!');
 
         $children = Catalog::where('parent_id', $category->id)->first();
         if ($children) return back()->withErrors('Canceled. Category '.$category->name.' has a children Categories!');
