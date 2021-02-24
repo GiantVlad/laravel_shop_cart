@@ -17,6 +17,9 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin()
     ],
+    externals: {
+        fs: '{}'
+    },
     module: {
         rules: [
             {
