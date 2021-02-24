@@ -1,4 +1,4 @@
-import {shallowMount, createWrapper} from '@vue/test-utils'
+import { shallowMount, createWrapper } from '@vue/test-utils'
 import ProductFilter from '../../resources/assets/js/components/ProductFilter.vue'
 
 describe('ProductFilter.vue', () => {
@@ -20,7 +20,8 @@ describe('ProductFilter.vue', () => {
                     ],
                 }
             }
-        })
+        });
+
         wrapper_select = shallowMount(ProductFilter, {
             propsData: {
                 property: {
@@ -39,19 +40,20 @@ describe('ProductFilter.vue', () => {
                     ],
                 }
             }
-        })
-    })
+        });
+    });
 
     it('contains input for property with type "number"', () => {
         expect(wrapper_numb.contains('input#select-property-min-'+wrapper_numb.props('property').id)).toBe(true)
         expect(wrapper_numb.contains('input#select-property-max-'+wrapper_numb.props('property').id)).toBe(true)
-    })
+    });
 
     it('contains checkboxes for property with type "select"', () => {
         wrapper_select.props('property').property_values.forEach(val=>{
-            expect(wrapper_select.findAll('.checkbox > label').filter(w => w.text() === val.value).isEmpty()).toBe(false)
+            expect(wrapper_select.findAll('.checkbox > label').filter(w => w.text() === val.value).isEmpty())
+                .toBe(false)
         })
-    })
+    });
 
     it('checks that event has been emitted, when max/min inputs were changed', () => {
         let node = wrapper_numb.find('input#select-property-min-'+wrapper_numb.props('property').id);
@@ -63,7 +65,7 @@ describe('ProductFilter.vue', () => {
         expect(rootWrapper.emitted().product_filter).toBeTruthy()
         expect(rootWrapper.emitted().product_filter[0][0].option).toEqual('min')
         expect(rootWrapper.emitted().product_filter[0][0].value).toEqual('15')
-    })
+    });
 
     it('checks that event has been emitted, when the checkbox was changed', () => {
         let node = wrapper_select.findAll('.checkbox > label').filter(w => w.text() === 'Bosch').at(0);
@@ -76,4 +78,4 @@ describe('ProductFilter.vue', () => {
         expect(rootWrapper.emitted().product_filter[0][0].value[2].name).toEqual("Bosch")
         expect(rootWrapper.emitted().product_filter[0][0].value[2].value).toBe(true)
     })
-})
+});

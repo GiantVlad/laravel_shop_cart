@@ -3,19 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Catalog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Property;
 use App\Product;
 
+/**
+ * Class PropertyController
+ * @package App\Http\Controllers
+ */
 class PropertyController extends Controller
 {
-    private $catalog;
+    private Catalog $catalog;
 
     public function __construct (Catalog $catalog)
     {
         $this->catalog = $catalog;
     }
-
+    
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function filter (Request $request)
     {
         //ToDO check is $request->properties correct
@@ -51,8 +60,8 @@ class PropertyController extends Controller
                     $query = $query->whereHas('properties', function ($q) use ($property_val_ids) {
                         $resp = $q->whereIn('property_value_id', $property_val_ids);
                         //todo check it
-                        if ($resp) return $resp;
-                        return;
+                        if ($resp)
+                            return $resp;
                     });
                 }
                 $conditions = $properties['conditions'];
@@ -60,9 +69,8 @@ class PropertyController extends Controller
                     $query = $query->whereHas('properties', function ($q) use ($condition) {
                         //todo check it
                         $resp = $q->where($condition);
-                        if ($resp) return $resp;
-                        return;
-
+                        if ($resp)
+                            return $resp;
                     });
                 }
                 return $query;
