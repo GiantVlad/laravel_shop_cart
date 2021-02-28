@@ -23,6 +23,18 @@ import Cart from './components/Cart'
 import NavSearch from './components/NavSearch'
 import ModalWrapper from './components/ModalWrapper'
 import OrderInfo from './components/OrderInfo'
+import * as Sentry from "@sentry/vue";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+    Vue,
+    dsn: "https://27ba377838bc4f22ab5971c86e99642a@o536436.ingest.sentry.io/5655026",
+    integrations: [new Integrations.BrowserTracing()],
+
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+});
 
 import moment from 'moment'
 
