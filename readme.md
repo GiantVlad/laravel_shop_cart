@@ -5,7 +5,7 @@
 
 There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 
-[Video presantasion](https://youtu.be/McmVr2FEo-0)
+[Video presentation](https://youtu.be/McmVr2FEo-0)
 
 <p><img src="https://preview.ibb.co/dyyGMb/sshot_shop.png" alt="sshot_shop" border="0"></p>
 
