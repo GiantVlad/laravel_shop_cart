@@ -2,9 +2,11 @@ name: OnPushIntoAllBranches
 
 on:
   push:
-    branches: 
-    - '*'
-    - '**'
+    branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - '!master'   # excludes master
   
 jobs:
   laravel-tests:
@@ -21,4 +23,3 @@ jobs:
       run: composer dumpautoload
     - name: code analise
       run: ./vendor/bin/phpstan analyse --memory-limit=2G 
-    
