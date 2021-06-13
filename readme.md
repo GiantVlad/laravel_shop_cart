@@ -1,6 +1,6 @@
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
-## It is an E-commerce template on Laravel + Vue.js to easy start your own e-shop.
+## This is a Laravel + Vue.js e-commerce template that will make it easy for you to start your own online store.
 
 
 There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
