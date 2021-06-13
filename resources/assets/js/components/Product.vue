@@ -111,7 +111,11 @@
                 }).then(response => {
                     this.$root.$emit('nav_cart', response.data)
                 }).catch(e => {
+                  if (e.response && e.response.status === 401) {
+                    window.location.href = this.baseUrl + '/login';
+                  } else {
                     console.log(e)
+                  }
                     //this.errors.push(e)
                 })
             },
