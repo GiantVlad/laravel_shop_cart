@@ -23,7 +23,7 @@ class ShopController extends Controller
 
     public function list ()
     {
-        $products = Product::with('catalogs')->with('properties')->get();
+            $products = Product::with('catalogs')->with('properties')->get();
 
         /**
          * @var \Illuminate\View\View $view

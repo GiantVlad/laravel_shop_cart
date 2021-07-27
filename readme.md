@@ -24,4 +24,14 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 13. For testing Vue.js run the command "npm run test"
 14. To check code quality run: ./vendor/bin/phpstan analyse --memory-limit=2G. Setup code quality Level 0-8 in the file phpstan.neon.
 
-_Uladzimir Sadkou_: hofirma@gmail.com
+###Docker-compose for local development:
+- setup docker and docker-compose on your local machine.
+- create the .local_data folder in the folder with your project
+- install mkcert and generate ssl certificates:
+```  
+brew install mkcert nss
+mkcert -cert-file .docker/nginx/dev/site.crt -key-file .docker/nginx/dev/site.key localhost 127.0.0.1
+```
+- run docker-compose up -d
+
+_Uladzimir Sadkou_: hofirma@gmail.com 
