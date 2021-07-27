@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderActionRequest;
+use App\Http\Resources\OrderCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
 use App\Order;
 use App\OrderData;
-use Carbon\Carbon;
 use App\Library\Services\CartService;
 use Illuminate\Support\Facades\Auth;
-use App\Product;
-use App\RelatedProduct;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -18,11 +17,10 @@ class OrderController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
      */
-    private $order;
-    private $cartService;
-    private $orderData;
+    private Order $order;
+    private CartService $cartService;
+    private OrderData $orderData;
 
     public function __construct(Order $order, CartService $cartService, OrderData $orderData)
     {
@@ -33,26 +31,38 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * The list of orders.
      *
      * @return View
      */
-    public function list()
+    public function list(Request $request): View
     {
-        $userId = Auth::user()->id;
-        $orders = $this->order->getOrdersByUserId($userId)->orderBy('created_at', 'desc')->paginate(15);
+        $userId = $request->user()->id;
+        $orders = new OrderCollection(
+            $this->order->getOrdersByUserId($userId)
+                ->orderBy('created_at', 'desc')
+                ->paginate(15)
+        );
+        
         return view('shop.orders', ['orders' => $orders]);
     }
-
-    public function changeOrderStatus(Request $request)
+    
+    /**
+     * @param OrderActionRequest $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function doAction(OrderActionRequest $request): JsonResponse
     {
-        $orderStatus = $request->get('status');
-        $orderId = $request->get('id');
+        $validatedData = $request->validated();
+        $orderStatus = $validatedData['action'];
+        $orderId = $validatedData['id'];
 
         //For repeat order add products to cart and user will be redirected to cart
         if ($orderStatus === 'repeat') {
             $this->makeCartByOrderId($orderId);
-            return 'redirect_to_cart';
+            
+            return response()->json('redirect_to_cart');
         }
 
         $userId = Auth::user()->id;
@@ -73,17 +83,20 @@ class OrderController extends Controller
 
         return view('shop.order',['order' => $selectedOrder]);
     }
-
-    private function makeCartByOrderId(int $orderId)
+    
+    /**
+     * @param int $orderId
+     * @throws \Exception
+     */
+    private function makeCartByOrderId(int $orderId): void
     {
         $orderDetails = $this->orderData->where('order_id', $orderId)->get();
-        if (empty($orderDetails)) {
-            //Todo return error
-            return 'error';
+        if ($orderDetails->isEmpty()) {
+            //Todo make useful Exception
+            throw new \Exception();
         }
         foreach ($orderDetails as $orderRow) {
             $this->cartService->addToCart($orderRow->product_id, $orderRow->qty);
         }
-        return;
     }
 }

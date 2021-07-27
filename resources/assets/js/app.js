@@ -23,6 +23,7 @@ import Cart from './components/Cart'
 import NavSearch from './components/NavSearch'
 import ModalWrapper from './components/ModalWrapper'
 import OrderInfo from './components/OrderInfo'
+import OrdersList from './components/OrdersList'
 import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
 
@@ -50,5 +51,15 @@ Vue.filter('formatDate', (value, format = false) => {
 });
 const app = new Vue({
     el: '#app',
-    components: {SingleItem, Product, ProductFilter, NavCart, Cart, OrderInfo, NavSearch, ModalWrapper},
+    components: {
+        SingleItem,
+        Product,
+        ProductFilter,
+        NavCart,
+        Cart,
+        OrderInfo,
+        OrdersList,
+        NavSearch,
+        ModalWrapper
+    },
 });
