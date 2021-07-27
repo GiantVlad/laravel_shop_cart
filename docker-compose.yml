@@ -1,0 +1,65 @@
+version: '3.8'
+services:
+  app:
+    image: bitnami/php-fpm:8.0
+    restart: unless-stopped
+    environment:
+      PHP_IDE_CONFIG: 'serverName=ule_shop'
+    volumes:
+      - './:/app:delegated'
+      - './.docker/php/dev/xdebug.ini:/opt/bitnami/php/etc/conf.d/docker-php-ext-xdebug.ini:ro'
+      - './node_modules:/app/node_modules:ro'
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - default
+
+  nginx:
+    image: nginx
+    volumes:
+      #- ./templates:/etc/nginx/templates
+      - './:/app:ro'
+      - './.docker/nginx/dev/:/etc/nginx/conf.d:ro'
+    ports:
+      - '${DOCKER_HTTP_PORT:-80}:80'
+      - '${DOCKER_HTTPS_PORT:-443}:443'
+    environment:
+      - NGINX_HOST=localhost
+    restart: unless-stopped
+    networks:
+      - default
+
+  mariadb:
+    image: bitnami/mariadb:10
+    restart: unless-stopped
+    environment:
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=secret
+      - MARIADB_ROOT_PASSWORD=rootsecret123
+      - MARIADB_DATABASE=shop
+      - MARIADB_SKIP_TEST_DB=yes
+    ports:
+      - '${DOCKER_HTTP_PORT:-3307}:3306'
+    volumes:
+      - './.local_data/sql:/bitnami/mariadb'
+    networks:
+      - default
+
+  redis:
+    image: redis:6.2.5-alpine
+    restart: unless-stopped
+    ports:
+      - '${DOCKER_REDIS_PORT:-6380}:6379'
+    command:
+      - '--appendonly yes'
+      - '--databases'
+      - '512'
+    volumes:
+      - './.local_data/redis:/data'
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: on-failure
+    environment:
+      MH_UI_WEB_PATH: mailhog
