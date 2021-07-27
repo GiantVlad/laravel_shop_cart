@@ -2,12 +2,17 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\User;
 
 
 class Order extends Model
 {
+    use HasFactory;
+    
+    /**
+     * @var string[]
+     */
     protected $fillable = array('commentary', 'total', 'status', 'order_label');
 
     public function orderData ()

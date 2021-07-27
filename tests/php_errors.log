@@ -1,3 +1,0 @@
-[10-Jan-2018 09:18:06 UTC] PHP Fatal error:  Class 'Illuminate\Foundation\Testing\TestCase' not found in E:\lerning\php_ii\tests\TestCase.php on line 7
-[10-Jan-2018 09:18:06 UTC] PHP Stack trace:
-[10-Jan-2018 09:18:06 UTC] PHP   1. {main}() E:\lerning\php_ii\tests\TestCase.php:0

@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'ShopController@list');
+Route::get('/', 'ShopController@list')->name('home');
 
 Route::prefix('cart')->group( function() {
     Route::post('/', 'CartController@post')->name('post.cart');
