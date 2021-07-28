@@ -2,22 +2,28 @@
 
 namespace App;
 
-
 class FreeShippingMethod extends ShippingMethod
 {
-
-
-    static function getRate()
+    /**
+     * @return int
+     */
+    static function getRate(): int
     {
         return 0;
     }
-
-    static function getLabel()
+    
+    /**
+     * @return string
+     */
+    static function getLabel(): string
     {
         return 'Free Shipping';
     }
-
-    static function getDeliveryTime ()
+    
+    /**
+     * @return string
+     */
+    static function getDeliveryTime(): string
     {
         return '1-2 weeks';
     }

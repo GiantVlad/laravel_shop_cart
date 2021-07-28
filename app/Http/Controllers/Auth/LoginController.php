@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -24,10 +27,8 @@ class LoginController extends Controller
 
     /**
      * Where to redirect users after login.
-     *
-     * @var string
      */
-    protected $redirectTo = '/';
+    protected string $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -38,9 +39,15 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-
-    public function logout (Request $request) {
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Redirector
+     */
+    public function logout(Request $request): RedirectResponse|Redirector
+    {
         if (session()->has('cartProducts')) {
+            /** @var User $user */
             $user = Auth::user();
             if (empty($user->force_logout)) {
                 $cartProductsString = serialize(session()->get('cartProducts'));
@@ -53,8 +60,12 @@ class LoginController extends Controller
 
         return redirect($this->redirectTo);
     }
-
-    protected function authenticated(Request $request, $user)
+    
+    /**
+     * @param Request $request
+     * @param User $user
+     */
+    protected function authenticated(Request $request, User $user): void
     {
 
     }

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Product;
 
 class SearchController extends Controller
 {
-    public function __construct ()
-    {
-
-    }
-    public function search(Request $request)
+    /**
+     * @param Request $request
+     * @return string|JsonResponse
+     */
+    public function search(Request $request): string|JsonResponse
     {
         $keyword = $request->keyword;
 

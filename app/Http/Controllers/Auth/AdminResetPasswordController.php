@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use Password;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 
 class AdminResetPasswordController extends Controller
 {
@@ -25,10 +29,8 @@ class AdminResetPasswordController extends Controller
 
     /**
      * Where to redirect users after resetting their password.
-     *
-     * @var string
      */
-    protected $redirectTo = '/admin';
+    protected string $redirectTo = '/admin';
 
     /**
      * Create a new controller instance.
@@ -39,20 +41,31 @@ class AdminResetPasswordController extends Controller
     {
         $this->middleware('guest:admin');
     }
-
-    public function showResetForm(Request $request, $token = null)
+    
+    /**
+     * @param Request $request
+     * @param null $token
+     * @return View
+     */
+    public function showResetForm(Request $request, $token = null): View
     {
         return view('auth.passwords.reset-admin')->with(
             ['token' => $token, 'email' => $request->email]
         );
     }
-
-    protected function guard()
+    
+    /**
+     * @return Guard|StatefulGuard
+     */
+    protected function guard(): Guard|StatefulGuard
     {
         return Auth::guard('admin');
     }
-
-    protected function broker()
+    
+    /**
+     * @return PasswordBroker
+     */
+    protected function broker(): PasswordBroker
     {
         return Password::broker('admins');
     }

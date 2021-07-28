@@ -2,22 +2,29 @@
 
 namespace App;
 
-
 class FixRateShippingMethod extends ShippingMethod
 {
-
-
-    static function getRate()
+    
+    /**
+     * @return int
+     */
+    static function getRate(): int
     {
         return 15;
     }
-
-    static function getLabel()
+    
+    /**
+     * @return string
+     */
+    static function getLabel(): string
     {
         return 'Fix Rate Shipping';
     }
-
-    static function getDeliveryTime ()
+    
+    /**
+     * @return string
+     */
+    static function getDeliveryTime(): string
     {
         return '5-7 days';
     }
