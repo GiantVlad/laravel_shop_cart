@@ -47,4 +47,10 @@ class OrderControllerTest extends TestCase
         $response = $this->get('/orders');
         $response->assertRedirect(route('login'));
     }
+    
+    public function testDoAction()
+    {
+        $response = $this->get('/orders');
+        $response->assertRedirect(route('login'));
+    }
 }
