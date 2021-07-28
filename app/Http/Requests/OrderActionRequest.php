@@ -26,8 +26,8 @@ class OrderActionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|exists:orders,id',
-            'action' => ['required', Rule::in(OrderActions::getActions())]
+            'id' => 'required|exists:orders,id,user_id,' . $this->user()->id,
+            'action' => ['required', Rule::in(OrderActions::getActions())],
         ];
     }
 }
