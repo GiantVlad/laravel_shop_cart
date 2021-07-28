@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderActionRequest;
 use App\Http\Resources\OrderCollection;
+use App\Library\Services\IpspPaymentService;
+use App\Library\Services\PaymentServiceInterface;
 use App\Services\Order\OrderActions;
 use App\Services\Order\OrderStatuses;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderData;
-use App\Library\Services\CartService;
+use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -53,10 +56,11 @@ class OrderController extends Controller
     
     /**
      * @param OrderActionRequest $request
+     * @param IpspPaymentService $paymentService
      * @return JsonResponse
      * @throws \Exception
      */
-    public function doAction(OrderActionRequest $request): JsonResponse
+    public function doAction(OrderActionRequest $request, PaymentServiceInterface $paymentService): JsonResponse
     {
         $validatedData = $request->validated();
         $orderAction = $validatedData['action'];
@@ -65,9 +69,9 @@ class OrderController extends Controller
 
         //For repeat order add products to cart and user will be redirected to the cart
         if ($orderAction === OrderActions::REPEAT) {
-            $this->makeCartByOrderId($orderId);
+            $this->cartService->makeCartByOrderId($orderId);
             
-            return response()->json('redirect_to_cart');
+            return response()->json(['redirect_to' => route('get.cart')]);
         }
         
         if ($orderAction === OrderActions::UNDO) {
@@ -77,32 +81,41 @@ class OrderController extends Controller
             
             return response()->json(['status' => $order->status]);
         }
+    
+        if ($orderAction === OrderActions::RE_PAYMENT) {
+            $order = $this->order->where(['id' => $orderId, 'user_id' => $user->id])->first();
+            $requestData = [
+                'order_id'    => $order->order_label,
+                'order_desc'  => 'order #'. $order->order_label . '. Test Cart Number: 4444555511116666',
+                'currency'    => 'USD',
+                'amount'      => $order->total*100,
+                'response_url'=> url('checkout/success').'?_token='.csrf_token()
+            ];
+            
+            //ToDo check if the order already exists in the payment system
+            $responseData = $paymentService->pay($requestData)->getData();
+            
+            if (isset($responseData['checkout_url'])) {
+                return response()->json(['redirect_to' => $responseData['checkout_url']]);
+            }
+        }
         
-        // ToDo implement all actions
         return response()->json();
-    }
-
-    public function getOrder(int $id)
-    {
-        $userId = Auth::user()->id;
-        $selectedOrder = $this->order->where([['id', '=', $id],['user_id', '=', $userId]])->with('orderData.product')->first();
-        if (empty($selectedOrder)) return  back()->with('error', 'Order not found');
-
-        return view('shop.order',['order' => $selectedOrder]);
     }
     
     /**
-     * @param int $orderId
-     * @throws \Exception
+     * @param int $id
+     * @param Request $request
+     * @return View|RedirectResponse
      */
-    private function makeCartByOrderId(int $orderId): void
+    public function getOrder(int $id, Request $request): View|RedirectResponse
     {
-        $orderDetails = $this->orderData->where('order_id', $orderId)->get();
-        if ($orderDetails->isEmpty()) {
-            throw new ModelNotFoundException($orderDetails::class);
+        $userId = $request->user()->id;
+        $selectedOrder = $this->order->where(['id' => $id, 'user_id' => $userId])->with('orderData.product')->first();
+        if (!$selectedOrder instanceof Order) {
+            return  back()->with('error', 'Order not found');
         }
-        foreach ($orderDetails as $orderRow) {
-            $this->cartService->addToCart($orderRow->product_id, $orderRow->qty);
-        }
+
+        return view('shop.order', ['order' => $selectedOrder]);
     }
 }

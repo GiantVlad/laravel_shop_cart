@@ -16,7 +16,7 @@ Route::get('/', 'ShopController@list')->name('home');
 Route::prefix('cart')->group( function() {
     Route::post('/', 'CartController@post')->name('post.cart');
     Route::post('/add-to-cart', 'CartController@addToCart');
-    Route::get('/', 'CartController@index');
+    Route::get('/', 'CartController@index')->name('get.cart');
 });
 
 Route::prefix('checkout')->group( function() {

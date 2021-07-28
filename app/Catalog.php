@@ -2,21 +2,30 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Catalog extends Model
 {
     use HasFactory;
 
     protected $fillable = array('name', 'description', 'parent_id', 'image', 'priority');
-
-    public function products()
+    
+    /**
+     * @return HasMany
+     */
+    public function products(): HasMany
     {
         return $this->hasMany('App\Product', 'catalog_id', 'id');
     }
-
-    public function get_catalog_ids_tree(int $id)
+    
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function getCatalogIdsTree(int $id): array
     {
         $child_ids = [$id];
         $catalog_ids = [];
@@ -25,12 +34,15 @@ class Catalog extends Model
             $child_ids = $this::whereIn('parent_id', $child_ids)->pluck('id')->toArray();
         }
         while ($child_ids);
+        
         return $catalog_ids;
     }
-
-    public function parentsNode()
+    
+    /**
+     * @return Collection
+     */
+    public function parentsNode(): Collection
     {
         return $this->where('parent_id', NULL)->get();
     }
 }
-

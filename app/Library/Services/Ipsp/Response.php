@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
+use App\Library\Services\PaymentResponseInterface;
+
 /**
  * Class Response
  */
-class Response
+class Response implements PaymentResponseInterface
 {
-    private $data;
+    private array $data;
     protected $response_status = '';
 
-    public function __construct($data = array())
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
@@ -34,7 +36,7 @@ class Response
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

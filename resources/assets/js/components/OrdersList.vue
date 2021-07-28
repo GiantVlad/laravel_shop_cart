@@ -25,15 +25,11 @@
         <div class="col-md-2">
           <select class="form-control" id="order-status-actions" v-model="orderAction">
             <option v-if="!orderAction" :value="null" >select action</option>
-            <option
-              v-if="order.status !== 'pending payment'"
-              :value="{idx: idx, order: order.id, action: 'repeat'}">
-              repeat order
-            </option>
-            <template v-else>
-<!--            <option :value="{idx: idx, order: order.id, action: 'replay payment'}">replay payment</option>-->
+            <template v-if="order.status === 'pending payment'">
               <option :value="{idx: idx, order: order.id, action: 'undo'}">undo order</option>
+              <option :value="{idx: idx, order: order.id, action: 're_payment'}">repeat payment</option>
             </template>
+            <option v-else :value="{idx: idx, order: order.id, action: 'repeat'}">repeat order</option>
           </select>
         </div>
       </div>
@@ -65,8 +61,8 @@
             id: val.order,
             action: val.action,
           }).then(response => {
-            if (response.data === 'redirect_to_cart') {
-              window.location.href = this.baseUrl + '/cart';
+            if (response.data.hasOwnProperty('redirect_to')) {
+              window.location.href = response.data.redirect_to;
             }
             if (response.data.hasOwnProperty('status')) {
               this.ordersList[val.idx].status = response.data.status;

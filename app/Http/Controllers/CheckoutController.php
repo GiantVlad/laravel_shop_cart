@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Library\Services\IpspPaymentService;
+use App\Library\Services\PaymentServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderData;
@@ -33,10 +34,10 @@ class CheckoutController extends Controller
 
     /**
      * @param Request $request
-     * @param IpspPaymentService $paymentService
-     * @return \Illuminate\Http\JsonResponse
+     * @param PaymentServiceInterface $paymentService
+     * @return JsonResponse
      */
-    public function sendPayment(Request $request, IpspPaymentService $paymentService)
+    public function sendPayment(Request $request, PaymentServiceInterface $paymentService)
     {
         $request->validate(
             [
@@ -113,14 +114,12 @@ class CheckoutController extends Controller
 
         $responseData = $paymentService->pay($requestData);
         $responseData = $responseData->getData();
-        // redirect to checkoutpage
-        //ToDo check if $responseData->checkout_url exist
+        
         if (isset($responseData['checkout_url'])) {
-            return response()->json(['redirect_to'=>$responseData['checkout_url']], 200);
+            return response()->json(['redirect_to' => $responseData['checkout_url']]);
         }
-        return response()->json(['redirect_to'=>route('orders')], 200);
-
-        //return view('order-not-success');
+        
+        return response()->json(['redirect_to' => route('orders')]);
     }
 
     public function success (Request $request)

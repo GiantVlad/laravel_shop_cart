@@ -11,5 +11,6 @@ parameters:
     excludePaths:
         - ./*/*/FileToBeExcluded.php
         - ./vendor/**
+        - ./app/Library/Services/**
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
