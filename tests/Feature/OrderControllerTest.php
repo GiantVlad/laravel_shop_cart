@@ -11,7 +11,7 @@ class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $user;
+    private User $user;
 
     public function setUp () :void
     {
@@ -39,6 +39,7 @@ class OrderControllerTest extends TestCase
         $this->assertArrayHasKey('status', $item);
         $this->assertArrayHasKey('label', $item);
         $this->assertArrayHasKey('created_at', $item);
+        $this->assertArrayHasKey('uri', $item);
     }
     
     public function testListUserNotAuth()

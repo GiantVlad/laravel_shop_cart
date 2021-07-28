@@ -79072,7 +79072,9 @@ var render = function() {
               _vm._v(_vm._s(order.status))
             ]),
             _vm._v(" "),
-            _vm._m(1, true),
+            _c("div", { staticClass: "col-md-1" }, [
+              _c("a", { attrs: { href: order.uri } }, [_vm._v("details")])
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-md-2" }, [
               _c(
@@ -79141,14 +79143,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "container" }, [
         _c("h3", { staticClass: "display-3" }, [_vm._v("Orders")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-1" }, [
-      _c("a", { attrs: { href: "" } }, [_vm._v("details")])
     ])
   }
 ]
