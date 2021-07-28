@@ -21,7 +21,7 @@
         <div class="col-md-2">{{order.created_at}}</div>
         <div class="col-md-2">{{order.total}}</div>
         <div class="col-md-2">{{order.status}}</div>
-        <div class="col-md-1"><a href="">details</a></div>
+        <div class="col-md-1"><a :href="order.uri">details</a></div>
         <div class="col-md-2">
           <select class="form-control" id="order-status-actions" v-model="orderAction">
             <option v-if="!orderAction" :value="null" >select action ..</option>

@@ -29,10 +29,11 @@ class OrderController extends Controller
         $this->cartService = $cartService;
         $this->middleware('auth')->except('logout');
     }
-
+    
     /**
      * The list of orders.
      *
+     * @param Request $request
      * @return View
      */
     public function list(Request $request): View
@@ -64,15 +65,17 @@ class OrderController extends Controller
             
             return response()->json('redirect_to_cart');
         }
-
-        $userId = Auth::user()->id;
-        $order = $this->order->where([['id', '=', $orderId],['user_id', '=', $userId]])->first();
-        $order->status = $orderStatus;
-        $order->save();
-
-        $html = view('shop.order-status-options', compact('order'))->render();
-
-        return response()->json(compact('html'));
+        
+        // ToDo implement all actions
+        return response()->json('redirect_to_cart');
+//        $userId = Auth::user()->id;
+//        $order = $this->order->where([['id', '=', $orderId],['user_id', '=', $userId]])->first();
+//        $order->status = $orderStatus;
+//        $order->save();
+//
+//        $html = \View::make('shop.order-status-options', compact('order'))->render();
+//
+//        return response()->json(compact('html'));
     }
 
     public function getOrder(int $id)

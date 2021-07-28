@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class PaymentUrl
  */
-class Checkout extends Resource{
+class Checkout extends Resource
+{
     protected $path   = '/checkout/url';
     protected $fields = array(
         'merchant_id'=>array(

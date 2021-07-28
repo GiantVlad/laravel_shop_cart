@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class Refund
  */
-class P2pcredit extends Resource{
+class P2pcredit extends Resource
+{
     protected $path   = '/p2pcredit';
     protected $defaultParams = array(
 

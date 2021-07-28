@@ -20,7 +20,8 @@ class OrderResource extends JsonResource
             'label' => $this->order_label,
             'total' => $this->total,
             'created_at' => $this->created_at->toDateTimeString(),
-            'status' => $this->status
+            'status' => $this->status,
+            'uri' => route('order', ['id' => $this->id])
         ];
     }
 }

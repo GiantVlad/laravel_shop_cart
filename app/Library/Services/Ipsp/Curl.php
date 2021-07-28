@@ -4,7 +4,8 @@ namespace App\Library\Services\Ipsp;
 /**
  * Class Curl
  */
-class Curl {
+class Curl
+{
     protected $response = '';       // Contains the cURL response for debug
     protected $last_response;
     protected $session;             // Contains the cURL handler for a session
@@ -24,7 +25,7 @@ class Curl {
     public function post($params=array(),$options=array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, null, '&');
+            $params = http_build_query($params, '', '&');
         }
         $this->options($options);
         $this->http_method('post');
@@ -34,7 +35,7 @@ class Curl {
     public function put($params = array(), $options = array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, NULL, '&');
+            $params = http_build_query($params, '', '&');
         }
         $this->options($options);
         $this->http_method('put');
@@ -44,7 +45,7 @@ class Curl {
     public function patch($params = array(), $options = array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, NULL, '&');
+            $params = http_build_query($params, '', '&');
         }
         $this->options($options);
         $this->http_method('patch');
@@ -54,7 +55,7 @@ class Curl {
     public function delete($params, $options = array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, NULL, '&');
+            $params = http_build_query($params, '', '&');
         }
         $this->options($options);
         $this->http_method('delete');
@@ -63,7 +64,7 @@ class Curl {
     public function set_cookies($params = array())
     {
         if (is_array($params)) {
-            $params = http_build_query($params, NULL, '&');
+            $params = http_build_query($params, '', '&');
         }
         $this->option(CURLOPT_COOKIE, $params);
         return $this;
@@ -133,6 +134,7 @@ class Curl {
         $this->session = curl_init($this->url);
         return $this;
     }
+    
     public function execute()
     {
         if ( ! isset($this->options[CURLOPT_TIMEOUT])) {

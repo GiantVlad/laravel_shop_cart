@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class Refund
  */
-class Reports extends Resource{
+class Reports extends Resource
+{
     protected $path   = '/reports';
     protected $fields = array(
         'merchant_id'=>array(
