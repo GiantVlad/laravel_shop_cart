@@ -14804,10 +14804,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "OrdersList",
@@ -14833,8 +14829,8 @@ __webpack_require__.r(__webpack_exports__);
         id: val.order,
         action: val.action
       }).then(function (response) {
-        if (response.data === 'redirect_to_cart') {
-          window.location.href = _this.baseUrl + '/cart';
+        if (response.data.hasOwnProperty('redirect_to')) {
+          window.location.href = response.data.redirect_to;
         }
 
         if (response.data.hasOwnProperty('status')) {
@@ -79114,21 +79110,8 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  order.status !== "pending payment"
-                    ? _c(
-                        "option",
-                        {
-                          domProps: {
-                            value: {
-                              idx: idx,
-                              order: order.id,
-                              action: "repeat"
-                            }
-                          }
-                        },
-                        [_vm._v("\n              repeat order\n            ")]
-                      )
-                    : [
+                  order.status === "pending payment"
+                    ? [
                         _c(
                           "option",
                           {
@@ -79141,8 +79124,35 @@ var render = function() {
                             }
                           },
                           [_vm._v("undo order")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "option",
+                          {
+                            domProps: {
+                              value: {
+                                idx: idx,
+                                order: order.id,
+                                action: "re_payment"
+                              }
+                            }
+                          },
+                          [_vm._v("repeat payment")]
                         )
                       ]
+                    : _c(
+                        "option",
+                        {
+                          domProps: {
+                            value: {
+                              idx: idx,
+                              order: order.id,
+                              action: "repeat"
+                            }
+                          }
+                        },
+                        [_vm._v("repeat order")]
+                      )
                 ],
                 2
               )

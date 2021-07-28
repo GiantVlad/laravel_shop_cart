@@ -8,14 +8,20 @@ class IpspPaymentService implements PaymentServiceInterface
 {
     private Api $api;
     
-    public function __construct (Api $api)
+    public function __construct(Api $api)
     {
         $this->api = $api;
     }
-
-    public function pay (array $requestData)
+    
+    public function checkStatus(array $requestData)
     {
-        $requestData['currency'] = constant(get_class ($this->api).'::'.$requestData['currency']);
+        $requestData['currency'] = constant(get_class($this->api) . '::' . $requestData['currency']);
+        return $this->api->call('status', $requestData)->getResponse();
+    }
+
+    public function pay(array $requestData)
+    {
+        $requestData['currency'] = constant(get_class($this->api) . '::' . $requestData['currency']);
         return $this->api->call('checkout', $requestData)->getResponse();
     }
 }

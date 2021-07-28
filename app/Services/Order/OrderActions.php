@@ -8,6 +8,7 @@ class OrderActions
 {
     public const REPEAT = 'repeat';
     public const UNDO = 'undo';
+    public const RE_PAYMENT = 're_payment';
     
     /**
      * @return array
@@ -17,6 +18,7 @@ class OrderActions
         return [
             self::REPEAT,
             self::UNDO,
+            self::RE_PAYMENT,
         ];
     }
 }

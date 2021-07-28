@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\OrderData;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Product;
 
@@ -9,11 +12,13 @@ class CartService
 {
     private Product $product;
     private Request $request;
-
-    public function __construct (Product $product, Request $request)
+    private OrderData $orderData;
+    
+    public function __construct (Product $product, Request $request, OrderData $orderData)
     {
         $this->product = $product;
         $this->request = $request;
+        $this->orderData = $orderData;
     }
     
     /**
@@ -71,5 +76,22 @@ class CartService
         $this->request->session()->put('cartProducts', $cartProducts);
         
         return true;
+    }
+    
+    /**
+     * @param int $orderId
+     */
+    public function makeCartByOrderId(int $orderId): void
+    {
+        /** @var Collection<OrderData> $orderDetails */
+        $orderDetails = $this->orderData->byOrderId($orderId)->get();
+        
+        if ($orderDetails->isEmpty()) {
+            throw (new ModelNotFoundException())->setModel(OrderData::class);
+        }
+    
+        foreach ($orderDetails as $orderRow) {
+            $this->addToCart($orderRow->product_id, $orderRow->qty);
+        }
     }
 }

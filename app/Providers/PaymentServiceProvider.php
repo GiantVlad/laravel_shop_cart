@@ -26,8 +26,6 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(PaymentServiceInterface::class, function ($app) {
-            return new IpspPaymentService(new IspsApi());
-        });
+        $this->app->bind(PaymentServiceInterface::class, fn () => new IpspPaymentService(new IspsApi()));
     }
 }
