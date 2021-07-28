@@ -14824,7 +14824,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.baseUrl = window.location.origin;
-    this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
   },
   watch: {
     orderAction: function orderAction(val) {
@@ -14832,17 +14831,19 @@ __webpack_require__.r(__webpack_exports__);
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(this.baseUrl + '/order/action', {
         id: val.order,
-        action: val.action,
-        _token: this.csrf
+        action: val.action
       }).then(function (response) {
-        console.log(response);
-
         if (response.data === 'redirect_to_cart') {
           window.location.href = _this.baseUrl + '/cart';
-        } // if delete remove row
+        }
 
+        if (response.data.hasOwnProperty('status')) {
+          _this.ordersList[val.idx].status = response.data.status;
+        }
       })["catch"](function (e) {
         console.log(e); //this.errors.push(e)
+      })["finally"](function () {
+        _this.orderAction = null;
       });
     }
   }
@@ -79051,7 +79052,7 @@ var render = function() {
             )
       ]),
       _vm._v(" "),
-      _vm._l(_vm.ordersList, function(order) {
+      _vm._l(_vm.ordersList, function(order, idx) {
         return _c(
           "div",
           { staticClass: "row", staticStyle: { "margin-bottom": "5px" } },
@@ -79109,7 +79110,7 @@ var render = function() {
                 [
                   !_vm.orderAction
                     ? _c("option", { domProps: { value: null } }, [
-                        _vm._v("select action ..")
+                        _vm._v("select action")
                       ])
                     : _vm._e(),
                   _vm._v(" "),
@@ -79118,13 +79119,32 @@ var render = function() {
                         "option",
                         {
                           domProps: {
-                            value: { order: order.id, action: "repeat" }
+                            value: {
+                              idx: idx,
+                              order: order.id,
+                              action: "repeat"
+                            }
                           }
                         },
                         [_vm._v("\n              repeat order\n            ")]
                       )
-                    : _vm._e()
-                ]
+                    : [
+                        _c(
+                          "option",
+                          {
+                            domProps: {
+                              value: {
+                                idx: idx,
+                                order: order.id,
+                                action: "undo"
+                              }
+                            }
+                          },
+                          [_vm._v("undo order")]
+                        )
+                      ]
+                ],
+                2
               )
             ])
           ]

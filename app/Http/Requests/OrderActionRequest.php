@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\Order\OrderActions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,7 @@ class OrderActionRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,11 +23,11 @@ class OrderActionRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'id' => 'required|exists:orders,id',
-            'action' => ['required', Rule::in(['repeat', 'undo'])]
+            'id' => 'required|exists:orders,id,user_id,' . $this->user()->id,
+            'action' => ['required', Rule::in(OrderActions::getActions())],
         ];
     }
 }
