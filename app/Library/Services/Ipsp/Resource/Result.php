@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class PaymentResult
  */
-class Result extends Resource{
+class Result extends Resource
+{
     public function call( $data = NULL ){
         if( empty( $data ) )
         {

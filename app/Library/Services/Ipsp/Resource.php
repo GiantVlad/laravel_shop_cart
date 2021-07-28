@@ -29,24 +29,35 @@ class Resource {
         'form' => 'parseForm'
     );
     private $client;
-    private $params = array();
+    private array $params = [];
+    
+    public function __construct()
+    {
+        $this->request  = new Request();
+        if(!empty($this->defaultParams))
+            $this->params = $this->defaultParams;
+    }
+    
     /**
      * @param array $params
      * @return string
      */
-    private function getSignature(Array $params){
-        $params = array_filter($params,'strlen');
+    private function getSignature(array $params): string
+    {
+        //$params = array_filter($params, fn ($item) => strlen($item));
         ksort($params);
         $params = array_values($params);
         array_unshift( $params , $this->client->getPassword() );
         $params = join('|',$params);
+        
         return(sha1($params));
     }
     /**
      * @param string $json
      * @return mixed
      */
-    private function parseJson($json=''){
+    private function parseJson(string $json='')
+    {
         $data = json_decode($json,TRUE);
         return $data['response'];
     }
@@ -55,7 +66,8 @@ class Resource {
      * @param string $xml
      * @return array
      */
-    private function parseXml($xml=''){
+    private function parseXml($xml='')
+    {
         $xml = new XmlData($xml);
         $data = $xml->xmlToArray();
         return $data;
@@ -64,7 +76,8 @@ class Resource {
      * @param string $query
      * @return array
      */
-    private function parseForm($query=''){
+    private function parseForm($query='')
+    {
         $data = array();
         parse_str($query, $data);
         return $data;
@@ -74,7 +87,8 @@ class Resource {
      * @return mixed
      * @throws Exception
      */
-    protected function parseRespose($data){
+    protected function parseRespose($data)
+    {
         $callback = $this->parser[$this->format];
         if( method_exists($this,$callback) ) {
             return call_user_func(array($this,$callback),$data);
@@ -87,7 +101,8 @@ class Resource {
      * @param array $params
      * @return string
      */
-    private function jsonParams($params=array()){
+    private function jsonParams($params=array())
+    {
         return json_encode(array(
             'request'=>$params
         ));
@@ -96,14 +111,16 @@ class Resource {
      * @param array $params
      * @return string
      */
-    private function formParams($params=array()){
+    private function formParams($params=array())
+    {
         return http_build_query($params);
     }
     /**
      * @param array $params
      * @return mixed
      */
-    private function xmlParams($params=array()){
+    private function xmlParams($params=array())
+    {
         $xml = new XmlData('<request/>');
         $xml->arrayToXml($params);
         return $xml->asXML();
@@ -113,24 +130,22 @@ class Resource {
      * @return mixed
      * @throws Exception
      */
-    protected function buildParams(array $params){
+    protected function buildParams(array $params)
+    {
         $callback = $this->formatter[$this->format];
-        if( method_exists($this,$callback) ) {
-            return call_user_func(array($this,$callback),$params);
+        if(method_exists($this,$callback)) {
+            return call_user_func(array($this, $callback), $params);
         }
         else {
-            throw new Exception(sprintf('format %s not supported',$this->format));
+            throw new Exception(sprintf('format %s not supported', $this->format));
         }
     }
-    public function __construct(){
-        $this->request  = new Request();
-        if(!empty($this->defaultParams))
-            $this->params = $this->defaultParams;
-    }
+    
     /**
      * @param Client $client
      */
-    public function setClient(Client $client){
+    public function setClient(Client $client)
+    {
         $this->client = $client;
     }
 
@@ -138,7 +153,8 @@ class Resource {
      * @param array $params
      * @return bool
      */
-    public function isValid(array $params) {
+    public function isValid(array $params)
+    {
         $fields = $this->fields;
         return TRUE;
     }
@@ -147,7 +163,8 @@ class Resource {
      * @param mixed $value
      * @return bool
      */
-    public function isValidParam(string $key, $value) {
+    public function isValidParam(string $key, $value)
+    {
         return true;
     }
 
@@ -155,7 +172,8 @@ class Resource {
      * @param array $params
      * @return $this
      */
-    public function setParams(Array $params){
+    public function setParams(Array $params)
+    {
         if( $this->isValid($params) ){
             $this->params = array_merge($this->params,$params);
         }
@@ -166,7 +184,8 @@ class Resource {
      * @param mixed $value
      * @return $this
      */
-    public function setParam(string $key, $value) {
+    public function setParam(string $key, $value)
+    {
         if( $this->isValidParam($key, $value) ) {
             $this->params[$key] = $value;
         }
@@ -175,19 +194,22 @@ class Resource {
     /**
      * @return mixed
      */
-    public function getParams(){
+    public function getParams()
+    {
         $params = $this->params;
         $params['merchant_id'] = $this->client->getId();
         $params['signature']   = $this->getSignature($params);
         return $params;
     }
+    
     public function getParam($key){
         return isset($this->params[$key]) ? $this->params[$key] : NULL;
     }
     /**
      * @return string
      */
-    public function getUrl(){
+    public function getUrl()
+    {
         return sprintf('%s%s',$this->client->getUrl(),$this->path);
     }
 
@@ -196,10 +218,11 @@ class Resource {
      * @return $this
      * @throws Exception
      */
-    public function call( $params=array() ){
+    public function call($params = [])
+    {
         $this->setParams( $params );
         $this->request->setFormat( $this->format );
-        $data = $this->request->doPost($this->getUrl(),$this->buildParams($this->getParams()));
+        $data = $this->request->doPost($this->getUrl(), $this->buildParams($this->getParams()));
         $data = $this->parseRespose($data);
         $this->setResponse($data);
         return $this;
@@ -208,13 +231,15 @@ class Resource {
     /**
      * @param array $data
      */
-    public function setResponse($data=array()){
+    public function setResponse($data=array())
+    {
         $this->response = new Response($data);
     }
     /**
      * @return array
      */
-    public function getResponse(){
+    public function getResponse()
+    {
         return $this->response;
     }
 

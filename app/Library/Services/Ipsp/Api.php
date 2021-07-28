@@ -11,8 +11,9 @@ use Exception;
 class Api
 {
 
-    private $client;
-    private $params = array();
+    private Client $client;
+    private array $params = [];
+    
     /**
      * Supported currencies
      */
@@ -29,16 +30,16 @@ class Api
         defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
 
         $this->client = new Client(MERCHANT_ID, MERCHANT_PASSWORD, IPSP_GATEWAY);
-        set_error_handler(array($this, 'handleError'));
-        set_exception_handler(array($this, 'handleException'));
+        set_error_handler($this->handleError());
+        set_exception_handler($this->handleException());
     }
 
     /**
      * @param string $name
-     * @return mixed
+     * @return Resource
      * @throws Exception
      */
-    public function initResource ($name)
+    public function initResource(string $name): Resource
     {
         $class = __NAMESPACE__.'\\Resource\\' . ucfirst($name);
         if (!class_exists($class)) {
@@ -48,12 +49,12 @@ class Api
     }
 
     /**
-     * @param null $name
+     * @param string $name
      * @param array $params
      * @return mixed
      * @throws Exception
      */
-    public function call ($name = NULL, $params = array())
+    public function call(string $name, array $params = [])
     {
         $resource = $this->initResource($name);
         $resource->setClient($this->client);
@@ -64,61 +65,64 @@ class Api
      * @param string $key
      * @param string $value
      */
-    public function setParam ($key = '', $value = '')
+    public function setParam(string $key = '', string $value = ''): void
     {
         $this->params[$key] = $value;
     }
-
-    public function getParam ($key = '')
+    
+    /**
+     * @param string $key
+     * @return array
+     */
+    public function getParam(string $key = ''): array
     {
         return $this->params[$key];
     }
-
+    
     /**
-     * @param int $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int $errline
-     * @throws ErrorException
+     * @return callable
      */
-    public function handleError ($errno, $errstr, $errfile, $errline)
+    public function handleError(): callable
     {
-        throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+        return function (int $errno, string $errstr, string $errfile, int $errline) {
+            throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+        };
     }
 
-    public function hasAcsData ()
+    public function hasAcsData()
     {
         return isset($_POST['MD']) AND isset($_POST['PaRes']);
     }
 
-    public function hasResponseData ()
+    public function hasResponseData()
     {
         return isset($_POST['response_status']);
     }
 
-    public function success ($callback)
+    public function success($callback)
     {
 
     }
 
-    public function failure ($callback)
+    public function failure($callback)
     {
 
     }
 
-    /**
-     * @param Exception $e
-     */
-    public function handleException (Exception $e)
+    public function handleException(): callable
     {
-        error_log($e->getMessage());
-        $msg = sprintf('<h1>Ipsp PHP Error</h1>' .
-            '<h3>%s (%s)</h3>' .
-            '<pre>%s</pre>',
-            $e->getMessage(),
-            $e->getCode(),
-            $e->getTraceAsString()
-        );
-        exit($msg);
+        return function (Exception $e) {
+            error_log($e->getMessage());
+        
+            $msg = sprintf('<h1>Ipsp PHP Error</h1>' .
+                '<h3>%s (%s)</h3>' .
+                '<pre>%s</pre>',
+                $e->getMessage(),
+                $e->getCode(),
+                $e->getTraceAsString()
+            );
+            
+            exit($msg);
+        };
     }
 }

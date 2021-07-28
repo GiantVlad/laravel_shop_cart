@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class PaymentResult
  */
-class Capture extends Resource{
+class Capture extends Resource
+{
     protected $path   = '/capture/order_id';
     protected $fields = array(
         'merchant_id'=>array(

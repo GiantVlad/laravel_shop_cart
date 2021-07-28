@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class Refund
  */
-class Recurring extends Resource{
+class Recurring extends Resource
+{
     protected $path   = '/recurring';
     protected $defaultParams = array(
 

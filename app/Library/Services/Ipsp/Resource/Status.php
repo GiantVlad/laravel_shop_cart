@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class PaymentStatus
  */
-class Status extends Resource{
+class Status extends Resource
+{
     protected $path   = '/status/order_id';
     protected $fields = array(
         'order_id'=>array(

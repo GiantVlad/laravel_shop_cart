@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class Refund
  */
-class Reverse extends Resource{
+class Reverse extends Resource
+{
 
     protected $path   = '/reverse/order_id';
 

@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Library\Services\Ipsp;
+
 /**
  * Class Request
  */
-class Request {
+class Request
+{
     private $curl;
     private $format;
     private $contentType = array(
@@ -12,10 +14,9 @@ class Request {
         'xml'  => 'application/xml',
         'form' => 'application/x-www-form-urlencoded'
     );
-    /**
-     *
-     */
-    public function __construct(){
+    
+    public function __construct()
+    {
         $this->curl = new Curl;
     }
 
@@ -23,7 +24,8 @@ class Request {
      * @param string $format
      * @return Request $this
      */
-    public function setFormat(string $format){
+    public function setFormat(string $format)
+    {
         $this->format = $format;
         return $this;
     }
@@ -32,7 +34,8 @@ class Request {
      * @param string $format
      * @return string
      */
-    private function getContentType(string $format) {
+    private function getContentType(string $format)
+    {
         $type = $this->contentType[$format];
         return  sprintf('Content-Type: %s',$type);
     }
@@ -40,7 +43,8 @@ class Request {
     /**
      * @return array
      */
-    public function getContentTypes(){
+    public function getContentTypes()
+    {
         return $this->contentType;
     }
 
@@ -48,21 +52,24 @@ class Request {
      * @param string $str
      * @return string
      */
-    private function getContentLength($str=''){
-        return sprintf('Content-Length: %s',strlen($str));
+    private function getContentLength(string $str=''): string
+    {
+        return sprintf('Content-Length: %s', strlen($str));
     }
 
     /**
      * @param string $url
-     * @param array $params
-     * @return bool|mixed
+     * @param string $params
+     * @return bool|string
      */
-    public function doPost( $url = '' , $params=array()){
+    public function doPost(string $url = '' , string $params = '')
+    {
         $this->curl->create($url);
         $this->curl->ssl();
         $this->curl->post($params);
-        $this->curl->http_header( $this->getContentType( $this->format ));
-        $this->curl->http_header( $this->getContentLength( $params ));
+        $this->curl->http_header($this->getContentType( $this->format ));
+        $this->curl->http_header($this->getContentLength($params));
+        
         return $this->curl->execute();
     }
 
@@ -71,13 +78,14 @@ class Request {
      * @param array $params
      * @return bool|mixed
      */
-    public function doGet( $url='', $params=array()){
+    public function doGet(string $url='', array $params = [])
+    {
         $this->curl->create(
-            $url.(empty($params) ? '' : '?'.http_build_query($params, NULL, '&'))
+            $url.(empty($params) ? '' : '?'.http_build_query($params))
         );
         $this->curl->ssl();
         $this->curl->http_header($this->getContentType( $this->format ));
-        $this->curl->http_header($this->getContentLength( $params ));
+        $this->curl->http_header($this->getContentLength(implode('', $params)));
         return $this->curl->execute();
     }
 }

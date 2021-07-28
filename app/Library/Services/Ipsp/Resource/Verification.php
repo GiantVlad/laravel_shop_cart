@@ -6,7 +6,8 @@ use App\Library\Services\Ipsp\Resource;
 /**
  * Class Refund
  */
-class Verification extends Resource{
+class Verification extends Resource
+{
     protected $path   = '/checkout/url';
     protected $defaultParams = array(
         'verification'=>'y',

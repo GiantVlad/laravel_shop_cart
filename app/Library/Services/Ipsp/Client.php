@@ -4,7 +4,8 @@ namespace App\Library\Services\Ipsp;
 /**
  * Class PaymentClient
  */
-class Client {
+class Client
+{
     private $id;
     private $password;
     private $url;
