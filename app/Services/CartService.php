@@ -1,28 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ale
- * Date: 29.01.2018
- * Time: 18:14
- */
 
-namespace App\Library\Services;
+namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Product;
 
 class CartService
 {
-    private $product;
-    private $request;
+    private Product $product;
+    private Request $request;
 
     public function __construct (Product $product, Request $request)
     {
         $this->product = $product;
         $this->request = $request;
     }
-
-    public function addToCart(int $productId, $qty)
+    
+    /**
+     * @param int $productId
+     * @param int $qty
+     * @return mixed
+     */
+    public function addToCart(int $productId, int $qty)
     {
         $cartProducts = $this->request->session()->get('cartProducts');
         $total = 0;
@@ -50,21 +49,27 @@ class CartService
         //Todo return ok
         return true;
     }
-
-    public function updateQty(int $productId, $qty)
+    
+    /**
+     * @param int $productId
+     * @param int $qty
+     * @return bool
+     */
+    public function updateQty(int $productId, int $qty): bool
     {
         $cartProducts = $this->request->session()->get('cartProducts');
-        if (!empty($cartProducts)) {
-            if (array_key_exists($productId, $cartProducts)) {
-                $oldQty = $cartProducts[$productId]['productQty'];
-                $price = $this->product->getProductPriceById($productId);
-                $diff = $price * ($qty - $oldQty);
-                $cartProducts['total'] = $cartProducts['total'] + $diff;
-                $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
-                $this->request->session()->forget('cartProducts');
-                $this->request->session()->put('cartProducts', $cartProducts);
-                return true;
-            }
+        if (!$cartProducts || !array_key_exists($productId, $cartProducts)) {
+            return false;
         }
+        
+        $oldQty = $cartProducts[$productId]['productQty'];
+        $price = $this->product->getProductPriceById($productId);
+        $diff = $price * ($qty - $oldQty);
+        $cartProducts['total'] = $cartProducts['total'] + $diff;
+        $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
+        $this->request->session()->forget('cartProducts');
+        $this->request->session()->put('cartProducts', $cartProducts);
+        
+        return true;
     }
 }

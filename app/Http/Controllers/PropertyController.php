@@ -31,7 +31,7 @@ class PropertyController extends Controller
         //mapping $request->properties for query
 
         $category_id = $request->category;
-        $category_ids = $this->catalog->get_catalog_ids_tree($category_id);
+        $category_ids = $this->catalog->getCatalogIdsTree($category_id);
 
         if (count($request->properties) < 1) {
             $products = Product::whereIn('catalog_id', $category_ids)->get();

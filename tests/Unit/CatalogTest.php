@@ -28,7 +28,7 @@ class CatalogTest extends TestCase
     {
         $this->catalog->whereIn('id', [3,4])->update(['parent_id' => 1]);
 
-        $catalog_ids = $this->catalog->get_catalog_ids_tree(1);
+        $catalog_ids = $this->catalog->getCatalogIdsTree(1);
 
         $passed = true;
         if (($catalog_ids[0] !== 1) ||

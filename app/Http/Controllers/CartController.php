@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\RelatedProduct;
 use App\ShippingMethod;
-use App\Library\Services\CartService;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller

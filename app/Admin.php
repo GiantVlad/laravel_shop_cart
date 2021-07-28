@@ -10,7 +10,7 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
-    protected $guard = "admin";
+    protected string $guard = "admin";
     /**
      * The attributes that are mass assignable.
      *
@@ -28,8 +28,11 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    public function sendPasswordResetNotification($token)
+    
+    /**
+     * @param string $token
+     */
+    public function sendPasswordResetNotification($token): void
     {
         $this->notify(new AdminResetPasswordNotification($token));
     }

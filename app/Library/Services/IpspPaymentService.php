@@ -1,20 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ale
- * Date: 23.01.2018
- * Time: 17:52
- */
 
 namespace App\Library\Services;
 
 use App\Library\Services\Ipsp\Api;
 
-
-
 class IpspPaymentService implements PaymentServiceInterface
 {
-    private $api;
+    private Api $api;
+    
     public function __construct (Api $api)
     {
         $this->api = $api;
