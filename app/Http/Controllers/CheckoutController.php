@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Library\Services\PaymentServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderData;
 use Carbon\Carbon;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use App\Product;
 use App\RelatedProduct;
@@ -19,13 +21,13 @@ class CheckoutController extends Controller
      *
      * @return void
      */
-    private $product;
-    private $relatedProduct;
-
-
-    public function __construct(Product $product,
-                                RelatedProduct $relatedProduct)
-    {
+    private Product $product;
+    private RelatedProduct $relatedProduct;
+    
+    public function __construct(
+        Product $product,
+        RelatedProduct $relatedProduct
+    ) {
         $this->product = $product;
         $this->relatedProduct = $relatedProduct;
 
@@ -121,14 +123,23 @@ class CheckoutController extends Controller
         
         return response()->json(['redirect_to' => route('orders')]);
     }
-
-    public function success (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Redirector
+     */
+    public function success(Request $request): RedirectResponse|Redirector
     {
         if (!empty($request->get('response_status')) && ($request->get('response_status') === 'success')) {
             Order::where('order_label', $request->get('order_id'))->update(['status' => 'process']);
-            return redirect('checkout/success')->with('message', "Thank's. Your payment has been successfully completed! The Order #".$request->get('order_id')." has been created.");
+            
+            return redirect('checkout/success')->with(
+                    'message',
+                    "Thank's. Your payment has been successfully completed! The Order #" .
+                    $request->get('order_id') . " has been created."
+            );
         }
+        
         return redirect('checkout/success')->with('error', 'Payment is NOT successful. PLS, try again');
-
     }
 }

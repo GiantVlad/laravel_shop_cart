@@ -3,30 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\ValidationException;
 
 class AdminUsersController extends Controller
 {
-    private $user;
-    public function __construct (User $user)
+    private User $user;
+    
+    /**
+     * AdminUsersController constructor.
+     * @param User $user
+     */
+    public function __construct(User $user)
     {
         $this->middleware('auth:admin');
         $this->user = $user;
     }
-
-    public function list ()
+    
+    /**
+     * @return View
+     */
+    public function list(): View
     {
         $users = $this->user->paginate(15);
+        
         return view('admin.users', ['users' => $users]);
     }
-
-    public function delete (Request $request)
+    
+    /**
+     * @param Request $request
+     */
+    public function delete(Request $request): void
     {
-
     }
-
-    public function search(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return View|RedirectResponse
+     */
+    public function search(Request $request): View|RedirectResponse
     {
         $keyword = $request->keyword;
 
@@ -40,13 +57,15 @@ class AdminUsersController extends Controller
 
         return back();
     }
-
-
-    public function showEditForm (int $id)
+    
+    /**
+     * @param int $id
+     * @return View|RedirectResponse
+     */
+    public function showEditForm(int $id): View|RedirectResponse
     {
-        $user = null;
         if ($id) {
-            $user = $this->user->find($id);
+            $user = $this->user->findOrFail($id);
         } else {
             return back()->withErrors('Invalid ID');
         }
@@ -55,10 +74,14 @@ class AdminUsersController extends Controller
         }
 
         return view('admin.edit-user', ['user' => $user]);
-
     }
-
-    public function update (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     */
+    public function update(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required | min:3 | max:150',
@@ -75,11 +98,14 @@ class AdminUsersController extends Controller
         } else {
             return back()->withErrors('User not found');
         }
-
-
     }
-
-    public function deleteCart (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     */
+    public function deleteCart(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'id' => 'required'
@@ -94,6 +120,4 @@ class AdminUsersController extends Controller
             return back()->withErrors('User not found');
         }
     }
-
-
 }

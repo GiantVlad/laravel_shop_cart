@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CartRequest;
 use App\Product;
 use App\RelatedProduct;
+use App\Services\Cart\CartPostActions;
 use App\ShippingMethod;
 use App\Services\CartService;
 use Illuminate\Contracts\View\View;
@@ -35,59 +37,60 @@ class CartController extends Controller
     }
 
     // ToDo return one type instead of View, array or string
-    public function post(Request $request)
+    
+    /**
+     * @param CartRequest $request
+     * @return array|View|int|string
+     */
+    public function post(CartRequest $request): array|View|int|string
     {
-        if (isset($request->input)) {
-            $request->validate([
-                'input' => 'string|min:5|max:30'
-            ]);
-            if ($request->input == 'emptyCart') { //All products has been removed (ajax)
-                return view('empty-cart');
-            } elseif ($request->get('input') == 'removeRow') { //Product has been removed (ajax)
+        $data = $request->validated();
+        if ($data['input'] === CartPostActions::EMPTY_CART) { //All products has been removed (ajax)
+            return view('empty-cart');
+        } elseif ($data['input'] === CartPostActions::REMOVE_ROW) { //Product has been removed (ajax)
+            $productId = $request->get('productId');
 
-                $productId = $request->get('productId');
-
-                if ($request->get('isRelated') > 0) {
-                    $this->relatedProduct->where('id', $productId)->increment('points', -3);
-                }
-
-                if ($request->session()->has('cartProducts')) {
-
-                    $cartProducts = $request->session()->get('cartProducts');
-
-                    if (array_key_exists($productId, $cartProducts)) {
-
-                        unset($cartProducts[$productId]);
-                        if (count($cartProducts) <= 2) {
-                            $request->session()->forget('cartProducts');
-                            return ['items' => 0, 'total' => 0];
-                        }
-                        $cartProducts['total'] = $request->get('subtotal');
-                        $request->session()->forget('cartProducts');
-                        $request->session()->put('cartProducts', $cartProducts);
-                    }
-                    return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
-                }
-                return 0;
-            } elseif ($request->get('input') == 'changeShipping') {
-
-                if ($request->session()->has('cartProducts')) {
-
-                    $cartProducts = $request->session()->get('cartProducts');
-
-                    if (array_key_exists('total', $cartProducts)) {
-                        $cartProducts['total'] = $request->subtotal;
-                        $cartProducts['shippingMethodId'] = $request->shippingMethodId;
-                        $request->session()->forget('cartProducts');
-                        $request->session()->put('cartProducts', $cartProducts);
-                    }
-                    return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
-                }
-            } elseif ($request->get('input') == 'addRelated') {
-                $this->addRelatedProduct($request);
-                return 'ok';
+            if ($request->get('isRelated') > 0) {
+                $this->relatedProduct->where('id', $productId)->increment('points', -3);
             }
+
+            if ($request->session()->has('cartProducts')) {
+                $cartProducts = $request->session()->get('cartProducts');
+
+                if (array_key_exists($productId, $cartProducts)) {
+                    unset($cartProducts[$productId]);
+                    if (count($cartProducts) <= 2) {
+                        $request->session()->forget('cartProducts');
+                        
+                        return ['items' => 0, 'total' => 0];
+                    }
+                    $cartProducts['total'] = $request->get('subtotal');
+                    $request->session()->forget('cartProducts');
+                    $request->session()->put('cartProducts', $cartProducts);
+                }
+                
+                return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
+            }
+            
+            return 0;
+        } elseif ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
+            if ($request->session()->has('cartProducts')) {
+                $cartProducts = $request->session()->get('cartProducts');
+
+                if (array_key_exists('total', $cartProducts)) {
+                    $cartProducts['total'] = $request->subtotal;
+                    $cartProducts['shippingMethodId'] = $request->shippingMethodId;
+                    $request->session()->forget('cartProducts');
+                    $request->session()->put('cartProducts', $cartProducts);
+                }
+
+                return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
+            }
+        } elseif ($data['input'] === CartPostActions::ADD_RELATED) {
+            $this->addRelatedProduct($request);
         }
+        
+        return 'ok';
     }
     
     /**

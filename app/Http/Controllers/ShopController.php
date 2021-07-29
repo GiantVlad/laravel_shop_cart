@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use Illuminate\Support\Facades\View;
-use Illuminate\View\View as V;
+use Illuminate\Contracts\View\View;
+use Illuminate\View\View as ViewInstance;
+use \Illuminate\Contracts\View\Factory as FactoryContract;
 use App\Catalog;
 use App\Property;
 
@@ -15,35 +16,49 @@ class ShopController extends Controller
      *
      * @return void
      */
-    private $catalog;
-    public function __construct (Catalog $catalog)
+    private Catalog $catalog;
+    private FactoryContract $view;
+    
+    public function __construct (Catalog $catalog, FactoryContract $view)
     {
         $this->catalog = $catalog;
+        $this->view = $view;
     }
-
-    public function list ()
+    
+    /**
+     * @return View
+     */
+    public function list(): View
     {
-            $products = Product::with('catalogs')->with('properties')->get();
-
-        /**
-         * @var \Illuminate\View\View $view
-         */
-        $view = View::make('shop', ['products' => $products]);
+        $products = Product::with('catalogs')->with('properties')->get();
+    
+        /** @var ViewInstance $view */
+        $view = $this->view->make('shop', ['products' => $products]);
         $view->nest('links', 'layouts.links');
+        
         return $view;
     }
-
-    public function get_product ($id)
+    
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function get_product(int $id): View
     {
-        $product = Product::with('properties')->find($id);
+        $product = Product::with('properties')->findOrFail($id);
+        
         return view('shop.single', ['product' => $product]);
     }
-
-    public function get_child_catalogs ($id)
+    
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getChildCatalogs(int $id): View
     {
         $child_catalogs = Catalog::where('parent_id', $id)->get();
 
-        $catalog_ids = $this->catalog->getCatalogIdsTree((int) $id);
+        $catalog_ids = $this->catalog->getCatalogIdsTree($id);
 
         $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->with('properties')->get();
         $parent_id = $id;
@@ -59,10 +74,11 @@ class ShopController extends Controller
         $parent_catalogs_array = array_reverse($parent_catalogs_array);
         $properties = Property::with('propertyValues')->orderBy('priority')->get();
 
-        /**
-         * @var \Illuminate\View\View $view
-         */
-        $view = View::make('shop', ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]);
+        /** @var ViewInstance $view */
+        $view = $this->view->make(
+            'shop',
+            ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]
+        );
         $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 
         return $view;

@@ -33,7 +33,7 @@ Route::post('/order/action', 'OrderController@doAction')->name('change.order.sta
 
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
-    Route::get('/category/{id}', 'ShopController@get_child_catalogs');
+    Route::get('/category/{id}', 'ShopController@getChildCatalogs');
     Route::get('/{id}', 'ShopController@get_product')->name('product');
 });
 
