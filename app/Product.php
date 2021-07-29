@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $description
  * @property int $catalog_id
  * @property string $image
+ * @property int $qty (optional)
+ * @property bool $is_related (optional)
  *
  * @method Product findOrFail(int $id)
  */

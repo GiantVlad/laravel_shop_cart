@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Services\Shipping;
 
-class FreeShippingMethod extends ShippingMethod
+class FreeShippingMethod implements ShippingMethodImplementation
 {
     /**
      * @return int

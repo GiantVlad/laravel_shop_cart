@@ -11,11 +11,16 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property bool|int $enable
  * @property bool $priority
+ * @property string $label
+ * @property int $rate
+ * @property string $time
+ * @property string $class_name
  *
  * @method ShippingMethod findOrFail(int $id)
  */
-abstract class ShippingMethod extends Model
+class ShippingMethod extends Model
 {
+    private const NAMESPACE = 'App\\Services\\Shipping\\';
     protected $fillable = array('class_name', 'enable', 'priority');
     
     /**
@@ -24,23 +29,9 @@ abstract class ShippingMethod extends Model
     public function getAllEnabled(): Collection
     {
         $shippingMethods = $this->where('enable', 1)->orderBy('priority')->get();
-        return $this->getParams($shippingMethods);
+        
+        return $this->addImplementation($shippingMethods);
     }
-    
-    /**
-     * @return int
-     */
-    abstract public static function getRate(): int;
-    
-    /**
-     * @return string
-     */
-    abstract public static function getLabel(): string;
-    
-    /**
-     * @return string
-     */
-    abstract public static function getDeliveryTime(): string;
     
     /**
      * @param int $id
@@ -67,22 +58,26 @@ abstract class ShippingMethod extends Model
     {
         $shippingMethods = $this->orderBy('priority')->get();
         
-        return $this->getParams($shippingMethods);
+        return $this->addImplementation($shippingMethods);
     }
     
     /**
      * @param Collection $shippingMethods
      * @return Collection
      */
-    private function getParams(Collection $shippingMethods): Collection
+    private function addImplementation(Collection $shippingMethods): Collection
     {
         if ($shippingMethods->isNotEmpty()) {
-            foreach ($shippingMethods as $shippingMethod) {
-                $shippingMethod->class_name = 'App\\'.$shippingMethod->class_name;
+            $shippingMethods->filter(
+                fn(ShippingMethod $shippingMethod) => class_exists(self::NAMESPACE . $shippingMethod->class_name)
+            );
+            
+            $shippingMethods->map(static function(ShippingMethod $shippingMethod) {
+                $shippingMethod->class_name = self::NAMESPACE . $shippingMethod->class_name;
                 $shippingMethod->label = $shippingMethod->class_name::getLabel();
                 $shippingMethod->rate = $shippingMethod->class_name::getRate();
                 $shippingMethod->time = $shippingMethod->class_name::getDeliveryTime();
-            }
+            });
         }
         
         return $shippingMethods;

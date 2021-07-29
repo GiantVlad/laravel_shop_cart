@@ -1,8 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Services\Shipping;
 
-class FixRateShippingMethod extends ShippingMethod
+
+class FixRateShippingMethod implements ShippingMethodImplementation
 {
     
     /**

@@ -6,7 +6,10 @@ use App\Product;
 use App\RelatedProduct;
 use App\ShippingMethod;
 use App\Services\CartService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 
 class CartController extends Controller
 {
@@ -15,25 +18,24 @@ class CartController extends Controller
      *
      * @return void
      */
-    private $product;
-    private $shippingMethod;
-    private $relatedProduct;
-    private $cartService;
+    private Product $product;
+    private RelatedProduct $relatedProduct;
+    private CartService $cartService;
 
-    public function __construct (Product $product,
-                                 ShippingMethod $shippingMethod,
-                                 RelatedProduct $relatedProduct,
-                                 CartService $cartService)
-    {
+    public function __construct(
+        Product $product,
+        RelatedProduct $relatedProduct,
+        CartService $cartService
+    ) {
         $this->product = $product;
-        $this->shippingMethod = $shippingMethod;
         $this->relatedProduct = $relatedProduct;
         $this->cartService = $cartService;
 
         $this->middleware('auth')->except('logout');
     }
 
-    public function post (Request $request)
+    // ToDo return one type instead of View, array or string
+    public function post(Request $request)
     {
         if (isset($request->input)) {
             $request->validate([
@@ -87,19 +89,25 @@ class CartController extends Controller
             }
         }
     }
-
-    public function index ()
+    
+    /**
+     * @param ShippingMethod $shippingMethod
+     * @return View
+     */
+    public function index(ShippingMethod $shippingMethod): View
     {
         $cartProducts = session('cartProducts');
-
-        if (empty($cartProducts)) return view('empty-cart');
+        
+        if (empty($cartProducts)) {
+            return view('empty-cart');
+        }
 
         $products = [];
         $index = 0;
         $productsIds = [];
 
-        $shippingMethods = $this->shippingMethod->getAllEnabled();
-
+        $shippingMethods = $shippingMethod->getAllEnabled();
+        
         foreach ($cartProducts as $key => $cartProduct) {
             if ($key === 'total') {
                 continue;
@@ -116,17 +124,26 @@ class CartController extends Controller
 
                 continue;
             }
-            $products[$index] = $this->product->find($key);
+            $products[$index] = $this->product->findOrFail($key);
             $products[$index]->is_related = $cartProduct['isRelatedProduct'];
             $products[$index]->qty = $cartProduct['productQty'];
             $productsIds[] = $products[$index]->id;
             $index++;
         }
+        
         $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
-        return view('cart', ['products' => $products, 'relatedProduct' => $relatedProduct, 'shippingMethods' => $shippingMethods]);
+        
+        return view(
+            'cart',
+            ['products' => $products, 'relatedProduct' => $relatedProduct, 'shippingMethods' => $shippingMethods]
+        );
     }
-
-    public function addToCart (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return array|RedirectResponse|Redirector
+     */
+    public function addToCart(Request $request): array|RedirectResponse|Redirector
     {
         $request->validate(
             [
@@ -150,13 +167,20 @@ class CartController extends Controller
         }
 
         if ($request->ajax()) {
-            return ['items' => (count($request->session()->get('cartProducts')) - 2), 'total' => $request->session()->get('cartProducts.total')];
+            return [
+                'items' => (count($request->session()->get('cartProducts')) - 2),
+                'total' => $request->session()->get('cartProducts.total')
+            ];
         }
 
         return redirect('cart');
     }
-
-    private function addRelatedProduct (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return Product|null
+     */
+    private function addRelatedProduct(Request $request): ?Product
     {
         //add to session
         $request->session()->put('cartProducts.' . $request->related_product_id,
@@ -173,9 +197,7 @@ class CartController extends Controller
             if ($key === 'total' || $key === 'shippingMethodId') continue;
             $productsIds[] = $key;
         }
-
-        $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
-
-        return $relatedProduct;
+    
+        return $this->relatedProduct->getRelatedProduct($productsIds);
     }
 }
