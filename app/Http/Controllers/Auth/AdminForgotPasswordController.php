@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Password;
-
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class AdminForgotPasswordController extends Controller
 {
@@ -34,12 +38,17 @@ class AdminForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
-    public function showLinkRequestForm()
+    public function showLinkRequestForm(): View
     {
         return view('auth.passwords.email-admin');
     }
-
-    public function sendResetLinkEmail(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse
+     * @throws ValidationException
+     */
+    public function sendResetLinkEmail(Request $request): RedirectResponse|JsonResponse
     {
         $this->validateEmail($request);
 
@@ -51,8 +60,11 @@ class AdminForgotPasswordController extends Controller
             ? $this->sendResetLinkResponse($request, $response)
             : $this->sendResetLinkFailedResponse($request, $response);
     }
-
-    protected function broker()
+    
+    /**
+     * @return PasswordBroker
+     */
+    protected function broker(): PasswordBroker
     {
         return Password::broker('admins');
     }

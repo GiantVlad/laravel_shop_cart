@@ -10,13 +10,14 @@ use Illuminate\Notifications\Messages\MailMessage;
 class AdminResetPasswordNotification extends Notification
 {
     use Queueable;
-    public $token;
+    
+    public string $token;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct(string $token)
     {
         $this->token = $token;
     }
@@ -25,9 +26,9 @@ class AdminResetPasswordNotification extends Notification
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return string[]
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -36,9 +37,9 @@ class AdminResetPasswordNotification extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->line('You are receiving this email because we received a password reset request for your admin account.')
@@ -52,7 +53,7 @@ class AdminResetPasswordNotification extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             //

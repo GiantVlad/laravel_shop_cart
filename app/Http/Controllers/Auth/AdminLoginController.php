@@ -2,23 +2,35 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class AdminLoginController extends Controller
 {
-    public function __construct ()
+    public function __construct()
     {
         $this->middleware('guest:admin')->except('adminLogout');
     }
-
-    public function showLoginForm ()
+    
+    /**
+     * @return View
+     */
+    public function showLoginForm(): View
     {
         return view('auth.admin-login');
     }
-
-    public function login (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ValidationException
+     */
+    public function login(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'email' => 'required | email',
@@ -31,12 +43,17 @@ class AdminLoginController extends Controller
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             return redirect()->intended(route('admin.dashboard'));
         }
+        
         return redirect()->back()->withInput($request->only('email, remember'));
     }
-
-    public function adminLogout ()
+    
+    /**
+     * @return RedirectResponse|Redirector
+     */
+    public function adminLogout(): RedirectResponse|Redirector
     {
         Auth::guard('admin')->logout();
+        
         return redirect(route('admin.login'));
     }
 }

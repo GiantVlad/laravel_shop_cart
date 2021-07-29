@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ale
- * Date: 01.12.2017
- * Time: 19:15
- */
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 
 class AdminController extends Controller
 {
@@ -15,8 +10,11 @@ class AdminController extends Controller
     {
         $this->middleware('auth:admin');
     }
-
-    public function index()
+    
+    /**
+     * @return View
+     */
+    public function index(): View
     {
         return view('admin.dashboard');
     }

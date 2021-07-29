@@ -14,7 +14,7 @@ class HttpGetShopTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $user;
+    private User $user;
 
     public function setUp () :void
     {
@@ -25,13 +25,9 @@ class HttpGetShopTest extends TestCase
 
         Product::factory()->count(20)->create();
 
-        $order = new Order;
-        $order->id = 1;
-        $order->order_label = 'ips_77889900';
-        $order->commentary = 'commentary';
-        $order->total = 152;
-        $order->user_id = 1;
-        $order->save();
+        Order::factory()->create([
+            'user_id' => 1,
+        ]);
     }
     /**
      * A test home page.
@@ -85,7 +81,10 @@ class HttpGetShopTest extends TestCase
      */
     public function testGetCartPage()
     {
+        $this->withoutExceptionHandling();
+
         $response = $this->actingAs($this->user)->get('/cart');
+        
         $response->assertStatus(200);
     }
 
