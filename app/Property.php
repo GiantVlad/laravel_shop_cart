@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Class Property
  * @package App
+ *
+ * @property int $id
  */
 class Property extends Model
 {

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Catalog;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 
 class AdminCategoriesController extends Controller
 {
@@ -11,60 +15,94 @@ class AdminCategoriesController extends Controller
     {
         $this->middleware('auth:admin');
     }
-
+    
+    /**
+     * @return View
+     */
     public function list()
     {
         $categories = Catalog::leftJoin('catalogs as cat_parent', 'cat_parent.id' , '=', 'catalogs.parent_id')
             ->get(['catalogs.*', 'cat_parent.name as parent_name']);
-        return view('admin.categories', ['categories' => $categories] );
+        
+        return view('admin.categories', ['categories' => $categories]);
     }
-
-    public function delete($id, Request $request)
+    
+    /**
+     * @param int $id
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function delete(int $id, Request $request): RedirectResponse
     {
-
-        if (!$request->id || ($request->id != $id)) return back()->withErrors('Server Error... Please try again.');; //ToDo create error
+        if (!$request->id || ($request->id != $id)) {
+            return back()->withErrors('Server Error... Please try again.'); //ToDo create error
+        }
 
         $category = Catalog::find($request->id);
 
-        if (!$category) return back()->withErrors('Server Error... Category not found');
+        if (!$category) {
+            return back()->withErrors('Server Error... Category not found');
+        }
 
-        if ($category->products()->first()) return back()->withErrors('Canceled. Category '.$category->name.' has a children Products!');
+        if ($category->products()->first()) {
+            return back()->withErrors('Canceled. Category '.$category->name.' has a children Products!');
+        }
 
         $children = Catalog::where('parent_id', $category->id)->first();
-        if ($children) return back()->withErrors('Canceled. Category '.$category->name.' has a children Categories!');
+        if ($children) {
+            return back()->withErrors('Canceled. Category '.$category->name.' has a children Categories!');
+        }
 
         $category->delete();
+        
         return redirect()->back()->with('message', 'Category '.$category->name.' was deleted!');
     }
-
-    public function showEditForm($id=null)
+    
+    /**
+     * @param int|null $id
+     * @return View
+     */
+    public function showEditForm(int $id=null): View
     {
         $parentCategories = Catalog::all('id', 'name');
         $category = null;
-        if ($id) $category = Catalog::find($id);
+        if ($id) {
+            $category = Catalog::findOrFail($id);
+        }
 
-        return view('admin.edit-category', ['category'=> $category, 'parent_categories_names' => $parentCategories]);
+        return view(
+            'admin.edit-category',
+            ['category'=> $category, 'parent_categories_names' => $parentCategories]
+        );
     }
-
-    public function update(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Redirector
+     * @throws ValidationException
+     */
+    public function update(Request $request): RedirectResponse|Redirector
     {
         $this->validate($request, [
             'name' => 'required | min:3 | max:30',
             'priority' => 'max:99',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        if ($request->id) {
-            $category = Catalog::find($request->id);
-            $message = 'Category '. $request->name .' was changed!';
+        $id = (int)$request->get('id');
+        if ($id) {
+            $category = Catalog::findOrFail($id);
+            $message = 'Category '. $request->get('name') .' was changed!';
         } else {
             $category = new Catalog;
-            $message = 'Category '. $request->name .' was added!';
+            $message = 'Category '. $request->get('name') .' was added!';
         }
 
-        $category->name = $request->name;
-        $category->priority = $request->priority;
-        $category->description = $request->description;
-        if ($request->parent) $category->parent_id = $request->parent;
+        $category->name = $request->get('name');
+        $category->priority = $request->get('priority');
+        $category->description = $request->get('description');
+        if ($request->get('parent')) {
+            $category->parent_id = $request->get('parent');
+        }
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');

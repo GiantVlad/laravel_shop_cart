@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Property;
 use App\PropertyValue;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Catalog;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 
 class AdminProductsController extends Controller
 {
@@ -15,15 +19,21 @@ class AdminProductsController extends Controller
         $this->middleware('auth:admin');
     }
 
-    public function list ()
+    public function list(): View
     {
         //todo app settings
         $products = Product::paginate(15);
         $categories = Catalog::all('id', 'name');
+        
         return view('admin.products', ['products' => $products, 'categories' => $categories]);
     }
-
-    public function categoryFilter (Request $request, $category_id)
+    
+    /**
+     * @param Request $request
+     * @param int|null $category_id
+     * @return View|string
+     */
+    public function categoryFilter(Request $request, ?int $category_id): View|string
     {
         $products = $category_id ?
             Product::where('catalog_id', $category_id)->paginate(10) :
@@ -36,55 +46,83 @@ class AdminProductsController extends Controller
         $categories = Catalog::all('id', 'name');
         return view('admin.products', ['products' => $products, 'categories' => $categories]);
     }
-
-    public function delete (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function delete(Request $request): RedirectResponse
     {
+        if (!$request->get('id')) {
+            return back()->withErrors('Server Error... Please try again.');
+        }
+        $id = (int)$request->get('id');
+        
+        $product = Product::findOrFail($id);
 
-        if (!$request->id) return back()->withErrors('Server Error... Please try again.');
-
-        $product = Product::find($request->id);
-
-        if (!$product) return back()->withErrors('Server Error... Product not found');
+        if (!$product instanceof Product) {
+            return back()->withErrors('Server Error... Product not found');
+        }
 
         $product->delete();
+        
         return redirect()->back()->with('message', 'Product ' . $product->name . ' was deleted!');
     }
 
-    //Remove property from product
-    public function deleteProperty (Request $request, $product_id)
+    /**
+     * Remove property from product
+     * @param Request $request
+     * @param int $product_id
+     * @return int|RedirectResponse
+     */
+    public function deleteProperty(Request $request, int $product_id): int|RedirectResponse
     {
-        if (!$request->value_id) return back()->withErrors('Server Error... Please try again.');
+        if (!$request->get('value_id')) {
+            return back()->withErrors('Server Error... Please try again.');
+        }
+        $valueId = (int)$request->get('value_id');
+        $product = Product::findOrFail($product_id);
 
-        $product = Product::find($product_id);
+        if (!$product instanceof Product) {
+            return back()->withErrors('Server Error... Product not found');
+        }
 
-        if (!$product) return back()->withErrors('Server Error... Product not found');
+        $product->properties()->detach([$valueId]);
 
-        $product->properties()->detach($request->value_id);
-
-        return $request->value_id;
+        return $valueId;
     }
-
-    public function showEditForm ($id = null)
+    
+    /**
+     * @param int|null $id
+     * @return View|RedirectResponse
+     */
+    public function showEditForm(int $id = null): View|RedirectResponse
     {
         $categories = Catalog::all('id', 'name');
         $product = null;
         if ($id) {
-            $product = Product::find($id);
-        }
-        if ($id && !$product) {
-            return back()->withErrors('Server Error... Product not found');
-        }
-        if (isset($product->properties)) {
-            foreach ($product->properties as $property) {
-                if ($property->properties->type === 'selector') {
-                    $property->properties->selectProperties = PropertyValue::where('property_id', $property->properties->id)->pluck( 'value', 'id');
-                }
+            $product = Product::with('properties')->findOrFail($id);
+            if (!$product instanceof Product) {
+                return back()->withErrors('Server Error... Product not found');
             }
         }
+        
+        foreach ($product->properties as $property) {
+            if ($property->properties->type === 'selector') {
+                $property->properties->selectProperties =
+                    PropertyValue::where('property_id', $property->properties->id)->pluck('value', 'id');
+            }
+        }
+        
         return view('admin.edit-product', ['product' => $product, 'categories' => $categories]);
     }
-
-    public function update (Request $request)
+    
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Redirector
+     * @throws ValidationException
+     */
+    public function update(Request $request): RedirectResponse|Redirector
     {
         $this->validate($request, [
             'name' => 'required | min:3 | max:150',
@@ -92,8 +130,9 @@ class AdminProductsController extends Controller
             'image' => 'image | mimes:jpeg,png,jpg,gif,svg | max:2048',
             'category' => 'required'
         ]);
-        if ($request->id) {
-            $product = Product::find($request->id);
+        $id = (int)$request->get('id');
+        if ($id) {
+            $product = Product::findOrFail($id);
             $message = 'Product ' . $request->name . ' was changed!';
         } else {
             $product = new Product;
@@ -141,17 +180,20 @@ class AdminProductsController extends Controller
 
         return redirect(url('admin/products'))->with('message', $message);
     }
-
-    public function getProperties (Request $request, $product_id)
+    
+    /**
+     * @param Request $request
+     * @param int $product_id
+     * @return RedirectResponse|string
+     */
+    public function getProperties (Request $request, int $product_id): RedirectResponse|string
     {
-        $product = Product::find($product_id);
-
-        if (!$product) return back()->withErrors('Server Error... Product not found');
+        $product = Product::findOrFail($product_id);
 
         if ($request->ajax()) {
             return view('admin.product-properties', compact('product'))->render();
         }
+    
+        return '';
     }
-
-
 }

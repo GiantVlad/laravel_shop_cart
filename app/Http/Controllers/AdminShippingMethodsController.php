@@ -4,34 +4,45 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\ShippingMethod;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\ValidationException;
 
 class AdminShippingMethodsController extends Controller
 {
-    private $shippingMethod;
-    private $order;
+    private ShippingMethod $shippingMethod;
+    private Order $order;
 
-    public function __construct (ShippingMethod $shippingMethod)
+    public function __construct(ShippingMethod $shippingMethod, Order $order)
     {
         $this->middleware('auth:admin');
         $this->shippingMethod = $shippingMethod;
-        $this->order = new Order();
+        $this->order = $order;
     }
-
-    public function list ()
+    
+    /**
+     * @return View
+     */
+    public function list(): View
     {
         $shippingMethods = $this->shippingMethod->list();
 
         return view('admin.shipping-methods', ['shippingMethods' => $shippingMethods]);
     }
-
-    public function delete (Request $request)
+    
+    /**
+     * @param Request $request
+     */
+    public function delete(Request $request): void
     {
-
     }
-
-    public function search(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return View|RedirectResponse
+     */
+    public function search(Request $request): View|RedirectResponse
     {
         $keyword = $request->keyword;
 
@@ -43,35 +54,40 @@ class AdminShippingMethodsController extends Controller
 
         return back();
     }
-
-
-    public function showEditForm (int $id)
+    
+    
+    /**
+     * @param int $id
+     */
+    public function showEditForm (int $id): void
     {
-
-
     }
-
-    public function changeStatus(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return string
+     * @throws ValidationException
+     */
+    public function changeStatus(Request $request): string
     {
         $this->validate($request, [
             'status' => 'required',
             'method_id' => 'required'
         ]);
         //$status = $request->status ? 1 : 0;
-        $this->shippingMethod->where('id', $request->method_id)->update(['enable' => $request->status]);
+        $this->shippingMethod->where('id', $request->method_id)->update(['enable' => $request->get('status')]);
         $shippingMethods = $this->shippingMethod->list();
         if ($request->ajax()) {
             return view('admin.shipping-methods-load', compact('shippingMethods'))->render();
         }
+        
+        return '';
     }
-
-    public function update (Request $request)
+    
+    /**
+     * @param Request $request
+     */
+    public function update(Request $request): void
     {
-        $this->validate($request, [
-
-        ]);
-
-
     }
-
 }

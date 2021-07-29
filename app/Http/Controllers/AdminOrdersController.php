@@ -5,55 +5,69 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Order;
 use App\OrderData;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
 
 class AdminOrdersController extends Controller
 {
-    private $user;
-    private $order;
-    private $orderData;
+    private User $user;
+    private Order $order;
+    private OrderData $orderData;
 
-    public function __construct (User $user, Order $order, OrderData $orderData)
+    public function __construct(User $user, Order $order, OrderData $orderData)
     {
         $this->middleware('auth:admin');
         $this->user = $user;
         $this->order = $order;
         $this->orderData = $orderData;
     }
-
-    public function list ()
+    
+    /**
+     * @return View
+     */
+    public function list(): View
     {
         $orders = $this->order->orderBy('created_at', 'desc')->paginate(15);
 
         return view('admin.orders', ['orders' => $orders]);
     }
-
-    public function delete (Request $request)
+    
+    /**
+     * @param Request $request
+     */
+    public function delete(Request $request): void
     {
-
     }
-
-    public function search(Request $request)
+    
+    /**
+     * @param Request $request
+     * @return View|RedirectResponse
+     */
+    public function search(Request $request): View|RedirectResponse
     {
         $keyword = $request->get('keyword');
 
-        if (empty($keyword)) return back();
+        if (empty($keyword)) {
+            return back();
+        }
 
         $selectedOrder = $this->order->getOrderByLabel($keyword)->paginate(15);
+        
         return view('admin.orders', ['orders' => $selectedOrder]);
     }
-
-
-    public function showEditForm (int $id)
+    
+    /**
+     * @param int $id
+     */
+    public function showEditForm(int $id): void
     {
     }
-
-    public function update (Request $request)
+    
+    /**
+     * @param Request $request
+     */
+    public function update(Request $request): void
     {
-        $this->validate($request, [
-
-        ]);
     }
-
 }
