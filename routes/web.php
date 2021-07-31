@@ -1,22 +1,16 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+declare(strict_types=1);
+
+use Illuminate\Routing\Router;
 
 Route::get('/', 'ShopController@list')->name('home');
 
-Route::prefix('cart')->group( function() {
-    Route::post('/', 'CartController@post')->name('post.cart');
-    Route::post('/add-to-cart', 'CartController@addToCart');
-    Route::get('/', 'CartController@index')->name('get.cart');
+Route::prefix('cart')->group(static function(Router $router) {
+    $router->post('/', 'CartController@post')->name('post.cart');
+    $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
+    $router->post('/add-to-cart', 'CartController@addToCart');
+    $router->get('/', 'CartController@index')->name('get.cart');
 });
 
 Route::prefix('checkout')->group( function() {

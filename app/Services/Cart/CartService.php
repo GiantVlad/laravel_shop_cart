@@ -1,24 +1,59 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
+
+namespace App\Services\Cart;
 
 use App\OrderData;
+use App\Product;
+use App\RelatedProduct;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use App\Product;
 
 class CartService
 {
+    private Session $session;
     private Product $product;
-    private Request $request;
+    private RelatedProduct $relatedProduct;
     private OrderData $orderData;
     
-    public function __construct (Product $product, Request $request, OrderData $orderData)
-    {
+    public function __construct(
+        Session $session,
+        Product $product,
+        RelatedProduct $relatedProduct,
+        OrderData $orderData
+    ) {
+        $this->session = $session;
         $this->product = $product;
-        $this->request = $request;
+        $this->relatedProduct = $relatedProduct;
         $this->orderData = $orderData;
+    }
+    
+    /**
+     * @param int $productId
+     */
+    public function addRelatedProduct(int $productId): void
+    {
+        //add to session
+        $this->session->put('cartProducts.' . $productId,
+            ['productQty' => 1, 'isRelatedProduct' => 1]
+        );
+        
+        $price = $this->product->getProductPriceById($productId);
+        $total = $this->session->get('cartProducts.total') + $price;
+        $this->session->put('cartProducts.total', $total);
+        
+        $cartProducts = session('cartProducts');
+        $productsIds = [];
+        foreach ($cartProducts as $key => $cartProduct) {
+            if ($key === 'total' || $key === 'shippingMethodId') {
+                continue;
+            }
+            $productsIds[] = $key;
+        }
+        
+        $this->relatedProduct->getRelatedProduct($productsIds);
     }
     
     /**
@@ -28,7 +63,7 @@ class CartService
      */
     public function addToCart(int $productId, int $qty)
     {
-        $cartProducts = $this->request->session()->get('cartProducts');
+        $cartProducts = $this->session->get('cartProducts');
         $total = 0;
         //If product exist in the cart
         if (!empty($cartProducts)) {
@@ -38,17 +73,21 @@ class CartService
                 $cartProducts['total'] = $total;
                 $qty += $cartProducts[$productId]['productQty'];
                 $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
-                $this->request->session()->forget('cartProducts');
-                $this->request->session()->put('cartProducts', $cartProducts);
-                if ($this->request->ajax()) return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
-                return redirect('cart');
+                $this->session->forget('cartProducts');
+                $this->session->put('cartProducts', $cartProducts);
+                
+//                if ($this->request->ajax()) {
+//                    return ['items' => (count($cartProducts) - 1), 'total' => $cartProducts['total']];
+//                }
+//
+//                return redirect('cart');
             }
         }
-
+        
         $total += $this->product->getProductPriceById($productId) * $qty;
-        $this->request->session()->put('cartProducts.total', $total);
-        $this->request->session()->put('cartProducts.shippingMethodId', '');
-        $this->request->session()->put('cartProducts.' . $productId,
+        $this->session->put('cartProducts.total', $total);
+        $this->session->put('cartProducts.shippingMethodId', '');
+        $this->session->put('cartProducts.' . $productId,
             ['productQty' => $qty, 'isRelatedProduct' => 0]
         );
         //Todo return ok
@@ -62,7 +101,7 @@ class CartService
      */
     public function updateQty(int $productId, int $qty): bool
     {
-        $cartProducts = $this->request->session()->get('cartProducts');
+        $cartProducts = $this->session->get('cartProducts');
         if (!$cartProducts || !array_key_exists($productId, $cartProducts)) {
             return false;
         }
@@ -72,8 +111,8 @@ class CartService
         $diff = $price * ($qty - $oldQty);
         $cartProducts['total'] = $cartProducts['total'] + $diff;
         $cartProducts[$productId] = ['productQty' => $qty, 'isRelatedProduct' => $cartProducts[$productId]['isRelatedProduct']];
-        $this->request->session()->forget('cartProducts');
-        $this->request->session()->put('cartProducts', $cartProducts);
+        $this->session->forget('cartProducts');
+        $this->session->put('cartProducts', $cartProducts);
         
         return true;
     }
@@ -89,9 +128,9 @@ class CartService
         if ($orderDetails->isEmpty()) {
             throw (new ModelNotFoundException())->setModel(OrderData::class);
         }
-    
+        
         foreach ($orderDetails as $orderRow) {
-            $this->addToCart($orderRow->product_id, $orderRow->qty);
+            $this->addToCart((int)$orderRow->product_id, (int)$orderRow->qty);
         }
     }
 }

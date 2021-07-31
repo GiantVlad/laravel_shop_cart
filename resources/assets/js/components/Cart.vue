@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="product-row" v-for="item, idx in items">
+        <div class="product-row" v-for="(item, idx) in items">
             <div class="row">
                 <input type="hidden" name="productId" :value="item.id">
                 <div class="col-md-2"><a :href="'/product/'+ item.id"><img class="img-thumbnail" :alt="'product id '+item.id"
@@ -70,7 +70,7 @@
 
                 <div class="col-md-2"><p>Price: {{ relatedProduct.price }}</p></div>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-primary" @click="addRelated">
+                    <button type="button" class="btn btn-primary add-related" @click="addRelated">
                         Add to Cart
                     </button>
                 </div>
@@ -96,14 +96,12 @@
         },
         watch: {
             selected_shipping(val) {
-
                 this.subtotal(val)
 
                 axios.post(this.baseUrl + '/cart', {
                     input: "changeShipping",
                     shippingMethodId: val,
                     subtotal: this.total,
-                    _token: this.csrf
                 }).then(response => {
                     this.$root.$emit('nav_cart', response.data)
                 }).catch(e => {
@@ -112,11 +110,9 @@
                 })
             },
         },
-        computed: {
-
-        },
+        computed: {},
         methods: {
-            pay () {
+            pay() {
                 let itemsInfo = {
                     productId: [],
                     productQty: [],
@@ -148,11 +144,9 @@
                     //window.location.reload()
                 });
             },
-            addRelated () {
-                axios.post(this.baseUrl + '/cart', {
-                    input: "addRelated",
-                    related_product_id: this.relatedProduct.id,
-                    _token: this.csrf
+            addRelated() {
+                axios.post(this.baseUrl + '/cart/add-related', {
+                    id: this.relatedProduct.id,
                 }).then(response => {
                     window.location.reload()
                 }).catch(e => {
@@ -171,7 +165,6 @@
                     productQty: new_val,
                     subtotal: this.total,
                     updateQty: true,
-                    _token: this.csrf
                 }).then(response => {
                     this.$root.$emit('nav_cart', response.data)
                     this.items[idx].qty = new_val;
@@ -194,15 +187,13 @@
                 this.total = Math.round(this.total*100)/100
                 return this.total;
             },
-
-            remove (item) {
+            remove(item) {
                 let total = this.total - (+item.price * +item.qty)
                 axios.post(this.baseUrl + '/cart', {
                     input: "removeRow",
                     productId: item.id,
                     isRelated: item.is_related,
                     subtotal: total,
-                    _token: this.csrf
                 }).then(response => {
                     this.items = this.items.filter( i => i.id !== item.id)
                     if (response.data.items === 0) {
@@ -210,7 +201,6 @@
                     }
                     this.$root.$emit('nav_cart', response.data)
                     this.subtotal(this.selected_shipping)
-
                 }).catch(e => {
                     console.log(e)
                     //this.errors.push(e)
@@ -231,5 +221,4 @@
 </script>
 
 <style scoped>
-
 </style>

@@ -9,6 +9,7 @@ module.exports = {
         filename: 'build.js'
     },
     resolve: {
+        //extensions: [ '.tsx', '.ts', '.js', '.vue' ],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
         }

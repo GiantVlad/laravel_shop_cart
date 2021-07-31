@@ -8,14 +8,11 @@ use App\Library\Services\IpspPaymentService;
 use App\Library\Services\PaymentServiceInterface;
 use App\Services\Order\OrderActions;
 use App\Services\Order\OrderStatuses;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Order;
-use App\OrderData;
-use App\Services\CartService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\Cart\CartService;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -26,12 +23,10 @@ class OrderController extends Controller
      */
     private Order $order;
     private CartService $cartService;
-    private OrderData $orderData;
 
-    public function __construct(Order $order, CartService $cartService, OrderData $orderData)
+    public function __construct(Order $order, CartService $cartService)
     {
         $this->order = $order;
-        $this->orderData = $orderData;
         $this->cartService = $cartService;
         $this->middleware('auth')->except('logout');
     }
@@ -88,7 +83,7 @@ class OrderController extends Controller
                 'order_id'    => $order->order_label,
                 'order_desc'  => 'order #'. $order->order_label . '. Test Cart Number: 4444555511116666',
                 'currency'    => 'USD',
-                'amount'      => $order->total*100,
+                'amount'      => $order->total * 100,
                 'response_url'=> url('checkout/success').'?_token='.csrf_token()
             ];
             
