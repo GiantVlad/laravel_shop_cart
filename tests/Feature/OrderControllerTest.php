@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use App\Library\Services\PaymentResponseInterface;
@@ -76,6 +78,7 @@ class OrderControllerTest extends TestCase
         
         app()->instance(PaymentServiceInterface::class, $paymentService);
         
+        /** @var Order $order */
         $order = Order::factory()->create([
             'user_id' => $this->user->id,
         ]);
@@ -96,7 +99,7 @@ class OrderControllerTest extends TestCase
             'user_id' => $this->user->id,
             'status' => OrderStatuses::DELETED,
         ]);
-
+        
         OrderData::factory()->create([
             'order_id' => $order->id,
         ]);

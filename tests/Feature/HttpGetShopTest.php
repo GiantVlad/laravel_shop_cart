@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use Tests\TestCase;
@@ -69,22 +71,7 @@ class HttpGetShopTest extends TestCase
      */
     public function testGetProductByIdPage()
     {
-        $this->withoutExceptionHandling();
         $response = $this->get('/shop/1');
-        $response->assertStatus(200);
-    }
-
-    /**
-     * A test cart page.
-     *
-     * @return void
-     */
-    public function testGetCartPage()
-    {
-        $this->withoutExceptionHandling();
-
-        $response = $this->actingAs($this->user)->get('/cart');
-        
         $response->assertStatus(200);
     }
 

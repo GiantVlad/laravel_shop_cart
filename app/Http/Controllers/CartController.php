@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CartAddRelatedRequest;
 use App\Http\Requests\CartRequest;
+use App\Http\Resources\CartPostResource;
 use App\Product;
 use App\RelatedProduct;
 use App\Services\Cart\CartPostActions;
+use App\Services\Cart\CartPostDTO;
 use App\ShippingMethod;
-use App\Services\CartService;
+use App\Services\Cart\CartService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
 
 class CartController extends Controller
@@ -27,7 +34,8 @@ class CartController extends Controller
     public function __construct(
         Product $product,
         RelatedProduct $relatedProduct,
-        CartService $cartService
+        CartService $cartService,
+        
     ) {
         $this->product = $product;
         $this->relatedProduct = $relatedProduct;
@@ -36,61 +44,50 @@ class CartController extends Controller
         $this->middleware('auth')->except('logout');
     }
 
-    // ToDo return one type instead of View, array or string
+    // ToDo return one type instead of array or string
     
     /**
      * @param CartRequest $request
-     * @return array|View|int|string
+     * @return array|int|string|JsonResource
      */
-    public function post(CartRequest $request): array|View|int|string
+    public function post(CartRequest $request): array|int|string|JsonResource
     {
         $data = $request->validated();
-        if ($data['input'] === CartPostActions::EMPTY_CART) { //All products has been removed (ajax)
-            return view('empty-cart');
-        } elseif ($data['input'] === CartPostActions::REMOVE_ROW) { //Product has been removed (ajax)
+        $cartProducts = $request->session()->get('cartProducts');
+        if (is_null($cartProducts)) {
+            return 0;
+        }
+        
+        if ($data['input'] === CartPostActions::REMOVE_ROW) { //Product has been removed (ajax)
             $productId = $request->get('productId');
 
             if ($request->get('isRelated') > 0) {
                 $this->relatedProduct->where('id', $productId)->increment('points', -3);
             }
-
-            if ($request->session()->has('cartProducts')) {
-                $cartProducts = $request->session()->get('cartProducts');
-
-                if (array_key_exists($productId, $cartProducts)) {
-                    unset($cartProducts[$productId]);
-                    if (count($cartProducts) <= 2) {
-                        $request->session()->forget('cartProducts');
-                        
-                        return ['items' => 0, 'total' => 0];
-                    }
-                    $cartProducts['total'] = $request->get('subtotal');
-                    $request->session()->forget('cartProducts');
-                    $request->session()->put('cartProducts', $cartProducts);
-                }
-                
-                return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
-            }
             
-            return 0;
-        } elseif ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
-            if ($request->session()->has('cartProducts')) {
-                $cartProducts = $request->session()->get('cartProducts');
-
-                if (array_key_exists('total', $cartProducts)) {
-                    $cartProducts['total'] = $request->subtotal;
-                    $cartProducts['shippingMethodId'] = $request->shippingMethodId;
+            if (array_key_exists($productId, $cartProducts)) {
+                unset($cartProducts[$productId]);
+                if (count($cartProducts) <= 2) {
                     $request->session()->forget('cartProducts');
-                    $request->session()->put('cartProducts', $cartProducts);
+                    
+                    return ['items' => 0, 'total' => 0];
                 }
-
-                return ['items' => (count($cartProducts) - 2), 'total' => $cartProducts['total']];
+                $cartProducts['total'] = $request->get('subtotal');
+                $request->session()->forget('cartProducts');
+                $request->session()->put('cartProducts', $cartProducts);
             }
-        } elseif ($data['input'] === CartPostActions::ADD_RELATED) {
-            $this->addRelatedProduct($request);
+        } elseif ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
+            if (array_key_exists('total', $cartProducts)) {
+                $cartProducts['total'] = $request->subtotal;
+                $cartProducts['shippingMethodId'] = $request->shippingMethodId;
+                $request->session()->forget('cartProducts');
+                $request->session()->put('cartProducts', $cartProducts);
+            }
         }
-        
-        return 'ok';
+    
+        $dto = new CartPostDTO((count($cartProducts) - 2), $cartProducts['total']);
+    
+        return new CartPostResource($dto);
     }
     
     /**
@@ -143,6 +140,18 @@ class CartController extends Controller
     }
     
     /**
+     * @param CartAddRelatedRequest $request
+     * @return JsonResponse
+     */
+    public function addRelated(CartAddRelatedRequest $request): JsonResponse
+    {
+        $id = (int)$request->validated()['id'];
+        $this->cartService->addRelatedProduct($id);
+        
+        return response()->json();
+    }
+    
+    /**
      * @param Request $request
      * @return array|RedirectResponse|Redirector
      */
@@ -177,30 +186,5 @@ class CartController extends Controller
         }
 
         return redirect('cart');
-    }
-    
-    /**
-     * @param Request $request
-     * @return Product|null
-     */
-    private function addRelatedProduct(Request $request): ?Product
-    {
-        //add to session
-        $request->session()->put('cartProducts.' . $request->related_product_id,
-            ['productQty' => 1, 'isRelatedProduct' => 1]
-        );
-
-        $price = $this->product->getProductPriceById($request->related_product_id);
-        $total = $request->session()->get('cartProducts.total') + $price;
-        $request->session()->put('cartProducts.total', $total);
-
-        $cartProducts = session('cartProducts');
-        $productsIds = [];
-        foreach ($cartProducts as $key => $cartProduct) {
-            if ($key === 'total' || $key === 'shippingMethodId') continue;
-            $productsIds[] = $key;
-        }
-    
-        return $this->relatedProduct->getRelatedProduct($productsIds);
     }
 }

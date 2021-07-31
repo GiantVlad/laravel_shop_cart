@@ -14,7 +14,8 @@ mix.webpackConfig({
     resolve: {
         alias: {
             'bootstrap-confirmation': 'bootstrap-confirmation2/bootstrap-confirmation.js'  // relative to node_modules
-        }
+        },
+        //extensions: [ '.tsx', '.ts', '.js', '.vue' ],
     }
 });
 mix.js('resources/assets/js/app.js', 'public/js')

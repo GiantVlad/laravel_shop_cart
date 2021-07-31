@@ -56,7 +56,8 @@ describe('Cart.vue', () => {
         mock = new MockAdapter(axios);
         mock.onPost('https://my-site.com/cart').reply(200, response);
         mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response);
-
+        delete global.window.location;
+        global.window.location = {href: '', reload: () => true};
     })
 
     afterEach(() => {
@@ -96,8 +97,6 @@ describe('Cart.vue', () => {
     it('removes product from cart', (done) => {
         let nodeQty = wrapper.find('button#remove-85');
         const rootWrapper = createWrapper(wrapper.vm.$root);
-        delete global.window.location;
-        global.window.location = {href: '', reload () {return true}};
 
         nodeQty.trigger('click');
         flushPromises().then(() => {
@@ -109,10 +108,21 @@ describe('Cart.vue', () => {
         });
     });
 
-    it('payment', (done) => {
-        delete global.window.location;
-        global.window.location = {href: '', reload () {return true}};
+    // it('add related product to the cart', (done) => {
+    //     let related = wrapper.find('button.add-related');
+    //     //const rootWrapper = createWrapper(wrapper.vm.$root);
+    //
+    //     mock.onPost('https://my-site.com/cart/add-related')
+    //         .reply(200, {});
+    //
+    //     related.trigger('click');
+    //     flushPromises().then(() => {
+    //         expect(mockMethod).toHaveBeenCalled();
+    //         done();
+    //     });
+    // });
 
+    it('payment', (done) => {
         mock.onPost('https://my-site.com/checkout')
             .reply(200, {redirect_to: wrapper.vm.baseUrl+'/payment_url'});
 
