@@ -10,6 +10,7 @@ Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/', 'CartController@post')->name('post.cart');
     $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
     $router->post('/add-to-cart', 'CartController@addToCart');
+    $router->post('/remove-item', 'CartController@removeItem');
     $router->get('/', 'CartController@index')->name('get.cart');
 });
 

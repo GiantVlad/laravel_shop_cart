@@ -56,6 +56,7 @@ describe('Cart.vue', () => {
         mock = new MockAdapter(axios);
         mock.onPost('https://my-site.com/cart').reply(200, response);
         mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response);
+        mock.onPost('https://my-site.com/cart/remove-item').reply(200, response);
         delete global.window.location;
         global.window.location = {href: '', reload: () => true};
     })

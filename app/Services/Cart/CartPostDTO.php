@@ -7,9 +7,9 @@ namespace App\Services\Cart;
 class CartPostDTO
 {
     private int $countItems;
-    private int $total;
+    private float $total;
     
-    public function __construct(int $countItems, int $total)
+    public function __construct(int $countItems, float $total)
     {
         $this->countItems = $countItems;
         $this->total = $total;
@@ -24,9 +24,9 @@ class CartPostDTO
     }
     
     /**
-     * @return int
+     * @return float
      */
-    public function getTotal(): int
+    public function getTotal(): float
     {
         return $this->total;
     }
