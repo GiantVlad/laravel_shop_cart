@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CartAddRelatedRequest;
+use App\Http\Requests\CartRemoveItemRequest;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartPostResource;
 use App\Product;
 use App\RelatedProduct;
 use App\Services\Cart\CartPostActions;
 use App\Services\Cart\CartPostDTO;
+use App\Services\Recommended\Recommended;
 use App\ShippingMethod;
 use App\Services\Cart\CartService;
 use Illuminate\Contracts\View\View;
@@ -27,56 +29,30 @@ class CartController extends Controller
      *
      * @return void
      */
-    private Product $product;
-    private RelatedProduct $relatedProduct;
-    private CartService $cartService;
 
     public function __construct(
-        Product $product,
-        RelatedProduct $relatedProduct,
-        CartService $cartService,
-        
+        private Product $product,
+        private RelatedProduct $relatedProduct,
+        private CartService $cartService,
+        private Recommended $recommendedService
     ) {
-        $this->product = $product;
-        $this->relatedProduct = $relatedProduct;
-        $this->cartService = $cartService;
-
         $this->middleware('auth')->except('logout');
     }
 
     // ToDo return one type instead of array or string
-    
     /**
      * @param CartRequest $request
-     * @return array|int|string|JsonResource
+     * @return JsonResource
      */
-    public function post(CartRequest $request): array|int|string|JsonResource
+    public function post(CartRequest $request): JsonResource
     {
         $data = $request->validated();
         $cartProducts = $request->session()->get('cartProducts');
         if (is_null($cartProducts)) {
-            return 0;
+            return new CartPostResource(new CartPostDTO(0, 0));
         }
         
-        if ($data['input'] === CartPostActions::REMOVE_ROW) { //Product has been removed (ajax)
-            $productId = $request->get('productId');
-
-            if ($request->get('isRelated') > 0) {
-                $this->relatedProduct->where('id', $productId)->increment('points', -3);
-            }
-            
-            if (array_key_exists($productId, $cartProducts)) {
-                unset($cartProducts[$productId]);
-                if (count($cartProducts) <= 2) {
-                    $request->session()->forget('cartProducts');
-                    
-                    return ['items' => 0, 'total' => 0];
-                }
-                $cartProducts['total'] = $request->get('subtotal');
-                $request->session()->forget('cartProducts');
-                $request->session()->put('cartProducts', $cartProducts);
-            }
-        } elseif ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
+        if ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
             if (array_key_exists('total', $cartProducts)) {
                 $cartProducts['total'] = $request->subtotal;
                 $cartProducts['shippingMethodId'] = $request->shippingMethodId;
@@ -86,6 +62,45 @@ class CartController extends Controller
         }
     
         $dto = new CartPostDTO((count($cartProducts) - 2), $cartProducts['total']);
+    
+        return new CartPostResource($dto);
+    }
+    
+    /**
+     * @param CartRemoveItemRequest $request
+     * @return JsonResource
+     */
+    public function removeItem(CartRemoveItemRequest $request): JsonResource
+    {
+        $cartProducts = $request->session()->get('cartProducts');
+        if (is_null($cartProducts)) {
+            return new CartPostResource(new CartPostDTO(0, 0));
+        }
+    
+        $input = $request->validated();
+        $productId = (int)$input['productId'];
+        $isRelated = (bool)$input['isRelated'];
+        $subtotal = $input['subtotal'] ?? null;
+    
+        if ($isRelated) {
+            $this->recommendedService->incrementRate($productId, Recommended::RATE_IMPACT_AFTER_REMOVAL_FROM_CART);
+        }
+        
+        $itemsCount = 0;
+        
+        if (array_key_exists($productId, $cartProducts)) {
+            unset($cartProducts[$productId]);
+            $cartProducts['total'] = 0;
+            if (count($cartProducts) > 2) {
+                $request->session()->forget('cartProducts');
+                $cartProducts['total'] = $subtotal;
+                $itemsCount = count($cartProducts) - 2;
+                $request->session()->forget('cartProducts');
+                $request->session()->put('cartProducts', $cartProducts);
+            }
+        }
+    
+        $dto = new CartPostDTO($itemsCount, $cartProducts['total']);
     
         return new CartPostResource($dto);
     }
@@ -169,10 +184,10 @@ class CartController extends Controller
                 'productQty.max' => 'Maximum of Quantity is 99 psc.'
             ]);
 
-        $productId = $request->get('productId');
-        $qty = $request->get('productQty');
+        $productId = (int)$request->get('productId');
+        $qty = (int)$request->get('productQty');
 
-        if ($request->get('updateQty')) {
+        if ((int)$request->get('updateQty')) {
             $this->cartService->updateQty($productId, $qty);
         } else {
             $this->cartService->addToCart($productId, $qty);

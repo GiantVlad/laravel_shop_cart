@@ -182,17 +182,16 @@
 
                 this.items.forEach(item=>{
                     this.total += (+item.price * +item.qty)
-                    item.rowTotal = Math.round(+item.price * +item.qty *100)/100
+                    item.rowTotal = Math.round(+item.price * +item.qty *100) / 100
                 })
-                this.total = Math.round(this.total*100)/100
+                this.total = Math.round(this.total*100) / 100
                 return this.total;
             },
             remove(item) {
                 let total = this.total - (+item.price * +item.qty)
-                axios.post(this.baseUrl + '/cart', {
-                    input: "removeRow",
+                axios.post(this.baseUrl + '/cart/remove-item', {
                     productId: item.id,
-                    isRelated: item.is_related,
+                    isRelated: Boolean(item.is_related),
                     subtotal: total,
                 }).then(response => {
                     this.items = this.items.filter( i => i.id !== item.id)
