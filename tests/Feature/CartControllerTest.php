@@ -6,6 +6,7 @@ use App\Product;
 use App\RelatedProduct;
 use App\Services\Cart\CartService;
 use App\Services\Recommended\Recommended;
+use App\ShippingMethod;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
@@ -94,8 +95,54 @@ class CartControllerTest extends TestCase
     }
     
     /**
-     * A test cart page.
-     *
+     * @return void
+     */
+    public function testChangeShippingEmptyCart()
+    {
+        /** @var ShippingMethod $shippingMethod */
+        $shippingMethod = ShippingMethod::factory()->create();
+        
+        $response = $this->actingAs($this->user)->postJson(
+            '/cart/change-shipping',
+            ['shippingMethodId' => $shippingMethod->id, 'subtotal' => 100.4]);
+        
+        $response->assertJsonStructure(['data' => ['items', 'total']]);
+        $data = $response->json()['data'];
+        $this->assertEquals(0, $data['items']);
+        $this->assertEquals(0, $data['total']);
+        $response->assertSuccessful();
+    }
+    
+    /**
+     * @return void
+     */
+    public function testChangeShipping()
+    {
+        $this->withoutExceptionHandling();
+        /** @var Product $product */
+        $product = Product::factory()->create();
+        
+        /** @var CartService $cartService */
+        $cartService = app()->get(CartService::class);
+        $cartService->addToCart($product->id, 2);
+        
+        /** @var ShippingMethod $shippingMethod */
+        $shippingMethod = ShippingMethod::factory()->create([
+            'enable' => 1
+        ]);
+        
+        $response = $this->actingAs($this->user)->postJson(
+            '/cart/change-shipping',
+            ['shippingMethodId' => $shippingMethod->id, 'subtotal' => 100.45]);
+        
+        $response->assertJsonStructure(['data' => ['items', 'total']]);
+        $data = $response->json()['data'];
+        $this->assertEquals(1, $data['items']);
+        $this->assertEquals(100.45, $data['total']);
+        $response->assertSuccessful();
+    }
+    
+    /**
      * @return void
      */
     public function testRemoveItemEmptyCart()
@@ -113,7 +160,6 @@ class CartControllerTest extends TestCase
     }
     
     /**
-     * A test cart page.
      * @dataProvider removeItemValidatorDP
      * @return void
      */

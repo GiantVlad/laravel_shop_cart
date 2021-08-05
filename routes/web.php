@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'ShopController@list')->name('home');
 
 Route::prefix('cart')->group(static function(Router $router) {
-    $router->post('/', 'CartController@post')->name('post.cart');
+    $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');
     $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
-    $router->post('/add-to-cart', 'CartController@addToCart');
-    $router->post('/remove-item', 'CartController@removeItem');
+    $router->post('/add-to-cart', 'CartController@addToCart')->name('cart.add_to_cart');;
+    $router->post('/remove-item', 'CartController@removeItem')->name('cart.remove_item');;
     $router->get('/', 'CartController@index')->name('get.cart');
 });
 

@@ -98,8 +98,7 @@
             selected_shipping(val) {
                 this.subtotal(val)
 
-                axios.post(this.baseUrl + '/cart', {
-                    input: "changeShipping",
+                axios.post(this.baseUrl + '/cart/change-shipping', {
                     shippingMethodId: val,
                     subtotal: this.total,
                 }).then(response => {

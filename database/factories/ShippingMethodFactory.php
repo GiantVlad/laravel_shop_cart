@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Product;
+use App\ShippingMethod;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductFactory extends Factory
+class ShippingMethodFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Product::class;
+    protected $model = ShippingMethod::class;
 
     /**
      * Define the model's default state.
@@ -26,11 +26,9 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->sentence,
-            'catalog_id' => random_int(1, 10),
-            'description' => $this->faker->paragraph,
-            'price' => $this->faker->randomFloat(2, 0.01, 9999999.99),
-            'image' => 'product_img.jpg'
+            'class_name' => $this->faker->word,
+            'priority' => $this->faker->numberBetween(1, 50),
+            'enable' => $this->faker->boolean,
         ];
     }
 }

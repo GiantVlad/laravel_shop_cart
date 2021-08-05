@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ShippingMethod
  * @package App
  *
+ * @property int $id
  * @property bool|int $enable
  * @property bool $priority
  * @property string $label
@@ -20,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ShippingMethod extends Model
 {
+    use HasFactory;
+    
     private const NAMESPACE = 'App\\Services\\Shipping\\';
     protected $fillable = array('class_name', 'enable', 'priority');
     

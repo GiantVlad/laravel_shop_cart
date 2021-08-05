@@ -54,7 +54,7 @@ describe('Cart.vue', () => {
 
         wrapper.setData({ baseUrl: 'https://my-site.com' });
         mock = new MockAdapter(axios);
-        mock.onPost('https://my-site.com/cart').reply(200, response);
+        mock.onPost('https://my-site.com/cart/change-shipping').reply(200, response);
         mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response);
         mock.onPost('https://my-site.com/cart/remove-item').reply(200, response);
         delete global.window.location;
