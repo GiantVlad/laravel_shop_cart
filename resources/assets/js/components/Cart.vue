@@ -102,7 +102,7 @@
                     shippingMethodId: val,
                     subtotal: this.total,
                 }).then(response => {
-                    this.$root.$emit('nav_cart', response.data)
+                    this.$root.$emit('nav_cart', response.data.data)
                 }).catch(e => {
                     console.log(e)
                     //this.errors.push(e)

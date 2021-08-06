@@ -87,11 +87,10 @@ class CartController extends Controller
         if (array_key_exists($productId, $cartProducts)) {
             unset($cartProducts[$productId]);
             $cartProducts['total'] = 0;
+            $request->session()->forget('cartProducts');
             if (count($cartProducts) > 2) {
-                $request->session()->forget('cartProducts');
                 $cartProducts['total'] = $subtotal;
                 $itemsCount = count($cartProducts) - 2;
-                $request->session()->forget('cartProducts');
                 $request->session()->put('cartProducts', $cartProducts);
             }
         }

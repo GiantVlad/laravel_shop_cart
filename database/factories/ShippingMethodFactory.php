@@ -28,7 +28,7 @@ class ShippingMethodFactory extends Factory
         return [
             'class_name' => $this->faker->word,
             'priority' => $this->faker->numberBetween(1, 50),
-            'enable' => $this->faker->boolean,
+            'enable' => $this->faker->boolean(),
         ];
     }
 }
