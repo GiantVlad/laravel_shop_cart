@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Services\Cart\CartPostActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class CartRequest extends FormRequest
+class CartChangeShippingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +24,8 @@ class CartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'input' => ['required', Rule::in(CartPostActions::getActions())],
+            'subtotal' => 'required|numeric|min:0',
+            'shippingMethodId' => 'required|integer|exists:shipping_methods,id,enable,1',
         ];
     }
 }

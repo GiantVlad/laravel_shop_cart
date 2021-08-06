@@ -6,11 +6,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CartAddRelatedRequest;
 use App\Http\Requests\CartRemoveItemRequest;
-use App\Http\Requests\CartRequest;
+use App\Http\Requests\CartChangeShippingRequest;
 use App\Http\Resources\CartPostResource;
 use App\Product;
 use App\RelatedProduct;
-use App\Services\Cart\CartPostActions;
 use App\Services\Cart\CartPostDTO;
 use App\Services\Recommended\Recommended;
 use App\ShippingMethod;
@@ -39,26 +38,23 @@ class CartController extends Controller
         $this->middleware('auth')->except('logout');
     }
 
-    // ToDo return one type instead of array or string
     /**
-     * @param CartRequest $request
+     * @param CartChangeShippingRequest $request
      * @return JsonResource
      */
-    public function post(CartRequest $request): JsonResource
+    public function changeShipping(CartChangeShippingRequest $request): JsonResource
     {
-        $data = $request->validated();
+        $input = $request->validated();
         $cartProducts = $request->session()->get('cartProducts');
         if (is_null($cartProducts)) {
             return new CartPostResource(new CartPostDTO(0, 0));
         }
         
-        if ($data['input'] === CartPostActions::CHANGE_SHIPPING) {
-            if (array_key_exists('total', $cartProducts)) {
-                $cartProducts['total'] = $request->subtotal;
-                $cartProducts['shippingMethodId'] = $request->shippingMethodId;
-                $request->session()->forget('cartProducts');
-                $request->session()->put('cartProducts', $cartProducts);
-            }
+        if (array_key_exists('total', $cartProducts)) {
+            $cartProducts['total'] = (float)$input['subtotal'];
+            $cartProducts['shippingMethodId'] = (int)$input['shippingMethodId'];
+            $request->session()->forget('cartProducts');
+            $request->session()->put('cartProducts', $cartProducts);
         }
     
         $dto = new CartPostDTO((count($cartProducts) - 2), $cartProducts['total']);
@@ -80,7 +76,7 @@ class CartController extends Controller
         $input = $request->validated();
         $productId = (int)$input['productId'];
         $isRelated = (bool)$input['isRelated'];
-        $subtotal = $input['subtotal'] ?? null;
+        $subtotal = (float)$input['subtotal'];
     
         if ($isRelated) {
             $this->recommendedService->incrementRate($productId, Recommended::RATE_IMPACT_AFTER_REMOVAL_FROM_CART);
@@ -91,11 +87,10 @@ class CartController extends Controller
         if (array_key_exists($productId, $cartProducts)) {
             unset($cartProducts[$productId]);
             $cartProducts['total'] = 0;
+            $request->session()->forget('cartProducts');
             if (count($cartProducts) > 2) {
-                $request->session()->forget('cartProducts');
                 $cartProducts['total'] = $subtotal;
                 $itemsCount = count($cartProducts) - 2;
-                $request->session()->forget('cartProducts');
                 $request->session()->put('cartProducts', $cartProducts);
             }
         }
