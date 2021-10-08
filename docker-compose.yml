@@ -10,7 +10,7 @@ services:
       - './.docker/php/dev/xdebug.ini:/opt/bitnami/php/etc/conf.d/docker-php-ext-xdebug.ini:ro'
       - './node_modules:/app/node_modules:ro'
     depends_on:
-      - postgres
+      - mariadb
       - redis
     networks:
       - default
