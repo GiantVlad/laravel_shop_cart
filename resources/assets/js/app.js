@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,7 +17,8 @@ window.Vue = require('vue');
 
 import SingleItem from './components/SingleItem'
 import Product from './components/Product'
-import ProductFilter from './components/ProductFilter'
+import ProductList from './components/ProductList.vue'
+import ProductFilters from "./components/ProductFilters";
 import NavCart from './components/NavCart'
 import Cart from './components/Cart'
 import NavSearch from './components/NavSearch'
@@ -26,6 +27,9 @@ import OrderInfo from './components/OrderInfo'
 import OrdersList from './components/OrdersList'
 import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
+import moment from 'moment'
+//bootstrap 3 plugin
+import * as uiv from 'uiv'
 
 Sentry.init({
     Vue,
@@ -36,11 +40,6 @@ Sentry.init({
     // for finer control
     tracesSampleRate: 1.0,
 });
-
-import moment from 'moment'
-
-//bootstrap 3 plugin
-import * as uiv from 'uiv'
 Vue.use(uiv)
 Vue.filter('formatDate', (value, format = false) => {
     console.table(value)
@@ -54,12 +53,13 @@ const app = new Vue({
     components: {
         SingleItem,
         Product,
-        ProductFilter,
+        ProductFilters,
         NavCart,
         Cart,
         OrderInfo,
         OrdersList,
         NavSearch,
-        ModalWrapper
+        ModalWrapper,
+        ProductList
     },
 });

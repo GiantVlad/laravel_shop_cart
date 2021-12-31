@@ -5,7 +5,7 @@
                 <a :href="baseUrl+'/shop/' + product.id">
                     <h4 class="header">{{product.name}}</h4>
                 </a>
-                <p>Category: {{product.catalogs.name}}</p>
+<!--                <p>Category: {{product.catalogs.name}}</p>-->
             </div>
             <div class="effect" @click="slide">
                 <span class="glyphicon glyphicon-triangle-bottom" :class="{'up':!active}"></span>
@@ -53,6 +53,7 @@
         },
         computed: {
             inFilter() {
+              return true;
                 if (this.fl === true) {}
                 let toReturn = true;
 
@@ -123,31 +124,6 @@
         mounted() {
             this.baseUrl = window.location.origin;
             this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
-            this.$root.$on('product_filter', data => {
-
-                if ( data.option === 'checked' ) {
-                    if (typeof this.filters[data.property_id] === 'undefined') {
-                        this.$set(this.filters, data.property_id, {checked: []});
-                    }
-                    if (typeof data.value.find(el => el.value) === 'undefined') {
-                        delete this.filters[data.property_id];
-                    } else  {
-                        this.$set(this.filters[data.property_id], data.option, data.value);
-                    }
-                } else {
-                    if (typeof this.filters[data.property_id] === 'undefined') {
-                        this.$set(this.filters, data.property_id, {min: null, max: null});
-                    }
-                    if (!data.value) {
-                        data.value = null;
-                    }
-                    this.$set(this.filters[data.property_id], data.option, data.value);
-                    if (!this.filters[data.property_id].min && !this.filters[data.property_id].max) {
-                        delete this.filters[data.property_id];
-                    }
-                }
-                this.fl = !this.fl;
-            });
         }
     }
 </script>

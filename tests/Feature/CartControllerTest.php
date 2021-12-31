@@ -14,8 +14,6 @@ use App\User;
 
 class CartControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     public function setUp () :void

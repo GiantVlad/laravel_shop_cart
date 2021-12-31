@@ -10,8 +10,6 @@ use Tests\TestCase;
 
 class RelatedProductRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
-    
     public function testIncrementRate()
     {
         /** @var RelatedProduct $related */

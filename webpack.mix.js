@@ -18,5 +18,5 @@ mix.webpackConfig({
         //extensions: [ '.tsx', '.ts', '.js', '.vue' ],
     }
 });
-mix.js('resources/assets/js/app.js', 'public/js')
+mix.js('resources/assets/js/app.js', 'public/js').vue()
    .sass('resources/assets/sass/app.scss', 'public/css');

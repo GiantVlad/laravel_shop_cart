@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Catalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Property;
 use App\Product;
 
 /**
@@ -25,7 +24,7 @@ class PropertyController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function filter (Request $request)
+    public function filter(Request $request)
     {
         //ToDO check is $request->properties correct
         //mapping $request->properties for query
