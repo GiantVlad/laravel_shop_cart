@@ -9,14 +9,11 @@ use App\Library\Services\PaymentServiceInterface;
 use App\OrderData;
 use App\Services\Order\OrderStatuses;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
 use App\Order;
 
 class OrderControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     public function setUp () :void

@@ -4,7 +4,9 @@ services:
     image: bitnami/php-fpm:8.0
     restart: unless-stopped
     environment:
-      PHP_IDE_CONFIG: 'serverName=ule_shop'
+      PHP_IDE_CONFIG: 'serverName=lara_shop'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - './:/app:delegated'
       - './.docker/php/dev/xdebug.ini:/opt/bitnami/php/etc/conf.d/docker-php-ext-xdebug.ini:ro'
@@ -12,8 +14,6 @@ services:
     depends_on:
       - mariadb
       - redis
-    networks:
-      - default
 
   nginx:
     image: nginx
@@ -27,8 +27,6 @@ services:
     environment:
       - NGINX_HOST=localhost
     restart: unless-stopped
-    networks:
-      - default
 
   mariadb:
     image: bitnami/mariadb:10
@@ -43,8 +41,18 @@ services:
       - '${DOCKER_HTTP_PORT:-3307}:3306'
     volumes:
       - './.local_data/sql:/bitnami/mariadb'
-    networks:
-      - default
+
+  mariadb_test:
+    image: bitnami/mariadb:10
+    restart: unless-stopped
+    environment:
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=secret
+      - MARIADB_ROOT_PASSWORD=rootsecret123
+      - MARIADB_DATABASE=shop
+      - MARIADB_SKIP_TEST_DB=yes
+    ports:
+      - '${DOCKER_HTTP_PORT:-3308}:3306'
 
   redis:
     image: redis:6.2.5-alpine

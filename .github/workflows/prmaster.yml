@@ -28,7 +28,7 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
-    - name: NPM install
+    - name: NPM update
       run: npm install
-    - name: NPM run tests  
-      run: npm run test
+#    - name: NPM run tests
+#      run: npm run test

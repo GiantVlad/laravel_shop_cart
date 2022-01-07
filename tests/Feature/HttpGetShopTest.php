@@ -14,8 +14,6 @@ use App\Product;
 
 class HttpGetShopTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
 
     public function setUp () :void

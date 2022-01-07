@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\View\View as ViewInstance;
-use \Illuminate\Contracts\View\Factory as FactoryContract;
+use \Illuminate\Contracts\View\Factory as ViewFactoryContract;
 use App\Catalog;
 use App\Property;
 
@@ -17,9 +18,9 @@ class ShopController extends Controller
      * @return void
      */
     private Catalog $catalog;
-    private FactoryContract $view;
+    private ViewFactoryContract $view;
     
-    public function __construct (Catalog $catalog, FactoryContract $view)
+    public function __construct (Catalog $catalog, ViewFactoryContract $view)
     {
         $this->catalog = $catalog;
         $this->view = $view;
@@ -28,12 +29,12 @@ class ShopController extends Controller
     /**
      * @return View
      */
-    public function list(): View
+    public function list(Request $request): View
     {
-        $products = Product::with('catalogs')->with('properties')->get();
+        $keyword = $request->get('keyword');
     
         /** @var ViewInstance $view */
-        $view = $this->view->make('shop', ['products' => $products]);
+        $view = $this->view->make('shop', ['keyword' => $keyword]);
         $view->nest('links', 'layouts.links');
         
         return $view;
@@ -43,7 +44,7 @@ class ShopController extends Controller
      * @param int $id
      * @return View
      */
-    public function get_product(int $id): View
+    public function getProduct(int $id): View
     {
         $product = Product::with('properties')->findOrFail($id);
         
@@ -77,7 +78,7 @@ class ShopController extends Controller
         /** @var ViewInstance $view */
         $view = $this->view->make(
             'shop',
-            ['products' => $products, 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]
+            ['products' => [], 'catalogs' => $child_catalogs, 'parent_catalogs' => $parent_catalogs_array]
         );
         $view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 

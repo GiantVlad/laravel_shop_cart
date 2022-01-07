@@ -4,29 +4,31 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Catalog;
+use App\PropertyValue;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CatalogFactory extends Factory
+class PropertyValueFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Catalog::class;
+    protected $model = PropertyValue::class;
 
     /**
      * Define the model's default state.
      *
      * @return array
+     * @throws Exception
      */
     public function definition()
     {
         return [
-            'name' => $this->faker->words(15, true),
-            'description' => $this->faker->sentence,
-            'parent_id' => null,
+            'property_id' => $this->faker->numberBetween(1, 100),
+            'value' => $this->faker->text(30),
+            'unit_id' => $this->faker->numberBetween(1, 20),
         ];
     }
 }

@@ -31,12 +31,11 @@ Route::post('/order/action', 'OrderController@doAction')->name('change.order.sta
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@getChildCatalogs');
-    Route::get('/{id}', 'ShopController@get_product')->name('product');
+    Route::get('/{id}', 'ShopController@getProduct')->name('product');
 });
 
-Route::post('search', 'SearchController@search')->name('search');
-
-Route::post('filter', 'PropertyController@filter');
+Route::get('search', 'SearchController@search')->name('search');
+Route::get('filter', 'SearchController@filter')->name('filter');
 
 Auth::routes();
 
