@@ -1,7 +1,5 @@
 import {createWrapper, shallowMount} from '@vue/test-utils'
 import NavSearch from '../../resources/assets/js/components/NavSearch.vue'
-import MockAdapter from 'axios-mock-adapter';
-import axios from "axios";
 import { flushPromises } from './flush-promises'
 
 describe('NavSearch.vue', () => {
@@ -13,28 +11,21 @@ describe('NavSearch.vue', () => {
                 searchUrl: '/search'
             }
         });
-        mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-        mock.restore();
     });
 
     it('finds button with id nav-search-btn', () => {
-        expect(wrapper.contains('#nav-search-btn')).toBe(true);
+        expect(wrapper.find('#nav-search-btn').exists()).toBe(true);
     });
 
-    it('run search by AJAX', (done) => {
-
-        mock.onPost('/search').reply(200, `<div class="row"></div>`);
-
+    it('clicks on search', (done) => {
         const rootWrapper = createWrapper(wrapper.vm.$root)
-
+        const textInput = wrapper.find('input#nav-search')
+        textInput.setValue('some value')
+        delete global.window.location;
+        global.window.location = {pathname: '/shop'};
         wrapper.find('button#nav-search-btn').trigger('click')
-
         flushPromises().then(() => {
-            expect(rootWrapper.emitted()['open-model'][0][0]).toEqual(`<div class="row"></div>`)
-            mock.restore();
+            expect(rootWrapper.emitted().product_search[0][0]).toEqual({keyword: 'some value'})
             done()
         })
     })
