@@ -41,14 +41,14 @@ describe('Product.vue', () => {
     });
 
     it('checks Up-Down Slider', (done) => {
-        expect(wrapper.contains('.product-shop-desc.is-displayed')).toBe(false);
-        expect(wrapper.contains('.center-block.is-displayed')).toBe(true);
+        expect(wrapper.find('.product-shop-desc.is-displayed').exists()).toBe(false);
+        expect(wrapper.find('.center-block.is-displayed').exists()).toBe(true);
 
         const triangleBtn = wrapper.find('div.effect');
         triangleBtn.trigger('click');
         flushPromises().then(() => {
-            expect(wrapper.contains('.product-shop-desc.is-displayed')).toBe(true);
-            expect(wrapper.contains('.center-block.is-displayed')).toBe(false);
+            expect(wrapper.find('.product-shop-desc.is-displayed').exists()).toBe(true);
+            expect(wrapper.find('.center-block.is-displayed').exists()).toBe(false);
             done();
         });
     });
