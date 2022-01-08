@@ -18,7 +18,7 @@ describe('SingleItem.vue', () => {
     });
 
     it('shoul\'d be QTY input', () => {
-        expect(wrapper.contains('input#single-productQty')).toBe(true);
+        expect(wrapper.find('input#single-productQty').exists()).toBeTruthy();
     });
 
     it('validates a QTY input ', () => {
