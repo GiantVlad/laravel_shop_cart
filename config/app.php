@@ -135,6 +135,8 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+    
+    'order_prefix' => env('APP_ORDERS_PREFIX', 'ule'),
 
     'providers' => [
 
@@ -191,7 +193,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -227,5 +228,4 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
-
 ];

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $commentary
  * @property string $status
  * @property string $order_label
+ * @property int $user_id
  *
  * @method Order findOrFail(int $id)
  */
