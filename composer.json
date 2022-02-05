@@ -14,6 +14,7 @@
         "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.6",
         "laravel/ui": "^3.4",
+        "predis/predis": "^1.1",
         "sentry/sentry-laravel": "^2.10",
         "twbs/bootstrap": "^3.4"
     },

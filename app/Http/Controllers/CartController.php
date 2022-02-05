@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CartAddRelatedRequest;
+use App\Http\Requests\CartAddRequest;
 use App\Http\Requests\CartRemoveItemRequest;
 use App\Http\Requests\CartChangeShippingRequest;
 use App\Http\Resources\CartPostResource;
@@ -14,10 +15,11 @@ use App\Services\Cart\CartPostDTO;
 use App\Services\Recommended\Recommended;
 use App\ShippingMethod;
 use App\Services\Cart\CartService;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
 
@@ -33,19 +35,22 @@ class CartController extends Controller
         private Product $product,
         private RelatedProduct $relatedProduct,
         private CartService $cartService,
-        private Recommended $recommendedService
+        private Recommended $recommendedService,
+        private Cache $cacheRepository,
     ) {
         $this->middleware('auth')->except('logout');
     }
-
+    
     /**
      * @param CartChangeShippingRequest $request
+     *
      * @return JsonResource
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function changeShipping(CartChangeShippingRequest $request): JsonResource
     {
         $input = $request->validated();
-        $cartProducts = $request->session()->get('cartProducts');
+        $cartProducts = $this->cartService->getCart($request->user()->id);
         if (is_null($cartProducts)) {
             return new CartPostResource(new CartPostDTO(0, 0));
         }
@@ -53,8 +58,7 @@ class CartController extends Controller
         if (array_key_exists('total', $cartProducts)) {
             $cartProducts['total'] = (float)$input['subtotal'];
             $cartProducts['shippingMethodId'] = (int)$input['shippingMethodId'];
-            $request->session()->forget('cartProducts');
-            $request->session()->put('cartProducts', $cartProducts);
+            $this->cartService->storeCart($request->user()->id, $cartProducts);
         }
     
         $dto = new CartPostDTO((count($cartProducts) - 2), $cartProducts['total']);
@@ -64,11 +68,13 @@ class CartController extends Controller
     
     /**
      * @param CartRemoveItemRequest $request
+     *
      * @return JsonResource
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function removeItem(CartRemoveItemRequest $request): JsonResource
     {
-        $cartProducts = $request->session()->get('cartProducts');
+        $cartProducts = $this->cartService->getCart($request->user()->id);
         if (is_null($cartProducts)) {
             return new CartPostResource(new CartPostDTO(0, 0));
         }
@@ -87,11 +93,11 @@ class CartController extends Controller
         if (array_key_exists($productId, $cartProducts)) {
             unset($cartProducts[$productId]);
             $cartProducts['total'] = 0;
-            $request->session()->forget('cartProducts');
+            $this->cartService->forget($request->user()->id);
             if (count($cartProducts) > 2) {
                 $cartProducts['total'] = $subtotal;
                 $itemsCount = count($cartProducts) - 2;
-                $request->session()->put('cartProducts', $cartProducts);
+                $this->cartService->storeCart($request->user()->id, $cartProducts);
             }
         }
     
@@ -101,12 +107,29 @@ class CartController extends Controller
     }
     
     /**
-     * @param ShippingMethod $shippingMethod
-     * @return View
+     * @param Request $request
+     *
+     * @return CartPostResource
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function index(ShippingMethod $shippingMethod): View
+    public function cartContent(Request $request): CartPostResource
     {
-        $cartProducts = session('cartProducts');
+        $cart = $this->cacheRepository->get(CartService::CART_KEY . $request->user()->id) ?? [];
+        $dto = new CartPostDTO(max(count($cart) - 2, 0), $cart['total'] ?? 0);
+    
+        return new CartPostResource($dto);
+    }
+    
+    /**
+     * @param Request $request
+     * @param ShippingMethod $shippingMethod
+     *
+     * @return View
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function index(Request $request, ShippingMethod $shippingMethod): View
+    {
+        $cartProducts = $this->cacheRepository->get(CartService::CART_KEY . $request->user()->id);
         
         if (empty($cartProducts)) {
             return view('empty-cart');
@@ -152,46 +175,40 @@ class CartController extends Controller
     /**
      * @param CartAddRelatedRequest $request
      * @return JsonResponse
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     public function addRelated(CartAddRelatedRequest $request): JsonResponse
     {
         $id = (int)$request->validated()['id'];
-        $this->cartService->addRelatedProduct($id);
+        $this->cartService->addRelatedProduct($request->user()->id, $id);
         
         return response()->json();
     }
     
     /**
-     * @param Request $request
+     * @param CartAddRequest $request
      * @return array|RedirectResponse|Redirector
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function addToCart(Request $request): array|RedirectResponse|Redirector
+    public function addToCart(CartAddRequest $request): array|RedirectResponse|Redirector
     {
-        $request->validate(
-            [
-                'productId' => 'required|integer|min:1|max:99999',
-                'productQty' => 'required|integer|min:1|max:99'
-            ],
-            [
-                'productQty.required' => 'The Quantity field can not be blank.',
-                'productQty.integer' => 'Quantity must be integer.',
-                'productQty.min' => 'Minimum of Quantity is 1 psc.',
-                'productQty.max' => 'Maximum of Quantity is 99 psc.'
-            ]);
-
         $productId = (int)$request->get('productId');
         $qty = (int)$request->get('productQty');
-
+        $userId = $request->user()->id;
         if ((int)$request->get('updateQty')) {
-            $this->cartService->updateQty($productId, $qty);
+            $this->cartService->updateQty($userId, $productId, $qty);
         } else {
-            $this->cartService->addToCart($productId, $qty);
+            $this->cartService->addToCart($userId, $productId, $qty);
         }
+        
+        $cart = $this->cartService->getCart($userId);
 
         if ($request->ajax()) {
             return [
-                'items' => (count($request->session()->get('cartProducts')) - 2),
-                'total' => $request->session()->get('cartProducts.total')
+                'items' => max((count($cart) - 2), 0),
+                'total' => $cart['total'] ?? 0,
             ];
         }
 

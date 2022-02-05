@@ -64,7 +64,7 @@ class OrderController extends Controller
 
         //For repeat order add products to cart and user will be redirected to the cart
         if ($orderAction === OrderActions::REPEAT) {
-            $this->cartService->makeCartByOrderId($orderId);
+            $this->cartService->makeCartByOrderId($request->user()->id, $orderId);
             
             return response()->json(['redirect_to' => route('get.cart')]);
         }

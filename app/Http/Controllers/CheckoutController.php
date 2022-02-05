@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CheckoutRequest;
 use App\Library\Services\PaymentServiceInterface;
 use App\Repositories\OrderRepository;
+use App\Services\Cart\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class CheckoutController extends Controller
      * @return void
      */
     public function __construct(
-        private RelatedProduct $relatedProduct
+        private RelatedProduct $relatedProduct,
+        private CartService $cartService,
     ) {
         $this->middleware('auth')->except('logout');
     }
@@ -50,13 +52,9 @@ class CheckoutController extends Controller
             $requestData
         );
 
-        if (session()->has('cartProducts')) {
-            session()->forget('cartProducts');
-        }
         
-        $user->cart = '';
-        $user->save();
-    
+        $this->cartService->forget($user->id);
+        
         $paymentRequestData = [
             'order_id' => $order->order_label,
             'order_desc' => 'order #' . $order->order_label . '. Test Cart Number: 4444555511116666',
