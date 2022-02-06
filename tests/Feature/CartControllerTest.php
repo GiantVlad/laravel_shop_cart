@@ -9,7 +9,6 @@ use App\Services\Cart\CartService;
 use App\Services\Recommended\Recommended;
 use App\ShippingMethod;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
 
 class CartControllerTest extends TestCase
@@ -20,6 +19,13 @@ class CartControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+        $this->cartService = app()->get(CartService::class);
+    }
+    
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        $this->cartService->forget($this->user->id);
     }
     
     /**
@@ -122,7 +128,7 @@ class CartControllerTest extends TestCase
 
         /** @var CartService $cartService */
         $cartService = app()->get(CartService::class);
-        $cartService->addToCart($product->id, 2);
+        $cartService->addToCart($this->user->id, $product->id, 2);
 
         /** @var ShippingMethod $shippingMethod */
         $shippingMethod = ShippingMethod::factory()->create([
@@ -243,17 +249,17 @@ class CartControllerTest extends TestCase
         
         /** @var CartService $cartService */
         $cartService = app()->get(CartService::class);
-        $cartService->addToCart($product->id, 2);
-        $sessionCartProducts = session()->get('cartProducts');
+        $cartService->addToCart($this->user->id, $product->id, 2);
+        $cartProducts = $cartService->getCart($this->user->id);
         
-        $this->assertArrayHasKey($product->id, $sessionCartProducts);
-        $this->assertCount(3, $sessionCartProducts);
+        $this->assertArrayHasKey($product->id, $cartProducts);
+        $this->assertCount(3, $cartProducts);
         
         $response = $this->actingAs($this->user)->postJson(
             '/cart/remove-item',
             ['productId' => $product->id, 'isRelated' => '1', 'subtotal' => 10]);
         
-        $this->assertNull(session()->get('cartProducts'));
+        $this->assertNull($cartService->getCart($this->user->id));
         
         $response->assertJsonStructure(['data' => ['items', 'total']]);
         $data = $response->json()['data'];
@@ -277,26 +283,26 @@ class CartControllerTest extends TestCase
         
         /** @var CartService $cartService */
         $cartService = app()->get(CartService::class);
-        $cartService->addToCart($product->id, 2);
+        $cartService->addToCart($this->user->id, $product->id, 2);
     
         /** @var Product $product2 */
         $product2 = Product::factory()->create();
-        $cartService->addToCart($product2->id, 1);
+        $cartService->addToCart($this->user->id, $product2->id, 1);
     
-        $sessionCartProducts = session()->get('cartProducts');
+        $cartProducts = $cartService->getCart($this->user->id);
     
-        $this->assertArrayHasKey($product->id, $sessionCartProducts);
-        $this->assertArrayHasKey($product2->id, $sessionCartProducts);
-        $this->assertCount(4, $sessionCartProducts);
+        $this->assertArrayHasKey($product->id, $cartProducts);
+        $this->assertArrayHasKey($product2->id, $cartProducts);
+        $this->assertCount(4, $cartProducts);
         
         $response = $this->actingAs($this->user)->postJson(
             '/cart/remove-item',
             ['productId' => $product->id, 'isRelated' => false, 'subtotal' => 10]);
     
-        $sessionCartProducts = session()->get('cartProducts');
-        $this->assertArrayNotHasKey($product->id, $sessionCartProducts);
-        $this->assertArrayHasKey($product2->id, $sessionCartProducts);
-        $this->assertCount(3, $sessionCartProducts);
+        $cartProducts = $cartService->getCart($this->user->id);
+        $this->assertArrayNotHasKey($product->id, $cartProducts);
+        $this->assertArrayHasKey($product2->id, $cartProducts);
+        $this->assertCount(3, $cartProducts);
         
         $response->assertJsonStructure(['data' => ['items', 'total']]);
         $data = $response->json()['data'];

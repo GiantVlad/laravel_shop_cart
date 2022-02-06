@@ -11,16 +11,9 @@ use Illuminate\Http\Request;
 
 class AdminOrdersController extends Controller
 {
-    private User $user;
-    private Order $order;
-    private OrderData $orderData;
-
-    public function __construct(User $user, Order $order, OrderData $orderData)
+    public function __construct(private Order $order)
     {
         $this->middleware('auth:admin');
-        $this->user = $user;
-        $this->order = $order;
-        $this->orderData = $orderData;
     }
     
     /**

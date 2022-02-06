@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Services\Order\OrderActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CheckoutRequest extends FormRequest
 {

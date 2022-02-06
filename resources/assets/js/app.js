@@ -30,17 +30,16 @@ import { Integrations } from "@sentry/tracing";
 import moment from 'moment'
 //bootstrap 3 plugin
 import * as uiv from 'uiv'
-import UserTracker from './proto/UserTracker'
 
-// Sentry.init({
-//     Vue,
-//     dsn: "https://27ba377838bc4f22ab5971c86e99642a@o536436.ingest.sentry.io/5655026",
-//     integrations: [new Integrations.BrowserTracing()],
-//
-//     // We recommend adjusting this value in production, or using tracesSampler
-//     // for finer control
-//     tracesSampleRate: 1.0,
-// });
+Sentry.init({
+    Vue,
+    dsn: "https://27ba377838bc4f22ab5971c86e99642a@o536436.ingest.sentry.io/5655026",
+    integrations: [new Integrations.BrowserTracing()],
+
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+});
 Vue.use(uiv)
 Vue.filter('formatDate', (value, format = false) => {
     if (value) {
@@ -61,13 +60,5 @@ const app = new Vue({
         NavSearch,
         ModalWrapper,
         ProductList,
-    },
-    mounted() {
-        this.$root.$on('nav_cart', data => {
-            const userTracker = new UserTracker();
-            userTracker.create().then((res) => {
-                console.log(res)
-            });
-        })
     },
 });

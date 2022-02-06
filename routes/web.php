@@ -14,6 +14,7 @@ Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/add-to-cart', 'CartController@addToCart')->name('cart.add_to_cart');;
     $router->post('/remove-item', 'CartController@removeItem')->name('cart.remove_item');;
     $router->get('/', 'CartController@index')->name('get.cart');
+    $router->get('/content', 'CartController@cartContent')->name('get.cart_content');
 });
 
 Route::prefix('checkout')->group( function() {

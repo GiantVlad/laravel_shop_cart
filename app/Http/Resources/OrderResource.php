@@ -2,9 +2,17 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property int $id
+ * @property string $order_label
+ * @property string $status
+ * @property float $total
+ * @property Carbon $created_at
+ */
 class OrderResource extends JsonResource
 {
     /**

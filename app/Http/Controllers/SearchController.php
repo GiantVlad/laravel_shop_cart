@@ -68,13 +68,11 @@ class SearchController extends Controller
             $property = Property::findOrFail($property_id);
             if ($property instanceof Property) {
                 $values = explode(',', $filterValues);
-                if (!empty($values)) {
-                    if ($property->type === Property::TYPE_SELECTOR) {
-                        $values = array_map('intval', $values);
-                        $properties->add(new FilterSelectorDTO($values, $property_id));
-                    } elseif ($property->type === Property::TYPE_NUMBER) {
-                        $properties->add(new FilterNumberDTO((float)$values[0], (float)$values[1], $property_id));
-                    }
+                if ($property->type === Property::TYPE_SELECTOR) {
+                    $values = array_map('intval', $values);
+                    $properties->add(new FilterSelectorDTO($values, $property_id));
+                } elseif ($property->type === Property::TYPE_NUMBER) {
+                    $properties->add(new FilterNumberDTO((float)$values[0], (float)$values[1], $property_id));
                 }
             }
         }

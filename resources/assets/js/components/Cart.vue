@@ -164,7 +164,7 @@ export default {
         subtotal: this.total,
         updateQty: true,
       }).then(response => {
-        this.$root.$emit('nav_cart', response.data)
+        this.$root.$emit('nav_cart', response.data.data)
         this.items[idx].qty = new_val;
         this.subtotal(this.selected_shipping)
       }).catch(e => {
@@ -193,15 +193,15 @@ export default {
         subtotal: total,
       }).then(response => {
         this.items = this.items.filter(i => i.id !== item.id)
-        if (response.data.items === 0) {
+        if (response.data.data.items === 0) {
           window.location.reload();
         }
-        this.$root.$emit('nav_cart', response.data)
+        this.$root.$emit('nav_cart', response.data.data)
         this.subtotal(this.selected_shipping)
       }).catch(e => {
         console.log(e)
         //this.errors.push(e)
-      })
+      });
     }
   },
   created() {

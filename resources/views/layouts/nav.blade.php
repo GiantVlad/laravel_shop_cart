@@ -31,9 +31,7 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                             @else
                             <li><a href="/orders" target="_blank">Orders</a></li>
-                                <nav-cart :cart="@if (session()->has('cartProducts')) {{json_encode(session('cartProducts'))}} @else {{json_encode([])}} @endif">
-                                </nav-cart>
-
+                                <nav-cart>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                        aria-expanded="false">

@@ -46,16 +46,6 @@ class LoginController extends Controller
      */
     public function logout(Request $request): RedirectResponse|Redirector
     {
-        if (session()->has('cartProducts')) {
-            /** @var User $user */
-            $user = Auth::user();
-            if (empty($user->force_logout)) {
-                $cartProductsString = serialize(session()->get('cartProducts'));
-                $user->cart = $cartProductsString;
-                $user->save();
-            }
-        }
-
         Auth::guard('web')->logout();
 
         return redirect($this->redirectTo);

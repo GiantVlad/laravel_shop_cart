@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Services\Cart\CartPostActions;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CartAddRelatedRequest extends FormRequest
 {
