@@ -10,6 +10,7 @@ use App\RelatedProduct;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class CartService
 {
@@ -27,7 +28,8 @@ class CartService
      * @param int $userId
      * @param int $productId
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function addRelatedProduct(int $userId, int $productId): void
     {
@@ -55,7 +57,8 @@ class CartService
      * @param int $qty
      *
      * @return bool
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function addToCart(int $userId, int $productId, int $qty): bool
     {
@@ -97,7 +100,8 @@ class CartService
      * @param int $qty
      *
      * @return bool
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function updateQty(int $userId, int $productId, int $qty): bool
     {
@@ -118,9 +122,11 @@ class CartService
     }
     
     /**
+     * @param int $userId
      * @param int $orderId
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function makeCartByOrderId(int $userId, int $orderId): void
     {
@@ -140,7 +146,8 @@ class CartService
      * @param int $userId
      * @return array|null
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function getCart(int $userId): ?array
     {
@@ -149,17 +156,18 @@ class CartService
     
     /**
      * @param int $userId
-     * @param $cart
-     * @return void
+     * @param array $cart
      *
+     * @return void
      */
-    public function storeCart(int $userId, $cart): void
+    public function storeCart(int $userId, array $cart): void
     {
         $this->cacheRepository->put(self::CART_KEY . $userId, $cart, self::CART_TTL);
     }
     
     /**
      * @param int $userId
+     *
      * @return void
      */
     public function forget(int $userId): void

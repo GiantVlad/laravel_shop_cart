@@ -22,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class CartController extends Controller
 {
@@ -45,7 +46,8 @@ class CartController extends Controller
      * @param CartChangeShippingRequest $request
      *
      * @return JsonResource
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function changeShipping(CartChangeShippingRequest $request): JsonResource
     {
@@ -70,7 +72,8 @@ class CartController extends Controller
      * @param CartRemoveItemRequest $request
      *
      * @return JsonResource
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function removeItem(CartRemoveItemRequest $request): JsonResource
     {
@@ -110,7 +113,8 @@ class CartController extends Controller
      * @param Request $request
      *
      * @return CartPostResource
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function cartContent(Request $request): CartPostResource
     {
@@ -125,7 +129,8 @@ class CartController extends Controller
      * @param ShippingMethod $shippingMethod
      *
      * @return View
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function index(Request $request, ShippingMethod $shippingMethod): View
     {
@@ -174,9 +179,10 @@ class CartController extends Controller
     
     /**
      * @param CartAddRelatedRequest $request
-     * @return JsonResponse
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @return JsonResponse
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function addRelated(CartAddRelatedRequest $request): JsonResponse
     {
@@ -190,7 +196,8 @@ class CartController extends Controller
      * @param CartAddRequest $request
      * @return array|RedirectResponse|Redirector
      *
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @phpstan-ignore-next-line
+     * @throws InvalidArgumentException
      */
     public function addToCart(CartAddRequest $request): array|RedirectResponse|Redirector
     {
