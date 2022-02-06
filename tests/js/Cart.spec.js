@@ -2,14 +2,14 @@ import {createWrapper, shallowMount} from '@vue/test-utils'
 import Cart from '../../resources/assets/js/components/Cart.vue'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import { flushPromises } from './flush-promises'
+import {flushPromises} from './flush-promises'
 
 describe('Cart.vue', () => {
     let wrapper;
     let mock;
     let response = {
         status: 200,
-        response: {
+        data: {
             total: 155.15,
             items: 2
         }
@@ -52,7 +52,7 @@ describe('Cart.vue', () => {
             }
         });
 
-        wrapper.setData({ baseUrl: 'https://my-site.com' });
+        wrapper.setData({baseUrl: 'https://my-site.com'});
         mock = new MockAdapter(axios);
         mock.onPost('https://my-site.com/cart/change-shipping').reply(200, response);
         mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response);
@@ -89,8 +89,8 @@ describe('Cart.vue', () => {
         const rootWrapper = createWrapper(wrapper.vm.$root);
         nodeQty.trigger('change');
         flushPromises().then(() => {
-            expect(rootWrapper.emitted().nav_cart[0][0].response.items).toEqual(2);
-            expect(rootWrapper.emitted().nav_cart[0][0].response.total).toEqual(155.15);
+            expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2);
+            expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15);
             done();
         });
     });
@@ -98,13 +98,12 @@ describe('Cart.vue', () => {
     it('removes product from cart', (done) => {
         let nodeQty = wrapper.find('button#remove-85');
         const rootWrapper = createWrapper(wrapper.vm.$root);
-
         nodeQty.trigger('click');
         flushPromises().then(() => {
-            expect(rootWrapper.emitted().nav_cart[0][0].response.items).toEqual(2);
-            expect(rootWrapper.emitted().nav_cart[0][0].response.total).toEqual(155.15); // total from request
+            expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2);
+            expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15); // total from request
             expect(wrapper.find('input#productQty85').exists()).toBe(false);
-            expect(wrapper.find('span#subtotal').text()).toEqual(""+(99.99+15.25)); // total of first product + shipping cost
+            expect(wrapper.find('span#subtotal').text()).toEqual("" + (99.99 + 15.25)); // total of first product + shipping cost
             done();
         });
     });
@@ -125,7 +124,7 @@ describe('Cart.vue', () => {
 
     it('payment', (done) => {
         mock.onPost('https://my-site.com/checkout')
-            .reply(200, {redirect_to: wrapper.vm.baseUrl+'/payment_url'});
+            .reply(200, {redirect_to: wrapper.vm.baseUrl + '/payment_url'});
 
         wrapper.find('button#checkout').trigger('click');
 

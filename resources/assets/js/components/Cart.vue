@@ -164,7 +164,7 @@ export default {
         subtotal: this.total,
         updateQty: true,
       }).then(response => {
-        this.$root.$emit('nav_cart', response.data)
+        this.$root.$emit('nav_cart', response.data.data)
         this.items[idx].qty = new_val;
         this.subtotal(this.selected_shipping)
       }).catch(e => {
@@ -201,7 +201,7 @@ export default {
       }).catch(e => {
         console.log(e)
         //this.errors.push(e)
-      })
+      });
     }
   },
   created() {

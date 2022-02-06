@@ -1,27 +1,24 @@
 import { shallowMount } from '@vue/test-utils'
 import NavCart from '../../resources/assets/js/components/NavCart.vue'
 import { flushPromises } from './flush-promises'
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 describe('NavCart.vue', () => {
-    let wrapper;
+    let wrapper, mock;
     beforeEach(() => {
-        wrapper = shallowMount(NavCart, {
-            propsData: {
-                cart: {
-                    total: 4523.74999,
-                    3: {productQty: 2},
-                    9: {productQty: 1},
-                    10: {productQty: 5},
-                    17: {productQty: 3}
-
-                }
-            }
-        });
+        wrapper = shallowMount(NavCart, {});
+        wrapper.setData({ baseUrl: 'https://my-site.com' });
+        mock = new MockAdapter(axios);
+        mock.onGet('https://my-site.com/cart/content').reply(200, {items: 3, total: 234.34});
     });
 
-    it('finds count of items and total sum in nav bar', () => {
-        expect(wrapper.find('span#nav-items').text()).toBe('4');
-        expect(wrapper.find('span#nav-total').text()).toBe('4523.75');
+    it('finds count of items and total sum in nav bar', (done) => {
+        flushPromises().then(() => {
+            expect(wrapper.find('span#nav-items').text()).toBe('0');
+            expect(wrapper.find('span#nav-total').text()).toBe('0');
+            done()
+        });
     });
 
     it('finds count of items and total after ".add-to-cart" button click', (done) => {
