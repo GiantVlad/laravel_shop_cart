@@ -194,12 +194,12 @@ class CartController extends Controller
     
     /**
      * @param CartAddRequest $request
-     * @return array|RedirectResponse|Redirector
+     * @return CartPostResource|RedirectResponse|Redirector
      *
      * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
-    public function addToCart(CartAddRequest $request): array|RedirectResponse|Redirector
+    public function addToCart(CartAddRequest $request): CartPostResource|RedirectResponse|Redirector
     {
         $productId = (int)$request->get('productId');
         $qty = (int)$request->get('productQty');
@@ -213,10 +213,9 @@ class CartController extends Controller
         $cart = $this->cartService->getCart($userId);
 
         if ($request->ajax()) {
-            return [
-                'items' => max((count($cart) - 2), 0),
-                'total' => $cart['total'] ?? 0,
-            ];
+            $dto = new CartPostDTO(max((count($cart) - 2), 0), ($cart['total'] ?? 0));
+    
+            return new CartPostResource($dto);
         }
 
         return redirect('cart');

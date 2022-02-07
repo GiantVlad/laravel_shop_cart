@@ -62,7 +62,7 @@ export default {
         productQty: 1,
         _token: this.csrf
       }).then(response => {
-        this.$root.$emit('nav_cart', response.data)
+        this.$root.$emit('nav_cart', response.data.data)
       }).catch(e => {
         if (e.response && e.response.status === 401) {
           window.location.href = this.baseUrl + '/login';

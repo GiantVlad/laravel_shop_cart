@@ -66,9 +66,10 @@ describe('Product.vue', () => {
             .reply(
                 200,
                 {
-                    items: 5,
-                    total: 1267.89
-                });
+                    status: 200,
+                    data: {items: 5, total: 1267.89}
+                }
+            );
 
         const rootWrapper = createWrapper(wrapper.vm.$root);
 
