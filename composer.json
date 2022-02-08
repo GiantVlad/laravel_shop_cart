@@ -5,12 +5,11 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^8.0.2",
         "doctrine/dbal": "^2.13",
-        "facade/ignition": "^2.17",
-        "fideloper/proxy": "~4.4",
+        "spatie/laravel-ignition": "^1.0",
         "guzzlehttp/guzzle": "^7.4",
-        "laravel/framework": "v8.82",
+        "laravel/framework": "^9.0",
         "laravel/helpers": "^1.5",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.4",
@@ -21,7 +20,7 @@
     "require-dev": {
         "filp/whoops": "~2.14",
         "mockery/mockery": "^1.5",
-        "nunomaduro/collision": "^v5.11",
+        "nunomaduro/collision": "^6.1",
         "nunomaduro/larastan": "^1.0",
         "phpunit/phpunit": "^9.5",
         "fakerphp/faker": "^1.19"
