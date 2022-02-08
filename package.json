@@ -35,7 +35,7 @@
     "laravel-mix": "^6.0.39",
     "lodash": "^4.17.21",
     "mocha": "^9.1.4",
-    "mochapack": "^2.1.2",
+    "mochapack": "^2.1.4",
     "postcss": "^8.4.5",
     "prettier": "^1.19.1",
     "resolve-url-loader": "^4.0.0",
@@ -48,7 +48,6 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "glob-parent": "6.0.2",
     "@sentry/tracing": "^6.16.1",
     "@sentry/vue": "^6.16.1",
     "bootstrap": "^3.4.1",
