@@ -28,7 +28,6 @@ class CartService
      * @param int $userId
      * @param int $productId
      *
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
     public function addRelatedProduct(int $userId, int $productId): void
@@ -57,7 +56,6 @@ class CartService
      * @param int $qty
      *
      * @return bool
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
     public function addToCart(int $userId, int $productId, int $qty): bool
@@ -100,7 +98,6 @@ class CartService
      * @param int $qty
      *
      * @return bool
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
     public function updateQty(int $userId, int $productId, int $qty): bool
@@ -125,7 +122,6 @@ class CartService
      * @param int $userId
      * @param int $orderId
      *
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
     public function makeCartByOrderId(int $userId, int $orderId): void
@@ -146,7 +142,6 @@ class CartService
      * @param int $userId
      * @return array|null
      *
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
     public function getCart(int $userId): ?array
