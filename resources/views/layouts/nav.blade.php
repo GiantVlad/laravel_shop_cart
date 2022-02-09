@@ -21,36 +21,37 @@
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
 
-                <div class="col-sm-4 col-lg-5 general-nav-col pull-right">
+            <div class="col-sm-4 col-lg-5 general-nav-col pull-right">
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right general-nav">
-                        <!-- Authentication Links -->
-                        @guest
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                            @else
-                            <li><a href="/orders" target="_blank">Orders</a></li>
-                                <nav-cart>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-expanded="false">
-                                        {{ Auth::user()->name }} <span class="caret"></span>
+                <!-- Right Side Of Navbar -->
+                <ul class="nav navbar-nav navbar-right general-nav">
+                    <!-- Authentication Links -->
+                    @guest
+                        <li><a href="{{ route('login') }}">Login</a></li>
+                        <li><a href="{{ route('register') }}">Register</a></li>
+                    @else
+                        <li><a href="/orders" target="_blank">Orders</a></li>
+                        <nav-cart></nav-cart>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a onclick="document.getElementById('logout-form').submit();"
+                                       style="cursor: pointer">
+                                        Logout
                                     </a>
-
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li>
-                                            <a onclick="document.getElementById('logout-form').submit();" style="cursor: pointer">
-                                                Logout
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </li>
-                                @endguest
-                    </ul>
+                            </ul>
+                        </li>
+                    @endguest
+                </ul>
 
-                </div>
-            <form style="display: none" id="logout-form" name="logout-form" action="{{ route('logout') }}" method="POST">
+            </div>
+            <form style="display: none" id="logout-form" name="logout-form" action="{{ route('logout') }}"
+                  method="POST">
                 @csrf
                 @method('POST')
             </form>
