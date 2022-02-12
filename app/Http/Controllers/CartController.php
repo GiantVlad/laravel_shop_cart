@@ -162,9 +162,11 @@ class CartController extends Controller
 
                 continue;
             }
-            $products[$index] = $this->product->findOrFail($key);
-            $products[$index]->is_related = $cartProduct['isRelatedProduct'];
-            $products[$index]->qty = $cartProduct['productQty'];
+            /** @var Product $product */
+            $product = $this->product->findOrFail($key);
+            $product->is_related = $cartProduct['isRelatedProduct'];
+            $product->qty = $cartProduct['productQty'];
+            $products[$index] = $product;
             $productsIds[] = $products[$index]->id;
             $index++;
         }

@@ -41,7 +41,9 @@ class CheckoutController extends Controller
         $requestData = $request->validated();
         
         if (isset($requestData['related_product_id']) && (int)$requestData['related_product_id'] > 0) {
-            $this->relatedProduct->find((int)$requestData['related_product_id'])->increment('points', -1);
+            /** @var RelatedProduct $relatedProduct */
+            $relatedProduct = $this->relatedProduct->find((int)$requestData['related_product_id']);
+            $relatedProduct->increment('points', -1);
         }
 
         $subtotal = $requestData['subtotal'];

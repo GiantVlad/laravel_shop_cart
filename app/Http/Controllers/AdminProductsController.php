@@ -11,6 +11,7 @@ use App\Product;
 use App\Catalog;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AdminProductsController extends Controller
 {
@@ -143,13 +144,15 @@ class AdminProductsController extends Controller
         $propertyValueIds = [];
         if (isset($request->propertyIds)) {
             foreach ($request->propertyIds as $key => $propertyId) {
+                /** @var Property $property */
+                $property = Property::find($propertyId);
                 //validate if type of property is "number"
                 if ($request->propertyTypes[$key] === 'number') {
                     $this->validate($request, [
                         'propertyValues.'.$key => 'numeric'
                     ],
                     [
-                        'propertyValues.'.$key.'.numeric' => 'The property '.Property::find($propertyId)->name.' must be a number',
+                        'propertyValues.' . $key . '.numeric' => 'The property ' . $property->name . ' must be a number',
                     ]);
                 }
 
@@ -168,6 +171,7 @@ class AdminProductsController extends Controller
         $product->catalog_id = $request->category;
 
         if ($request->hasFile('image')) {
+            /** @var UploadedFile $image */
             $image = $request->file('image');
             $imageName = 'prod_' . time() . '.' . $image->getClientOriginalExtension();
             $imageDestinationPath = public_path('images/products/');

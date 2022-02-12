@@ -42,7 +42,9 @@ class OrderRepository
             $orderData = [];
             $relatedProductIds = [];
             for ($i = 0; $i < count($products); $i++) {
-                $price = $this->mProduct->find($products[$i])->price;
+                /** @var Product $product */
+                $product = $this->mProduct->find($products[$i]);
+                $price = $product->price;
                 $orderData[] = new OrderData([
                     'order_id' => $order->id,
                     'product_id' => $products[$i],
