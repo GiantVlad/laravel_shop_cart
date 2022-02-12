@@ -67,10 +67,12 @@ class AdminPropertiesController extends Controller
         ]);
 
         if ($request->property_input_type === 'number') {
+            /** @var PropertyValue $propertyValue */
             $propertyValue = PropertyValue::firstOrCreate(
                 ['value' => $request->property_value, 'property_id' => $request->property_id]
             );
         } else {
+            /** @var PropertyValue $propertyValue */
             $propertyValue = PropertyValue::find($request->property_value);
         }
         $propertyValue->products()->syncWithoutDetaching([$request->product_id]);

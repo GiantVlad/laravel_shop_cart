@@ -81,6 +81,8 @@ class Product extends Model
      */
     public function getProductPriceById(int $id): float
     {
-        return $this->findOrFail($id)->price;
+        /** @var self $item */
+        $item = $this->findOrFail($id);
+        return $item->price;
     }
 }
