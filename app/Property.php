@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @package App
  *
  * @property int $id
+ * @property string $name
  */
 class Property extends Model
 {

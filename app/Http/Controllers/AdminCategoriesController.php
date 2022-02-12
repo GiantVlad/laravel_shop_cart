@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Catalog;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AdminCategoriesController extends Controller
 {
@@ -38,9 +39,10 @@ class AdminCategoriesController extends Controller
             return back()->withErrors('Server Error... Please try again.'); //ToDo create error
         }
 
+         /** @var Catalog $category */
         $category = Catalog::find($request->id);
 
-        if (!$category) {
+        if (!$category instanceof Catalog) {
             return back()->withErrors('Server Error... Category not found');
         }
 
@@ -105,8 +107,9 @@ class AdminCategoriesController extends Controller
         }
 
         if ($request->hasFile('image')) {
+            /** @var UploadedFile $image */
             $image = $request->file('image');
-            $imageName = 'cat_'.time().'.'.$image->getClientOriginalExtension();
+            $imageName = 'cat_' . time() . '.' . $image->getClientOriginalExtension();
             $imageDestinationPath = public_path('images/categories/');
             $image->move($imageDestinationPath, $imageName);
             $category->image = 'images/categories/'.$imageName;

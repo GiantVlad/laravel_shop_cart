@@ -45,7 +45,9 @@ class ShippingMethod extends Model
      */
     public function getStatusById(int $id): bool
     {
-        return (bool)$this->findOrFail($id)->enable;
+        /** @var self $item */
+        $item = $this->findOrFail($id);
+        return (bool)$item->enable;
     }
     
     /**
