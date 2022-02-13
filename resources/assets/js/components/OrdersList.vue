@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="row orders-list">
-      <div v-if="orders.left > 0" class="row" style="margin-bottom: 5px;">
+      <div v-if="ordersList.length > 0" class="row" style="margin-bottom: 5px;">
         <div class="col-md-2">ID</div>
         <div class="col-md-2">Created</div>
         <div class="col-md-2">Total</div>
