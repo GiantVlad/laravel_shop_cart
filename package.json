@@ -9,7 +9,7 @@
     "test": "mochapack --webpack-config tests/js/webpack.config.js --require tests/js/setup.js tests/js/**/*.spec.js"
   },
   "peerDependencies": {
-    "follow-redirects": ">=1.14.7"
+    "follow-redirects": ">=1.14.9"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
@@ -51,6 +51,7 @@
     "@sentry/tracing": "^6.17.9",
     "@sentry/vue": "^6.17.9",
     "bootstrap": "^3.4.1",
+    "follow-redirects": "^1.14.9",
     "moment": "^2.29.1",
     "uiv": "^0.37.0",
     "vue-slide-up-down": "^1.7.2"
