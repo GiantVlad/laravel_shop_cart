@@ -9,7 +9,7 @@
         "doctrine/dbal": "^2.13",
         "spatie/laravel-ignition": "^1.0",
         "guzzlehttp/guzzle": "^7.4",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "9.*",
         "laravel/helpers": "^1.5",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.4",
