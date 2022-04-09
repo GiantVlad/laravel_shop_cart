@@ -24,7 +24,7 @@ class CatalogTest extends TestCase
      *
      * @return void
      */
-    public function test_get_catalog_ids_tree ()
+    public function test_get_catalog_ids_tree()
     {
         $this->catalog->whereIn('id', [3,4])->update(['parent_id' => 1]);
 
