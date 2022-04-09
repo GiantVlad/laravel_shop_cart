@@ -19,7 +19,7 @@
     "acorn": "^8.7.0",
     "axios": "^0.24.0",
     "axios-mock-adapter": "^1.20.0",
-    "babel-loader": "^8.2.3",
+    "babel-loader": "^8.2.4",
     "babel-plugin-istanbul": "^6.1.1",
     "bootstrap-confirmation2": "^2.4.4",
     "bootstrap-sass": "^3.3.7",
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@sentry/tracing": "^6.17.9",
-    "@sentry/vue": "^6.17.9",
+    "@sentry/vue": "^6.19.6",
     "bootstrap": "^3.4.1",
     "follow-redirects": "^1.14.9",
     "moment": "^2.29.1",
