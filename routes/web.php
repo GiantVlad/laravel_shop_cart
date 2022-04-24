@@ -10,6 +10,7 @@ Route::get('/', 'ShopController@list')->name('home');
 
 Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');
+    $router->post('/change-payment', 'CartController@changePayment')->name('cart.change_payment');
     $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
     $router->post('/add-to-cart', 'CartController@addToCart')->name('cart.add_to_cart');;
     $router->post('/remove-item', 'CartController@removeItem')->name('cart.remove_item');;
@@ -27,6 +28,7 @@ Route::prefix('checkout')->group( function() {
 
 Route::get('/orders', 'OrderController@list')->name('orders');
 Route::get('/order/{id}', 'OrderController@getOrder')->name('order');
+Route::get('/order-data/{id}', 'OrderController@getOrderData')->name('order-data');
 Route::post('/order/action', 'OrderController@doAction')->name('change.order.status');
 
 Route::prefix('shop')->group( function() {
@@ -96,3 +98,8 @@ Route::get('/test', 'TestController@test');
 Route::get('/debug-sentry', function () {
     throw new Exception('My Sentry error!');
 });
+
+//Route::get('paywithpaypal', ['as' => 'paywithpaypal', 'uses' => 'PaypalController@payWithPaypal',]);
+//Route::post('paypal', ['as' => 'paypal', 'uses' => 'PaypalController@postPaymentWithpaypal',]);
+//Route::get('paypal', ['as' => 'status', 'uses' => 'PaypalController@getPaymentStatus',]);
+Route::get('paypal', ['as' => 'paywithpaypal', 'uses' => 'PaypalController2@pay',]);

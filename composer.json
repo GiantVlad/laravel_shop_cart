@@ -7,14 +7,15 @@
     "require": {
         "php": "^8.0.2",
         "doctrine/dbal": "^2.13",
-        "spatie/laravel-ignition": "^1.0",
         "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "9.*",
         "laravel/helpers": "^1.5",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.4",
+        "paypal/rest-api-sdk-php": "dev-2.0-beta",
         "predis/predis": "^1.1",
         "sentry/sentry-laravel": "^2.11",
+        "spatie/laravel-ignition": "^1.0",
         "twbs/bootstrap": "^3.4"
     },
     "require-dev": {

@@ -48,7 +48,11 @@ describe('Cart.vue', () => {
                 shipping: [
                     {id: 1, label: 'First shipping', time: "1-2 days", rate: 15.25, selected: true},
                     {id: 2, label: 'Free shipping', time: "1 week", rate: 0, selected: false},
-                ]
+                ],
+                payments: [
+                    {id: 1, label: 'First payment', selected: false},
+                    {id: 2, label: 'The Best Payment', selected: true},
+                ],
             }
         });
 

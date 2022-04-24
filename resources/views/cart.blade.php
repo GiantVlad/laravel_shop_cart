@@ -11,9 +11,9 @@
 
             @if(!empty($products))
                 <cart
-                    :products="{{json_encode($products)}}"
-                    :shipping="{{json_encode($shippingMethods)}}"
-
+                    :products="{{ json_encode($products) }}"
+                    :shipping="{{ json_encode($shippingMethods) }}"
+                    :payments="{{ json_encode($payments) }}"
                     @if (!empty($relatedProduct))
                         :related-product="{{json_encode($relatedProduct)}}"
                     @else

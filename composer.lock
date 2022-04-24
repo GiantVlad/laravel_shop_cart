@@ -4,8 +4,52 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44ebfe5d52ad322ef0d107f2db68aef2",
+    "content-hash": "9dc4594630b36dcbac92f6e257180e6d",
     "packages": [
+        {
+            "name": "braintree/braintreehttp",
+            "version": "0.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/braintree/braintreehttp_php.git",
+                "reference": "02250322d7ef9b742fc70493339aa9d6c0cd5e27"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/braintree/braintreehttp_php/zipball/02250322d7ef9b742fc70493339aa9d6c0cd5e27",
+                "reference": "02250322d7ef9b742fc70493339aa9d6c0cd5e27",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7",
+                "wiremock-php/wiremock-php": "1.43.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BraintreeHttp\\": "lib/BraintreeHttp"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Braintree",
+                    "email": "code@getbraintree.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/braintree/braintreehttp_php/issues",
+                "source": "https://github.com/braintree/braintreehttp_php/tree/master"
+            },
+            "abandoned": true,
+            "time": "2018-02-06T22:44:01+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.9.3",
@@ -2650,6 +2694,45 @@
                 }
             ],
             "time": "2022-02-02T18:37:57+00:00"
+        },
+        {
+            "name": "paypal/rest-api-sdk-php",
+            "version": "dev-2.0-beta",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paypal/PayPal-PHP-SDK.git",
+                "reference": "c6b53bea5248013e78499e82062ebd5d64eb611f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paypal/PayPal-PHP-SDK/zipball/c6b53bea5248013e78499e82062ebd5d64eb611f",
+                "reference": "c6b53bea5248013e78499e82062ebd5d64eb611f",
+                "shasum": ""
+            },
+            "require": {
+                "braintree/braintreehttp": "^0.2.4"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.9",
+                "phpunit/phpunit": "^5.7",
+                "wiremock-php/wiremock-php": "1.43.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPal": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "issues": "https://github.com/paypal/PayPal-PHP-SDK/issues",
+                "source": "https://github.com/paypal/PayPal-PHP-SDK/tree/2.0-beta"
+            },
+            "abandoned": true,
+            "time": "2018-04-17T21:57:06+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -10596,7 +10679,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "paypal/rest-api-sdk-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

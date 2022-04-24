@@ -26,6 +26,8 @@ class CheckoutRequest extends FormRequest
         return [
             'product_ids.*' => 'required|integer|min:1|max:99999',
             'subtotal' => 'required',
+            'paymentMethodId' => 'required|integer|exists:payment_methods,id,enabled,1',
+            'shippingMethodId' => 'required|integer|exists:shipping_methods,id,enable,1',
             'related_product_id' => 'integer|max:99999',
             'isRelatedProduct.*' => 'required|boolean',
             'productQty.*' => 'required|integer|min:1|max:99',

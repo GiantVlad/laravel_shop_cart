@@ -48,6 +48,22 @@ class Order extends Model
     }
     
     /**
+    * @return HasMany
+    */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
+    }
+    
+    /**
+     * @return HasMany
+     */
+    public function dispatches(): HasMany
+    {
+        return $this->hasMany(Dispatch::class, 'order_id', 'id');
+    }
+    
+    /**
      * @param string $label
      * @return Builder
      */
