@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Library\Services\PaymentResponseInterface;
-use App\Library\Services\PaymentServiceInterface;
+use App\Dispatch;
 use App\OrderData;
+use App\Payment;
 use App\Services\Order\OrderStatuses;
+use App\Services\Payment\PaymentMethodManager;
+use App\Services\Payment\PaymentResponse;
 use Tests\TestCase;
 use App\User;
 use App\Order;
@@ -65,20 +67,23 @@ class OrderControllerTest extends TestCase
     
     public function testDoActionRePay()
     {
-        $paymentResponse = $this->createMock(PaymentResponseInterface::class);
-        $paymentResponse->expects($this->once())
-            ->method('getData')
-            ->willReturn(['checkout_url' => 'some_url']);
+        $paymentResponse = $this->createMock(PaymentResponse::class);
+        $paymentResponse->expects($this->exactly(2))
+            ->method('getCheckoutUrl')
+            ->willReturn('some_url');
         
-        $paymentService = $this->createMock(PaymentServiceInterface::class);
+        $paymentService = $this->createMock(PaymentMethodManager::class);
         $paymentService->expects($this->once())->method('pay')->willReturn($paymentResponse);
         
-        app()->instance(PaymentServiceInterface::class, $paymentService);
+        app()->instance(PaymentMethodManager::class, $paymentService);
         
         /** @var Order $order */
-        $order = Order::factory()->create([
-            'user_id' => $this->user->id,
-        ]);
+        $order = Order::factory()
+            ->has(Payment::factory()->count(1))
+            ->has(Dispatch::factory()->count(1))
+            ->create([
+                'user_id' => $this->user->id,
+            ]);
         $response = $this->actingAs($this->user)
             ->post('/order/action', ['id' => $order->id, 'action' => 're_payment']);
         $response->assertSuccessful();

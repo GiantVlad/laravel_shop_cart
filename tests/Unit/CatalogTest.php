@@ -15,7 +15,7 @@ class CatalogTest extends TestCase
     public function setUp (): void
     {
         parent::setUp();
-        Catalog::factory()->count(5)->create();
+        $this->catalogs = Catalog::factory()->count(5)->create();
         $this->catalog = new Catalog;
     }
 
@@ -26,14 +26,14 @@ class CatalogTest extends TestCase
      */
     public function test_get_catalog_ids_tree()
     {
-        $this->catalog->whereIn('id', [3,4])->update(['parent_id' => 1]);
+        $first = $this->catalogs->first()->id;
+        $third = $this->catalogs[2]->id;
+        $fourth = $this->catalogs[3]->id;
+        $this->catalog->whereIn('id', [$third, $fourth])->update(['parent_id' => $first]);
 
-        $catalog_ids = $this->catalog->getCatalogIdsTree(1);
+        $catalog_ids = $this->catalog->getCatalogIdsTree($first);
 
-        $passed = true;
-        if (($catalog_ids[0] !== 1) ||
-            ($catalog_ids[1] !== 3) ||
-            ($catalog_ids[2] !== 4)) $passed = false;
+        $passed = $catalog_ids[0] === $first && $catalog_ids[1] === $third && $catalog_ids[2] === $fourth;
 
         $this->assertTrue($passed);
     }

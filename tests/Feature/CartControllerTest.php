@@ -193,10 +193,10 @@ class CartControllerTest extends TestCase
      */
     public function testRemoveItemEmptyCart()
     {
-        Product::factory()->create();
+        $product = Product::factory()->create();
         $response = $this->actingAs($this->user)->postJson(
             '/cart/remove-item',
-            ['productId' => 1, 'isRelated' => 0, 'subtotal' => 0]);
+            ['productId' => $product->id, 'isRelated' => 0, 'subtotal' => 0]);
 
         $response->assertJsonStructure(['data' => ['items', 'total']]);
         $data = $response->json()['data'];
@@ -253,7 +253,7 @@ class CartControllerTest extends TestCase
         $cartProducts = $cartService->getCart($this->user->id);
         
         $this->assertArrayHasKey($product->id, $cartProducts);
-        $this->assertCount(3, $cartProducts);
+        $this->assertCount(4, $cartProducts);
         
         $response = $this->actingAs($this->user)->postJson(
             '/cart/remove-item',
@@ -293,7 +293,7 @@ class CartControllerTest extends TestCase
     
         $this->assertArrayHasKey($product->id, $cartProducts);
         $this->assertArrayHasKey($product2->id, $cartProducts);
-        $this->assertCount(4, $cartProducts);
+        $this->assertCount(5, $cartProducts);
         
         $response = $this->actingAs($this->user)->postJson(
             '/cart/remove-item',
@@ -302,7 +302,7 @@ class CartControllerTest extends TestCase
         $cartProducts = $cartService->getCart($this->user->id);
         $this->assertArrayNotHasKey($product->id, $cartProducts);
         $this->assertArrayHasKey($product2->id, $cartProducts);
-        $this->assertCount(3, $cartProducts);
+        $this->assertCount(4, $cartProducts);
         
         $response->assertJsonStructure(['data' => ['items', 'total']]);
         $data = $response->json()['data'];
