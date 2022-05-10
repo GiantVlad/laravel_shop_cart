@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Dispatch;
+use App\Payment;
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 use App\User;
 use App\Order;
@@ -13,6 +16,8 @@ use App\Product;
 class HttpGetShopTest extends TestCase
 {
     private User $user;
+    private Order $order;
+    private Collection $products;
 
     public function setUp () :void
     {
@@ -21,11 +26,14 @@ class HttpGetShopTest extends TestCase
 
         Catalog::factory()->count(10)->create();
 
-        Product::factory()->count(20)->create();
-
-        Order::factory()->create([
-            'user_id' => 1,
-        ]);
+        $this->products = Product::factory()->count(20)->create();
+    
+        $this->order = Order::factory()
+            ->has(Payment::factory()->count(1))
+            ->has(Dispatch::factory()->count(1))
+            ->create([
+                'user_id' => $this->user->id,
+            ]);
     }
     /**
      * A test home page.
@@ -35,7 +43,7 @@ class HttpGetShopTest extends TestCase
     public function testGetHomePage()
     {
         $response = $this->get('/');
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 
     /**
@@ -46,20 +54,9 @@ class HttpGetShopTest extends TestCase
     public function testGetShopPage()
     {
         $response = $this->get('/shop');
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
-
-    /**
- * A test route get catalog by id.
- *
- * @return void
- */
-    public function testGetCatalogByID()
-    {
-        $response = $this->get('/shop/category/1');
-        $response->assertStatus(200);
-    }
-
+    
     /**
      * A test get product by id page.
      *
@@ -67,8 +64,19 @@ class HttpGetShopTest extends TestCase
      */
     public function testGetProductByIdPage()
     {
-        $response = $this->get('/shop/1');
-        $response->assertStatus(200);
+        $response = $this->get('/shop/' . $this->products->first()->id);
+        $response->assertSuccessful();
+    }
+
+    /**
+     * A test route get catalog by id.
+     *
+     * @return void
+     */
+    public function testGetCatalogByID()
+    {
+        $response = $this->get('/shop/category/1');
+        $response->assertSuccessful();
     }
 
     /**
@@ -79,7 +87,7 @@ class HttpGetShopTest extends TestCase
     public function testGetCheckoutSuccessPage()
     {
         $response = $this->get('/checkout/success');
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 
     /**
@@ -92,7 +100,7 @@ class HttpGetShopTest extends TestCase
         $response = $this->actingAs($this->user)
             ->get('/orders');
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 
     /**
@@ -102,9 +110,9 @@ class HttpGetShopTest extends TestCase
      */
     public function testGetOrderByIdPage()
     {
-        $response = $this->actingAs($this->user)
-            ->get('/order/1');
+        $this->actingAs($this->user);
+        $response = $this->get('/order/' . $this->order->id);
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 }

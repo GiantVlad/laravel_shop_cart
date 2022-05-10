@@ -39,6 +39,14 @@ class ShippingMethod extends Model
         return $this->addImplementation($shippingMethods);
     }
     
+    public static function getLabel(string $className): string
+    {
+        $class = self::NAMESPACE . $className;
+        throw_if(!class_exists($class));
+        
+        return $class::getLabel();
+    }
+    
     /**
      * @param int $id
      * @return bool

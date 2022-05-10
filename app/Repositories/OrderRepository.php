@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Dispatch;
 use App\Order;
 use App\OrderData;
+use App\Payment;
 use App\Product;
 use App\RelatedProduct;
 use App\User;
@@ -59,6 +61,16 @@ class OrderRepository
             }
             $this->mRelatedProduct->whereIn('id', $relatedProductIds)->increment('points', 5);
             $order->orderData()->saveMany($orderData);
+            $dispatch = new Dispatch([
+                'order_id' => $order->id,
+                'shipping_method_id' => $requestData['shippingMethodId'],
+            ]);
+            $order->dispatches()->saveMany([$dispatch]);
+            $payment = new Payment([
+                'order_id' => $order->id,
+                'payment_method_id' => $requestData['paymentMethodId'],
+            ]);
+            $order->dispatches()->saveMany([$payment]);
         });
         
         return $order;

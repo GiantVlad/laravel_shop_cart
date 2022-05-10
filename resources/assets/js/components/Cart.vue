@@ -3,8 +3,13 @@
     <div class="product-row" v-for="(item, idx) in items">
       <div class="row">
         <input type="hidden" name="productId" :value="item.id">
-        <div class="col-md-2"><a :href="'/product/'+ item.id"><img class="img-thumbnail" :alt="'product id '+item.id"
-                                                                   height="240" :src="'images/'+item.image"></a>
+        <div class="col-md-2">
+          <a :href="'/product/'+ item.id">
+            <img class="img-thumbnail"
+                 :alt="'product id '+item.id"
+                 height="240"
+                 :src="'images/'+item.image">
+          </a>
         </div>
         <div class="col-md-5">
           <h4>{{ item.name }}</h4>
@@ -30,10 +35,23 @@
       <div class="col-md-4 col-md-offset-7">
         <div class="form-group">
           <label for="shipping-select">Select shipping method: </label>
-          <select class="form-control" id="shipping-select" v-model="selected_shipping">
-            <option v-if="!selected_shipping" :value="null">Select shipping method...</option>
+          <select class="form-control" id="shipping-select" v-model="selectedShipping">
+            <option v-if="!selectedShipping" :value="null">Select shipping method...</option>
             <option v-for="method in shipping" :value="method.id">
               {{ method.label + ', ' + method.time + ', ' + method.rate }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-7">
+        <div class="form-group">
+          <label for="payment-select">Select payment method: </label>
+          <select class="form-control" id="payment-select" v-model="selectedPayment">
+            <option v-if="!selectedPayment" :value="null">Select payment method...</option>
+            <option v-for="method in payments" :value="method.id">
+              {{ method.label }}
             </option>
           </select>
         </div>
@@ -46,7 +64,7 @@
       </div>
       <div class="col-md-2">
         <button type="button" id="checkout" class="btn btn-primary"
-                :disabled="!selected_shipping"
+                :disabled="isPayDisabled"
                 @click="pay"
         >
           Pay
@@ -84,20 +102,20 @@ import axios from 'axios'
 
 export default {
   name: "Cart",
-  props: ['products', 'shipping', 'related-product'],
+  props: ['products', 'shipping', 'related-product', 'payments',],
   data() {
     return {
       baseUrl: '',
       total: 0,
       csrf: '',
-      selected_shipping: null,
+      selectedShipping: null,
+      selectedPayment: null,
       items: []
     }
   },
   watch: {
-    selected_shipping(val) {
+    selectedShipping(val) {
       this.subtotal(val)
-
       axios.post(this.baseUrl + '/cart/change-shipping', {
         shippingMethodId: val,
         subtotal: this.total,
@@ -108,8 +126,22 @@ export default {
         //this.errors.push(e)
       })
     },
+    selectedPayment(val) {
+      axios.post(this.baseUrl + '/cart/change-payment', {
+        paymentMethodId: val,
+      }).then(response => {
+        this.$root.$emit('nav_cart', response.data.data)
+      }).catch(e => {
+        console.log(e)
+        //this.errors.push(e)
+      })
+    },
   },
-  computed: {},
+  computed: {
+    isPayDisabled() {
+      return !this.selectedShipping || !this.selectedPayment
+    },
+  },
   methods: {
     pay() {
       let itemsInfo = {
@@ -117,7 +149,9 @@ export default {
         productQty: [],
         isRelatedProduct: [],
         subtotal: this.total,
-        related_product_id: this.relatedProduct.id
+        related_product_id: this.relatedProduct.id,
+        paymentMethodId: this.selectedPayment,
+        shippingMethodId: this.selectedShipping,
       };
       this.items.forEach(pr => {
         itemsInfo.product_ids.push(pr.id);
@@ -166,7 +200,7 @@ export default {
       }).then(response => {
         this.$root.$emit('nav_cart', response.data.data)
         this.items[idx].qty = new_val;
-        this.subtotal(this.selected_shipping)
+        this.subtotal(this.selectedShipping)
       }).catch(e => {
         console.log(e)
         //this.errors.push(e)
@@ -174,7 +208,7 @@ export default {
     },
     subtotal(val) {
       this.total = 0;
-      if (this.selected_shipping) {
+      if (this.selectedShipping) {
         this.total += this.shipping.find(method => method.id === val).rate
       }
 
@@ -197,7 +231,7 @@ export default {
           window.location.reload();
         }
         this.$root.$emit('nav_cart', response.data.data)
-        this.subtotal(this.selected_shipping)
+        this.subtotal(this.selectedShipping)
       }).catch(e => {
         console.log(e)
         //this.errors.push(e)
@@ -205,10 +239,12 @@ export default {
     }
   },
   created() {
-    let method = this.shipping.filter(method => method.selected === true)
-    this.selected_shipping = method.length > 0 ? method[0].id : null;
-    this.items = this.products
-    this.subtotal(this.selected_shipping)
+    const method = this.shipping.find(method => method.selected === true);
+    this.selectedShipping = method !== undefined ? method.id : null;
+    this.items = this.products;
+    this.subtotal(this.selectedShipping);
+    const payMethod = this.payments.find(item => item.selected === true);
+    this.selectedPayment = payMethod !== undefined ? payMethod.id : null;
   },
   mounted() {
     this.baseUrl = window.location.origin;

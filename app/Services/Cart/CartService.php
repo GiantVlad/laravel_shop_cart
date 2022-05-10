@@ -41,7 +41,7 @@ class CartService
         
         $productsIds = [];
         foreach ($cartProducts as $key => $cartProduct) {
-            if ($key === 'total' || $key === 'shippingMethodId') {
+            if (in_array($key, ['total', 'shippingMethodId', 'paymentMethodId'])) {
                 continue;
             }
             $productsIds[] = $key;
@@ -85,7 +85,8 @@ class CartService
             'isRelatedProduct' => 0,
         ];
         $cartProducts['total'] = $total;
-        $cartProducts['shippingMethodId'] = null;
+        $cartProducts['shippingMethodId'] = $cartProducts['shippingMethodId'] ?? null;
+        $cartProducts['paymentMethodId'] = $cartProducts['paymentMethodId'] ?? null;
         
         $this->storeCart($userId, $cartProducts);
        

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
-use App\Library\Services\PaymentServiceInterface;
 use App\Repositories\OrderRepository;
 use App\Services\Cart\CartService;
+use App\Services\Payment\PaymentMethodManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,14 +29,15 @@ class CheckoutController extends Controller
     
     /**
      * @param CheckoutRequest $request
-     * @param PaymentServiceInterface $paymentService
      * @param OrderRepository $orderRepository
+     * @param PaymentMethodManager $paymentManager
      * @return JsonResponse
+     * @throws \Throwable
      */
     public function sendPayment(
-        CheckoutRequest $request,
-        PaymentServiceInterface $paymentService,
-        OrderRepository $orderRepository
+        CheckoutRequest      $request,
+        OrderRepository      $orderRepository,
+        PaymentMethodManager $paymentManager,
     ): JsonResponse {
         $requestData = $request->validated();
         
@@ -56,20 +57,20 @@ class CheckoutController extends Controller
 
         
         $this->cartService->forget($user->id);
-        
+    
         $paymentRequestData = [
             'order_id' => $order->order_label,
+            'paymentId' => $order->payments()->first()?->id,
             'order_desc' => 'order #' . $order->order_label . '. Test Cart Number: 4444555511116666',
             'currency' => 'USD',
-            'amount' => $subtotal * 100,
-            'response_url' => url('checkout/success') . '?_token=' . csrf_token()
+            'amount' => $subtotal,
+            'response_url' => url('checkout/success') . '?_token=' . csrf_token(),
         ];
-
-        $paymentResponse = $paymentService->pay($paymentRequestData);
-        $paymentResponseData = $paymentResponse->getData();
+    
+        $paymentResponse = $paymentManager->pay($requestData['paymentMethodId'], $paymentRequestData);
         
-        if (isset($paymentResponseData['checkout_url'])) {
-            return response()->json(['redirect_to' => $paymentResponseData['checkout_url']]);
+        if ($paymentResponse->getCheckoutUrl()) {
+            return response()->json(['redirect_to' => $paymentResponse->getCheckoutUrl()]);
         }
         
         return response()->json(['redirect_to' => route('orders')]);
