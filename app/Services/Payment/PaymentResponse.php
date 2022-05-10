@@ -5,14 +5,14 @@ namespace App\Services\Payment;
 class PaymentResponse
 {
     public function __construct(
-        private $data,
+        private mixed $data,
         private string $externalId,
         private ?string $checkoutUrl = null,
         private ?int $paymentId = null,
     )
     {}
     
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }

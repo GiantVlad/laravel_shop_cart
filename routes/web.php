@@ -98,8 +98,3 @@ Route::get('/test', 'TestController@test');
 Route::get('/debug-sentry', function () {
     throw new Exception('My Sentry error!');
 });
-
-//Route::get('paywithpaypal', ['as' => 'paywithpaypal', 'uses' => 'PaypalController@payWithPaypal',]);
-//Route::post('paypal', ['as' => 'paypal', 'uses' => 'PaypalController@postPaymentWithpaypal',]);
-//Route::get('paypal', ['as' => 'status', 'uses' => 'PaypalController@getPaymentStatus',]);
-Route::get('paypal', ['as' => 'paywithpaypal', 'uses' => 'PaypalController2@pay',]);

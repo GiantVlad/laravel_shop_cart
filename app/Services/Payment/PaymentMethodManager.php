@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Payment;
 
 use App\Events\PaymentCreated;
@@ -8,6 +10,7 @@ use App\Repositories\PaymentMethodRepository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -44,6 +47,11 @@ class PaymentMethodManager
     public function getPaymentService(int $id): PaymentMethodInterface
     {
         $paymentMethod = $this->mPaymentMethod->findOrFail($id);
+        if (! $paymentMethod instanceof PaymentMethod) {
+            throw (new ModelNotFoundException)->setModel(
+                get_class($this->mPaymentMethod), $id
+            );
+        }
         
         return $this->container->get($paymentMethod->class_name);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\PaymentCreated;
 use App\Http\Requests\CheckoutRequest;
 use App\Repositories\OrderRepository;
 use App\Services\Cart\CartService;
@@ -13,9 +12,6 @@ use Illuminate\Http\Request;
 use App\Order;
 use Illuminate\Routing\Redirector;
 use App\RelatedProduct;
-use Illuminate\Contracts\Events\Dispatcher;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class CheckoutController extends Controller
 {
@@ -34,10 +30,8 @@ class CheckoutController extends Controller
     /**
      * @param CheckoutRequest $request
      * @param OrderRepository $orderRepository
-     * @param PaymentMethodManager $paymentMethodList
+     * @param PaymentMethodManager $paymentManager
      * @return JsonResponse
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws \Throwable
      */
     public function sendPayment(

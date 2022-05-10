@@ -5,6 +5,9 @@ namespace App\Http\Resources;
 use App\ShippingMethod;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property int $id
+ */
 class Dispatch extends JsonResource
 {
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $class_name
  * @property int $priority
  * @property boolean $enabled
- *
  * @property boolean $selected
  * @property string $label
  *
@@ -26,5 +27,5 @@ class PaymentMethod extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['class_name', 'priority', 'enabled',];
+    protected $fillable = ['class_name', 'priority', 'enabled', 'selected', 'label'];
 }

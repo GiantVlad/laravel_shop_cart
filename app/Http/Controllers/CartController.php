@@ -93,7 +93,6 @@ class CartController extends Controller
      * @param array $cartProducts
      * @return CartPostResource
      */
-    #[Pure]
     private function getCartPostResource(array $cartProducts): CartPostResource
     {
         $dto = new CartPostDTO((count($cartProducts) - 3), $cartProducts['total']);
@@ -160,10 +159,10 @@ class CartController extends Controller
     /**
      * @param Request $request
      * @param ShippingMethod $shippingMethod
-     *
+     * @param PaymentMethodManager $paymentMethodList
      * @return View
-     * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
+     * @phpstan-ignore-next-line
      */
     public function index(Request $request, ShippingMethod $shippingMethod, PaymentMethodManager $paymentMethodList): View
     {
@@ -210,11 +209,14 @@ class CartController extends Controller
             }
             
             $product = $this->product->findOrFail($key);
-            $product->is_related = $cartProduct['isRelatedProduct'];
-            $product->qty = $cartProduct['productQty'];
-            $products[$index] = $product;
-            $productsIds[] = $products[$index]->id;
-            $index++;
+            
+            if ($product instanceof Product) {
+                $product->is_related = $cartProduct['isRelatedProduct'];
+                $product->qty = $cartProduct['productQty'];
+                $products[$index] = $product;
+                $productsIds[] = $products[$index]->id;
+                $index++;
+            }
         }
         
         $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);

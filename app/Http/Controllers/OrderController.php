@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderActionRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderDetailResource;
-use App\Library\Services\IpspPaymentService;
 use App\Services\Order\OrderActions;
 use App\Services\Order\OrderStatuses;
 use App\Services\Payment\PaymentMethodManager;
-use App\ShippingMethod;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Order;
 use App\Services\Cart\CartService;
 use Illuminate\View\View;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class OrderController extends Controller
 {
@@ -53,9 +52,9 @@ class OrderController extends Controller
     
     /**
      * @param OrderActionRequest $request
-     * @param IpspPaymentService $paymentService
+     * @param PaymentMethodManager $paymentManager
      * @return JsonResponse
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function doAction(OrderActionRequest $request, PaymentMethodManager $paymentManager): JsonResponse
     {
@@ -124,9 +123,9 @@ class OrderController extends Controller
     /**
      * @param int $id
      * @param Request $request
-     * @return View|RedirectResponse
+     * @return OrderDetailResource
      */
-    public function getOrderData(int $id, Request $request): OrderDetailResource
+    public function getOrderData(int $id, Request $request): OrderDetailResource|RedirectResponse
     {
         $userId = $request->user()->id;
         $selectedOrder = $this->order->where(['id' => $id, 'user_id' => $userId])

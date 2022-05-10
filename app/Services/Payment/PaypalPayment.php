@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Payment;
 
 use PayPal\Core\PayPalHttpClient;
@@ -39,9 +41,13 @@ class PaypalPayment implements PaymentMethodInterface
         $response = $client->execute($request);
         // todo check status code $response->statusCode == 201
         /** @var array $links */
-        $links = $response->result->links;
+        $links = $response->result->links ?? []; /* @phpstan-ignore-line */
         $redirect = array_first($links, fn($item) => $item->rel === 'approval_url');
         
-        return new PaymentResponse($response->result, $response->result->id, $redirect->href);
+        return new PaymentResponse(
+            $response->result,
+            $response->result->id ?? '', /* @phpstan-ignore-line */
+            $redirect->href
+        );
     }
 }
