@@ -10,7 +10,6 @@ use Exception;
  */
 class Api
 {
-
     private Client $client;
     private array $params = [];
     
@@ -28,7 +27,7 @@ class Api
         defined('MERCHANT_ID') or define('MERCHANT_ID' , '1396424');
         defined('MERCHANT_PASSWORD') or define('MERCHANT_PASSWORD' , 'test');
         defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
-
+        
         $this->client = new Client(MERCHANT_ID, MERCHANT_PASSWORD, IPSP_GATEWAY);
         set_error_handler($this->handleError());
         set_exception_handler($this->handleException());

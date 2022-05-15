@@ -54,7 +54,6 @@ class CheckoutController extends Controller
             $user,
             $requestData
         );
-
         
         $this->cartService->forget($user->id);
     
