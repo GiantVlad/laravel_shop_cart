@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property boolean $enabled
  * @property boolean $selected
  * @property string $label
+ * @property string $config_key
  *
  * @method PaymentMethod findOrFail(int $id)
  */
@@ -27,5 +28,5 @@ class PaymentMethod extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['class_name', 'priority', 'enabled', 'selected', 'label'];
+    protected $fillable = ['class_name', 'priority', 'config_key', 'enabled', 'label'];
 }
