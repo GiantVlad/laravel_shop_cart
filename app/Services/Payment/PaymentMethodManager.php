@@ -66,4 +66,29 @@ class PaymentMethodManager
         
         return $paymentResponse;
     }
+    
+    public function enable(int $id): void
+    {
+        $this->paymentMethodRepository->changeStatus($id, true);
+    }
+    
+    public function disable(int $id): void
+    {
+        $this->paymentMethodRepository->changeStatus($id, false);
+    }
+    
+    public function addToDB(array $methodConfig): void
+    {
+        $this->paymentMethodRepository->addFromConfig($methodConfig);
+    }
+    
+    public function removeFromDB(int $id): void
+    {
+        $this->paymentMethodRepository->delete($id);
+    }
+    
+    public function changePriority(int $id, int $newVal): void
+    {
+        $this->paymentMethodRepository->updateById($id, ['priority' => $newVal]);
+    }
 }

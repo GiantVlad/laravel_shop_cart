@@ -11,6 +11,9 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body style="padding-top: 100px;">
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}"></script>
+<script type='text/javascript' src="{{ asset('js/admin_script.js') }}"></script>
 <div id="app">
     @if (Auth::guard('admin')->check())
         @include('admin.nav')
@@ -33,8 +36,5 @@
         <p class="text-center">Created by Uladzimir Sadkou hofirma@gmail.com</p>
     </footer>
 </div>
-<!-- Scripts -->
-<script src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/admin_script.js') }}"></script>
 </body>
 </html>
