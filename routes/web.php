@@ -91,6 +91,8 @@ Route::prefix('admin')->group( function() {
 
     Route::get('/shipping-methods', 'AdminShippingMethodsController@list')->name('admin.shipping-methods');
     Route::put('/shipping-method', 'AdminShippingMethodsController@changeStatus');
+    
+    Route::get('/payment-methods', 'AdminPaymentMethodsController@list')->name('admin.payment-methods');
 });
 
 Route::get('/test', 'TestController@test');

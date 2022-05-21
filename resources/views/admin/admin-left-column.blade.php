@@ -6,7 +6,7 @@
         <div><a href="{{ route('admin.products') }}">Products</a></div>
         <div><a href="{{ route('admin.users') }}">Users</a></div>
         <div><a href="{{ route('admin.orders') }}">Orders</a></div>
-        <div>Payment</div>
+        <div><a href="{{ route('admin.payment-methods') }}">Payment methods</a></div>
         <div><a href="{{ route('admin.shipping-methods') }}">Shipping</a></div>
         <div>Settings</div>
     </div>
