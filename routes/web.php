@@ -93,6 +93,8 @@ Route::prefix('admin')->group( function() {
     Route::put('/shipping-method', 'AdminShippingMethodsController@changeStatus');
     
     Route::get('/payment-methods', 'AdminPaymentMethodsController@list')->name('admin.payment-methods');
+    Route::put('/payment-method-action/{id}', 'AdminPaymentMethodsController@action')->name('admin.payment-method-action');
+    Route::put('/payment-method-priority/{id}', 'AdminPaymentMethodsController@priority')->name('admin.payment-method-priority');
 });
 
 Route::get('/test', 'TestController@test');

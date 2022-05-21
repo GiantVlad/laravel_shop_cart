@@ -20,6 +20,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $config_key
  *
  * @method PaymentMethod findOrFail(int $id)
+ * @method PaymentMethod update(array $values)
+ * @method PaymentMethod delete()
+ * @method PaymentMethod save()
  */
 class PaymentMethod extends Model
 {
