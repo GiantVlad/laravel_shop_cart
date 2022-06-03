@@ -1,32 +1,32 @@
 version: '3.8'
 services:
-  app:
-    image: bitnami/php-fpm:8.0
-    restart: unless-stopped
-    environment:
-      PHP_IDE_CONFIG: 'serverName=lara_shop'
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - './:/app:delegated'
-      - './.docker/php/dev/xdebug.ini:/opt/bitnami/php/etc/conf.d/docker-php-ext-xdebug.ini:ro'
-      - './node_modules:/app/node_modules:ro'
-    depends_on:
-      - mariadb
-      - redis
-
-  nginx:
-    image: nginx
-    volumes:
-      #- ./templates:/etc/nginx/templates
-      - './:/app:ro'
-      - './.docker/nginx/dev/:/etc/nginx/conf.d:ro'
+  roadrunner:
+    #image: gaintvlad/lara_shop_roadrunner:1.001
+    build:
+      context: ./
+      dockerfile: ./.docker/roadrunner/Dockerfile
+      args:
+        RR_VERSION: ${RR_VERSION}
+        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION}
     ports:
-      - '${DOCKER_HTTP_PORT:-80}:80'
-      - '${DOCKER_HTTPS_PORT:-443}:443'
+      - "80:80"
+    env_file: .env
     environment:
-      - NGINX_HOST=localhost
-    restart: unless-stopped
+      RR_VERSION: ${RR_VERSION}
+      APP_BASE_PATH: /app
+    working_dir: /app
+    depends_on:
+      - temporal
+      - postgresql
+    restart: on-failure
+#    healthcheck:
+#      interval: 1s
+#      timeout: 3s
+#      retries: 3
+#      start_period: 10s
+  #  volumes:
+      #- app_content:/app
+#      - ./.docker/roadrunner/config/rr.yaml:/etc/rr.yaml:ro
 
   mariadb:
     image: bitnami/mariadb:10
@@ -73,3 +73,69 @@ services:
       MH_UI_WEB_PATH: mailhog
     ports:
       - '8025:8025'
+
+  postgresql:
+    container_name: temporal-postgresql
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_USER: temporal
+    ports:
+      - "5432:5432"
+    volumes:
+      - './.local_data/temporal_sql:/var/lib/postgresql/data'
+
+  temporal:
+    container_name: temporal
+    image: temporalio/auto-setup:latest
+    depends_on:
+      - postgresql
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "tctl",
+          "--address",
+          "temporal:7233",
+          "workflow",
+          "list"
+        ]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    ports:
+      - "7233:7233"
+    volumes:
+      - ./.docker/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
+
+  temporal-admin-tools:
+    container_name: temporal-admin-tools
+    image: temporalio/admin-tools:latest
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    stdin_open: true
+    tty: true
+
+  temporal-web:
+    container_name: temporal-web
+    image: temporalio/web:latest
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_GRPC_ENDPOINT=temporal:7233
+      - TEMPORAL_PERMIT_WRITE_API=true
+    ports:
+      - "8088:8088"
+
+volumes:
+  app_content:

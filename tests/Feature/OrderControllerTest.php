@@ -18,13 +18,13 @@ class OrderControllerTest extends TestCase
 {
     private User $user;
 
-    public function setUp () :void
+    public function setUp() :void
     {
         parent::setUp();
         $this->user = User::factory()->create();
     }
     
-    public function testList()
+    public function testList(): void
     {
         Order::factory()->count(5)->create([
             'user_id' => $this->user->id,
@@ -47,13 +47,13 @@ class OrderControllerTest extends TestCase
         $this->assertArrayHasKey('uri', $item);
     }
 
-    public function testListUserNotAuth()
+    public function testListUserNotAuth(): void
     {
         $response = $this->get('/orders');
         $response->assertRedirect(route('login'));
     }
 
-    public function testDoActionUndo()
+    public function testDoActionUndo(): void
     {
         $order = Order::factory()->create([
             'user_id' => $this->user->id,
@@ -65,7 +65,7 @@ class OrderControllerTest extends TestCase
         $this->assertEquals(OrderStatuses::DELETED, $data['status']);
     }
     
-    public function testDoActionRePay()
+    public function testDoActionRePay(): void
     {
         $paymentResponse = $this->createMock(PaymentResponse::class);
         $paymentResponse->expects($this->exactly(2))
@@ -95,7 +95,7 @@ class OrderControllerTest extends TestCase
     /**
      * @throws \Throwable
      */
-    public function testDoActionRepeatOrder()
+    public function testDoActionRepeatOrder(): void
     {
         $order = Order::factory()->create([
             'user_id' => $this->user->id,
@@ -113,7 +113,7 @@ class OrderControllerTest extends TestCase
         $this->assertEquals(route('get.cart'), $data['redirect_to']);
     }
 
-    public function testDoActionOrderIsNotOfUser()
+    public function testDoActionOrderIsNotOfUser(): void
     {
         $order = Order::factory()->create();
 

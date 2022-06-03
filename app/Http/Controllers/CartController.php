@@ -19,6 +19,7 @@ use App\ShippingMethod;
 use App\Services\Cart\CartService;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -185,6 +186,7 @@ class CartController extends Controller
             }
             if ($key === 'shippingMethodId') {
                 $shippingMethods->map(function($method) use ($cartProducts) {
+                    /** @var ShippingMethod $method */
                     if ($method->id == $cartProducts['shippingMethodId']) {
                         $method->selected = true;
                     } else {
@@ -197,6 +199,7 @@ class CartController extends Controller
             }
             if ($key === 'paymentMethodId') {
                 $paymentMethods->map(function($method) use ($cartProducts) {
+                    /** @var ShippingMethod $method */
                     if ($method->id == $cartProducts['paymentMethodId']) {
                         $method->selected = true;
                     } else {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PaymentException;
 use App\Http\Requests\OrderActionRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderDetailResource;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 use App\Order;
 use App\Services\Cart\CartService;
 use Illuminate\View\View;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class OrderController extends Controller
@@ -91,7 +94,11 @@ class OrderController extends Controller
             ];
             
             // ToDo check if the payment already exists in the payment system or create a new payment in our DB
-            $paymentResponse = $paymentManager->pay($order->dispatches()->first()?->id, $requestData);
+            try {
+                $paymentResponse = $paymentManager->pay($order->dispatches()->first()?->id, $requestData);
+            } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+                throw new PaymentException($e->getMessage());
+            }
     
             if ($paymentResponse->getCheckoutUrl()) {
                 return response()->json(['redirect_to' => $paymentResponse->getCheckoutUrl()]);

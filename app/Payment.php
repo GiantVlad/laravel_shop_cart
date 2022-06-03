@@ -20,6 +20,7 @@ class Payment extends Model
     const STATUS_INITIALIZED = 0;
     const STATUS_CREATED = 1;
     const STATUS_PAID = 5;
+    const STATUS_CONFIRMED = 6;
     
     protected $fillable = ['details', 'order_id', 'payment_method_id', 'external_id', 'status'];
     

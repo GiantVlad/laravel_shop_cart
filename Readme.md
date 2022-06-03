@@ -17,7 +17,7 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 6. Run "composer update".
 7. Run "npm install", then "npm run dev".
 8. Run "php artisan key:generate". It will add application key to the .env file.
-9. Run "php artisan migrate" [Laravel Migrations](https://laravel.com/docs/5.5/migrations).
+9. Run "php artisan migrate" [Laravel Migrations](https://laravel.com/docs/9.x/migrations).
 10. Important! It's the correct way to seeding: "php artisan db:seed --class=DatabaseSeeder" [Laravel Seeding](https://laravel.com/docs/5.5/seeding).
 11. Setup "Document root" for your project on server like ".../my_example_shop/public".
 12. For testing back-end: copy and rename .env.testing.example to .env.testing, then add your app_key from .env file and run the command "php artisan test"
@@ -33,5 +33,7 @@ brew install mkcert nss
 mkcert -cert-file .docker/nginx/dev/site.crt -key-file .docker/nginx/dev/site.key localhost 127.0.0.1
 ```
 - run docker-compose up -d
+
+localhost:8088 -- [Temporal](https://temporal.io) UI 
 
 _Uladzimir Sadkou_: hofirma@gmail.com 

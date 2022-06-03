@@ -5,11 +5,14 @@ namespace App\Listeners;
 use App\Events\PaymentCreated;
 use App\Payment;
 use App\Repositories\PaymentRepository;
+use App\Services\WorkflowService;
 
 class PaymentStatusSubscriber
 {
-    public function __construct(private PaymentRepository $paymentRepository)
-    {
+    public function __construct(
+        private PaymentRepository $paymentRepository,
+        private WorkflowService $workflowService,
+    ) {
     }
     
     public function subscribe(): array
@@ -28,5 +31,11 @@ class PaymentStatusSubscriber
                 'status' => Payment::STATUS_CREATED,
             ],
         );
+        $this->checkPayment($event->payment->getPaymentId());
+    }
+    
+    private function checkPayment(int $getPaymentId): void
+    {
+        $this->workflowService->checkPayment($getPaymentId);
     }
 }

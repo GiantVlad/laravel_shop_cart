@@ -102,3 +102,7 @@ Route::get('/test', 'TestController@test');
 Route::get('/debug-sentry', function () {
     throw new Exception('My Sentry error!');
 });
+
+Route::prefix('stub')->group( function() {
+    Route::get('/payment', 'StubController@payment');
+});

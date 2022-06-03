@@ -17,9 +17,6 @@ class Catalog extends Model
 
     protected $fillable = array('name', 'description', 'parent_id', 'image', 'priority');
     
-    /**
-     * @return HasMany
-     */
     public function products(): HasMany
     {
         return $this->hasMany('App\Product', 'catalog_id', 'id');

@@ -11,7 +11,7 @@ class AddPaymentMethods extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         PaymentMethod::whereIn('config_key', ['paypal', 'fondy'])->delete();
         
@@ -20,7 +20,7 @@ class AddPaymentMethods extends Migration
         $paymentMethod->label = 'PayPal';
         $paymentMethod->config_key = 'paypal';
         $paymentMethod->priority = 1;
-        $paymentMethod->enabled = 1;
+        $paymentMethod->enabled = true;
         $paymentMethod->save();
     
         $paymentMethod = new PaymentMethod();
@@ -28,16 +28,16 @@ class AddPaymentMethods extends Migration
         $paymentMethod->label = 'Fondy';
         $paymentMethod->config_key = 'fondy';
         $paymentMethod->priority = 2;
-        $paymentMethod->enabled = 0;
+        $paymentMethod->enabled = false;
         $paymentMethod->save();
     }
     
-    /**
+    /**O
      * Reverse the migrations.
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         DB::table('payment_methods')->truncate();
     }

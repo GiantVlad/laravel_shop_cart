@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Repositories;
 
 use App\DTO\FilterNumberDTO;
@@ -14,7 +16,7 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class ProductRepositoryTest extends TestCase
 {
-    public function testGetFilteredProducts()
+    public function testGetFilteredProducts(): void
     {
         $color = Property::factory()->create(['name' => 'color', 'type' => Property::TYPE_SELECTOR]);
         $length = Property::factory()->create(['name' => 'length', 'type' => Property::TYPE_NUMBER]);
