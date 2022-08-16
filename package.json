@@ -52,7 +52,7 @@
     "@sentry/vue": "^6.19.6",
     "bootstrap": "^3.4.1",
     "follow-redirects": "^1.14.9",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "uiv": "^0.37.0",
     "vue-slide-up-down": "^1.7.2"
   },
