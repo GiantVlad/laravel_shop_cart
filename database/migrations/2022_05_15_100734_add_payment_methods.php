@@ -28,7 +28,7 @@ class AddPaymentMethods extends Migration
         $paymentMethod->label = 'Fondy';
         $paymentMethod->config_key = 'fondy';
         $paymentMethod->priority = 2;
-        $paymentMethod->enabled = false;
+        $paymentMethod->enabled = true;
         $paymentMethod->save();
     }
     

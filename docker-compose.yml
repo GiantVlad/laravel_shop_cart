@@ -18,7 +18,8 @@ services:
     depends_on:
       - temporal
       - postgresql
-    restart: on-failure
+      - mariadb
+    # restart: on-failure
 #    healthcheck:
 #      interval: 1s
 #      timeout: 3s
@@ -86,7 +87,6 @@ services:
       - './.local_data/temporal_sql:/var/lib/postgresql/data'
 
   temporal:
-    container_name: temporal
     image: temporalio/auto-setup:latest
     depends_on:
       - postgresql
@@ -117,7 +117,6 @@ services:
       - ./.docker/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
 
   temporal-admin-tools:
-    container_name: temporal-admin-tools
     image: temporalio/admin-tools:latest
     depends_on:
       - temporal
@@ -127,7 +126,6 @@ services:
     tty: true
 
   temporal-web:
-    container_name: temporal-web
     image: temporalio/web:latest
     depends_on:
       - temporal
