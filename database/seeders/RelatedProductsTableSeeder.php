@@ -1,13 +1,18 @@
 <?php
 
+namespace Database\Seeders;
+
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class RelatedProductsTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */

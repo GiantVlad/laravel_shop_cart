@@ -18,6 +18,7 @@ services:
     depends_on:
       - temporal
       - postgresql
+      - mariadb
     restart: on-failure
 #    healthcheck:
 #      interval: 1s
@@ -86,7 +87,6 @@ services:
       - './.local_data/temporal_sql:/var/lib/postgresql/data'
 
   temporal:
-    container_name: temporal
     image: temporalio/auto-setup:latest
     depends_on:
       - postgresql
@@ -117,7 +117,6 @@ services:
       - ./.docker/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
 
   temporal-admin-tools:
-    container_name: temporal-admin-tools
     image: temporalio/admin-tools:latest
     depends_on:
       - temporal
@@ -127,7 +126,6 @@ services:
     tty: true
 
   temporal-web:
-    container_name: temporal-web
     image: temporalio/web:latest
     depends_on:
       - temporal
@@ -136,6 +134,18 @@ services:
       - TEMPORAL_PERMIT_WRITE_API=true
     ports:
       - "8088:8088"
+
+  temporal-ui:
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:latest
+#    networks:
+#      - temporal-network
+    ports:
+      - 8099:8080
 
 volumes:
   app_content:

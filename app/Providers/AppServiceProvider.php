@@ -23,15 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot ()
     {
-        if (!$this->app->runningInConsole()) {
-            $catalog = new Catalog;
-            View::share('catalogs', $catalog->parentsNode());
-        }
-
-        //Delete records from "product_property" table
-        Product::deleting(function ($product) {
-            $product->properties()->detach();
-        });
+//        if (!$this->app->runningInConsole()) {
+//            $catalog = new Catalog;
+//            View::share('catalogs', $catalog->parentsNode());
+//        }
+//
+//        //Delete records from "product_property" table
+//        Product::deleting(function ($product) {
+//            $product->properties()->detach();
+//        });
     }
 
     /**

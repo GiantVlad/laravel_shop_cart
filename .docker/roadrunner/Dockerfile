@@ -263,23 +263,24 @@ COPY ./.docker/roadrunner/config/rr.yaml /etc/.rr.yaml
 
 WORKDIR /app
 
-#COPY composer.* ./
-
-#RUN composer install \
-#      --no-dev \
-#      --no-interaction \
-#      --prefer-dist \
-#      --no-scripts \
-#      --ignore-platform-reqs \
-#      --optimize-autoloader \
-#      --apcu-autoloader \
-#      --ansi
-
-
 COPY .docker/roadrunner/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
+
+COPY ./ /app
+
+RUN composer install \
+      --no-dev \
+      --no-interaction \
+      --prefer-dist \
+      --no-scripts \
+      --ignore-platform-reqs \
+      --optimize-autoloader \
+      --apcu-autoloader \
+      --ansi
+
+RUN composer dumpautoload
 
 RUN chmod +x /usr/local/bin/docker-healthcheck
 
 HEALTHCHECK --interval=1s --timeout=10s --retries=30 CMD ["docker-healthcheck"]
-COPY ./ /app
+
 CMD ["/usr/bin/rr", "serve", "-d", "-c", "/etc/.rr.yaml"]
