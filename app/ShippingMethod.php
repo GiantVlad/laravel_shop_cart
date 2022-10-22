@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $rate
  * @property string $time
  * @property string $class_name
+ * @property bool|int $selected
  *
  * @method ShippingMethod findOrFail(int $id)
  */
@@ -30,7 +31,7 @@ class ShippingMethod extends Model
     protected $fillable = array('class_name', 'enable', 'priority');
     
     /**
-     * @return Collection
+     * @return Collection<ShippingMethod>
      */
     public function getAllEnabled(): Collection
     {
@@ -88,7 +89,8 @@ class ShippingMethod extends Model
                 fn(ShippingMethod $shippingMethod) => class_exists(self::NAMESPACE . $shippingMethod->class_name)
             );
             
-            $shippingMethods->map(static function(ShippingMethod $shippingMethod) {
+            $shippingMethods->map(static function($shippingMethod) {
+                /** @var ShippingMethod $shippingMethod */
                 $shippingMethod->class_name = self::NAMESPACE . $shippingMethod->class_name;
                 $shippingMethod->label = $shippingMethod->class_name::getLabel();
                 $shippingMethod->rate = $shippingMethod->class_name::getRate();

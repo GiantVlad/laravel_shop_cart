@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use Tests\TestCase;
@@ -10,8 +12,8 @@ class OrderTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $order;
-    public function setUp (): void
+    private Order $order;
+    public function setUp(): void
     {
         parent::setUp();
         $this->order = new Order;
@@ -21,23 +23,14 @@ class OrderTest extends TestCase
         $this->order->user_id = 2;
         $this->order->save();
     }
-    /**
-     * A getOrderByLabel test.
-     *
-     * @return void
-     */
-    public function testGetOrderByLabel()
+    
+    public function testGetOrderByLabel(): void
     {
         $orderLabel = $this->order->getOrderByLabel('s_7788')->first()->order_label;
         $this->assertSame('ips_77889900', $orderLabel);
     }
 
-    /**
-     * A getOrdersByUserId test.
-     *
-     * @return void
-     */
-    public function testGetOrdersByUserId()
+    public function testGetOrdersByUserId(): void
     {
         $this->order = new Order;
         $this->order->order_label = 'ips_77889901';

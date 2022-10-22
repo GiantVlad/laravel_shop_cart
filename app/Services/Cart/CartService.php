@@ -18,10 +18,10 @@ class CartService
     private const CART_TTL = 7776000; // 3 months
     
     public function __construct(
-        private Product $product,
-        private RelatedProduct $relatedProduct,
-        private OrderData $orderData,
-        private Cache $cacheRepository
+        private readonly Product $product,
+        private readonly RelatedProduct $relatedProduct,
+        private readonly OrderData $orderData,
+        private readonly Cache $cacheRepository
     ) {}
     
     /**

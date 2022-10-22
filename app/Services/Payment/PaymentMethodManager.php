@@ -17,12 +17,11 @@ use Psr\Container\NotFoundExceptionInterface;
 class PaymentMethodManager
 {
     public function __construct(
-        private PaymentMethodRepository $paymentMethodRepository,
-        private Container $container,
-        private PaymentMethod $mPaymentMethod,
-        private Dispatcher $eventDispatcher,
-    )
-    {
+        private readonly PaymentMethodRepository $paymentMethodRepository,
+        private readonly Container $container,
+        private readonly PaymentMethod $mPaymentMethod,
+        private readonly Dispatcher $eventDispatcher,
+    ) {
     }
     
     /**
@@ -31,7 +30,8 @@ class PaymentMethodManager
     public function getAllEnabled(): Collection
     {
         $paymentMethods = $this->paymentMethodRepository->getList();
-        $paymentMethods->map(function (PaymentMethod $item) {
+        $paymentMethods->map(function($item) {
+            /** @var PaymentMethod $item */
             $item->selected = false;
         });
         
@@ -56,12 +56,17 @@ class PaymentMethodManager
         return $this->container->get($paymentMethod->class_name);
     }
     
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function pay(int $methodId, array $request): PaymentResponse
     {
         $paymentService = $this->getPaymentService($methodId);
         $paymentResponse = $paymentService->pay($request);
         
         $paymentResponse->setPaymentId($request['paymentId']);
+        
         $this->eventDispatcher->dispatch(new PaymentCreated($paymentResponse));
         
         return $paymentResponse;

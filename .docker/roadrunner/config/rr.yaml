@@ -1,0 +1,50 @@
+version: "2.7"
+
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "/app/temporal/roadrunner-worker"
+
+http:
+  address: :80
+  #max_request_size: 256
+  middleware: [ "static", "headers", "gzip" ]
+  uploads:
+    dir: /tmp
+    forbid: [ ".php", ".exe", ".bat", ".sh" ]
+  headers:
+    response:
+      X-Powered-By: RoadRunner
+  static:
+    dir: "/app/public"
+    forbid: [".htaccess", ".php", ".sql", ".config", "php_errors.log"]
+    calculate_etag: false
+    weak: false
+    allow: [ "" ]
+    request:
+      input: "custom-header"
+    response:
+      output: "output-header"
+  pool:
+    num_workers: 2
+    max_jobs: 64
+
+temporal:
+  address: temporal:7233
+  activities:
+    num_workers: 6
+
+reload:
+  interval: 1s
+  patterns: [".php", ".yaml"]
+  services:
+    http:
+      recursive: true
+      dirs: [ "/app/app" ]
+    temporal:
+      recursive: true
+      dirs: [ "/app/app" ]
+
+status:
+  address: roadrunner:2114

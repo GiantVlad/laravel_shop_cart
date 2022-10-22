@@ -1,14 +1,17 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Unit;
 use App\Property;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PropertyValuesTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */

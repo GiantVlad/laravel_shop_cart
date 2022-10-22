@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ master ]
+#  push:
+#    branches:
+#      - 'master'
+
+jobs:
+  composer-validate:
+    runs-on: ubuntu-latest
+    name: "Composer Validate"
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v2
+
+      - name: 'Validate composer.json'
+        run: composer validate --no-check-all --strict --no-check-lock
+
+  composer-install:
+    needs: composer-validate
+    runs-on: ubuntu-latest
+    name: "Composer Install"
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          ini-values: memory_limit=-1
+          coverage: none
+          tools: composer:v2
+          extensions: grpc
+
+      - name: 'Install Dependencies'
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+#  code-style:
+#    needs: composer-install
+#    runs-on: ubuntu-latest
+#    name: "Code Style"
+#    strategy:
+#      fail-fast: false
+#    steps:
+#      - name: 'Checkout Code'
+#        uses: actions/checkout@v2
+#
+#      - name: 'Setup PHP'
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: 8.1
+#          ini-values: memory_limit=-1
+#          coverage: none
+#          tools: composer:v2
+#          extensions: grpc
+#
+#      - name: 'Install PHP dependencies with Composer'
+#        run: composer install --prefer-dist --no-progress --optimize-autoloader
+#        working-directory: './'
+#
+#      - name: 'Run CodeSniffer'
+#        run: ./vendor/bin/phpcs ./ -p --encoding=utf-8 --extensions=php --ignore="vendor|Tests" --standard=./vendor/escapestudios/symfony2-coding-standard/Symfony
+
+  static-analysis:
+    needs: composer-install
+    runs-on: ubuntu-latest
+    name: "Static Analysis"
+    strategy:
+      fail-fast: false
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          ini-values: memory_limit=-1
+          coverage: none
+          tools: composer:v2
+          extensions: grpc
+
+      - name: 'Install PHP dependencies with Composer'
+        run: composer install --prefer-dist --no-progress --optimize-autoloader
+        working-directory: './'
+
+      - name: 'Run PHPStan'
+        run: ./vendor/bin/phpstan analyse --memory-limit=2G --no-progress -c phpstan.neon ./
+
+  test:
+    needs: composer-install
+    runs-on: ubuntu-latest
+    name: "Test Backend"
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PHP'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          ini-values: memory_limit=-1
+          coverage: none
+          tools: composer:v2
+          extensions: grpc
+
+      - name: 'Install PHP dependencies with Composer'
+        run: composer install --prefer-dist --no-progress --optimize-autoloader
+        working-directory: './'
+
+      - name: 'Create Database'
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
+
+  test-fe:
+    runs-on: ubuntu-latest
+    name: "Tests Frontend"
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v2
+
+      - name: 'NPM update'
+        run: npm install
+
+      - name: 'NPM run tests'
+        run: npm run test
+
+#  code-coverage:
+#    needs: test
+#    runs-on: ubuntu-latest
+#    name: "Code Coverage"
+#    strategy:
+#      fail-fast: false
+#    steps:
+#      - name: 'Checkout Code'
+#        uses: actions/checkout@v2
+#
+#      - name: 'Setup PHP'
+#        uses: shivammathur/setup-php@v2
+#        with:
+#          php-version: 8.1
+#          ini-values: memory_limit=-1
+#          coverage: pcov
+#          tools: composer:v2
+#
+#      - name: 'Install PHP dependencies with Composer'
+#        run: composer install --prefer-dist --no-progress --optimize-autoloader
+#        working-directory: './'
+#
+#      - name: 'Run PHPUnit with Code Coverage'
+#        run: ./vendor/bin/phpunit -v -c phpunit.xml.dist --coverage-clover=coverage.xml
+#
+#      - name: 'Download Coverage Files'
+#        uses: actions/download-artifact@v2
+#        with:
+#          path: reports
+#
+#      - name: 'Upload to Codecov'
+#        uses: codecov/codecov-action@v1
+#        with:
+#          files: ./coverage.xml
+#          fail_ci_if_error: true
+#          verbose: true

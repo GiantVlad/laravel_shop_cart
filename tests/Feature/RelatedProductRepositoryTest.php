@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class RelatedProductRepositoryTest extends TestCase
 {
-    public function testIncrementRate()
+    public function testIncrementRate(): void
     {
         /** @var RelatedProduct $related */
         $related = RelatedProduct::factory()->create([

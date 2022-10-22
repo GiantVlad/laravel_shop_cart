@@ -119,7 +119,7 @@ $(function () {
 
     //Remove property from Product
     $(document).on('click', '#removeProperty', function () {
-        $('div[id^=product-property]').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" src="' + baseUrl + '/images/loading.gif" />');
+        $('div[id^=product-property]').append('<img style="position: absolute; left: 0; top: 0; z-index: 100000;" Temporal="' + baseUrl + '/images/loading.gif" />');
         var product_id = $(this).data('product_id');
         $.post(baseUrl + '/admin/product/' + product_id + '/property', {
             value_id: $(this).data('value'),

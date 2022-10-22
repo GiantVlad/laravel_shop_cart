@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Payment;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class PaymentRepository
 {

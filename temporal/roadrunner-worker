@@ -1,0 +1,96 @@
+#!/usr/bin/env php
+<?php
+
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\UploadedFileFactory;
+use Laravel\Octane\ApplicationFactory;
+use Laravel\Octane\RequestContext;
+use Laravel\Octane\RoadRunner\RoadRunnerClient;
+use Laravel\Octane\Stream;
+use Laravel\Octane\Worker;
+use Psr\Http\Message\ServerRequestInterface;
+use Spiral\Goridge\Relay;
+use Spiral\RoadRunner\Http\PSR7Worker;
+use Spiral\RoadRunner\Worker as RoadRunnerWorker;
+use Spiral\RoadRunner;
+use App\Temporal\Locator;
+use Temporal\Worker\WorkerOptions;
+use Temporal\WorkerFactory;
+
+$basePath = require '/app/vendor/laravel/octane/bin/bootstrap.php';
+
+/*
+|--------------------------------------------------------------------------
+| Start The Octane Worker
+|--------------------------------------------------------------------------
+|
+| Next we will start the Octane worker, which is a long running process to
+| handle incoming requests to the application. Octane can intercept the
+| incoming requests and proxy them to the Laravel application for us.
+|
+*/
+
+$roadRunnerClient = new RoadRunnerClient($psr7Client = new PSR7Worker(
+    new RoadRunnerWorker(Relay::create('pipes')),
+    new ServerRequestFactory,
+    new StreamFactory,
+    new UploadedFileFactory,
+));
+
+$worker = null;
+$env = RoadRunner\Environment::fromGlobals();
+$appFactory = new ApplicationFactory($basePath);
+
+if ($env->getMode() === RoadRunner\Environment\Mode::MODE_HTTP) {
+    while ($psr7Request = $psr7Client->waitRequest()) {
+        try {
+            /** @var Worker $worker */
+            $worker = $worker ?: tap((new Worker(
+                $appFactory, $roadRunnerClient
+            )))->boot();
+        } catch (Throwable $e) {
+            Stream::shutdown($e);
+            
+            exit(1);
+        }
+        
+        if (!$psr7Request instanceof ServerRequestInterface) {
+            break;
+        }
+        
+        [$request, $context] = $roadRunnerClient->marshalRequest(new RequestContext([
+            'psr7Request' => $psr7Request
+        ]));
+        
+        $worker->handle($request, $context);
+    }
+    
+    if (!is_null($worker)) {
+        $worker->terminate();
+    }
+}
+
+$factory = WorkerFactory::create();
+
+$worker = $factory->newWorker(
+    'default',
+    WorkerOptions::new()
+        ->withMaxConcurrentActivityTaskPollers(2)
+        ->withMaxConcurrentWorkflowTaskPollers(10)
+);
+$locator = Locator::create('/app/app/Temporal/');
+
+// workflow types
+foreach ($locator->getWorkflowTypes() as $workflowType) {
+    $worker->registerWorkflowTypes($workflowType);
+}
+
+$app = $appFactory->createApplication();
+
+// activities
+foreach ($locator->getActivityTypes() as $activityType) {
+    $worker->registerActivityImplementations($app->get($activityType));
+}
+
+$factory->run();

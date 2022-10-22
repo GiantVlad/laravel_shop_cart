@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit;
 
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Catalog;
@@ -10,9 +13,10 @@ class CatalogTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $catalog;
+    private Catalog $catalog;
+    private Collection $catalogs;
 
-    public function setUp (): void
+    public function setUp(): void
     {
         parent::setUp();
         $this->catalogs = Catalog::factory()->count(5)->create();
@@ -24,7 +28,7 @@ class CatalogTest extends TestCase
      *
      * @return void
      */
-    public function test_get_catalog_ids_tree()
+    public function testGetCatalogIdsTree(): void
     {
         $first = $this->catalogs->first()->id;
         $third = $this->catalogs[2]->id;

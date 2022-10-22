@@ -13,7 +13,7 @@ class OrderFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
     protected $model = Order::class;
 
@@ -29,7 +29,7 @@ class OrderFactory extends Factory
             'commentary' => $this->faker->text(),
             'status' => $this->faker->randomElement(['pending payment', 'process', 'completed', 'deleted']),
             'total' => $this->faker->randomFloat(2, 0.05, 999999),
-            'user_id' => fn () => User::factory()->create()->id,
+            'user_id' => fn () => (int) (User::factory()->create()?->id ?? 0),
         ];
     }
 }

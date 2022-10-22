@@ -14,7 +14,7 @@ class OrderDataFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
     protected $model = OrderData::class;
 
@@ -26,8 +26,8 @@ class OrderDataFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id' => fn () => (int)Order::factory()->create()->id,
-            'product_id' => fn () => (int)Product::factory()->create()->id,
+            'order_id' => fn () => (int) (Order::factory()->create()?->id ?? 0),
+            'product_id' => fn () => (int) (Product::factory()->create()?->id ?? 0),
             'is_related_product' => $this->faker->boolean(),
             'price' => $this->faker->randomFloat(2, 0.05, 999999),
             'qty' => $this->faker->numberBetween(1, 100),

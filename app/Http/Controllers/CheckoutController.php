@@ -86,7 +86,7 @@ class CheckoutController extends Controller
             
             return redirect('checkout/success')->with(
                     'message',
-                    "Thank's. Your payment has been successfully completed! The Order #" .
+                    "Thanks. Your payment has been successfully completed! The Order #" .
                     $request->get('order_id') . " has been created."
             );
         }
