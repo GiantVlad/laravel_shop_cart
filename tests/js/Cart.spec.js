@@ -3,6 +3,7 @@ import Cart from '../../resources/assets/js/components/Cart.vue'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 import {flushPromises} from './flush-promises'
+import chai from 'chai'
 
 describe('Cart.vue', () => {
     let wrapper;
@@ -14,9 +15,13 @@ describe('Cart.vue', () => {
             items: 2
         }
     };
+    const expect = chai.expect
 
     beforeEach(() => {
         wrapper = shallowMount(Cart, {
+            mocks: {
+                $baseUrl: 'https://my-site.com'
+            },
             propsData: {
                 relatedProduct: {
                     id: 123,
@@ -54,62 +59,56 @@ describe('Cart.vue', () => {
                     {id: 2, label: 'The Best Payment', selected: true},
                 ],
             }
-        });
+        })
 
-        wrapper.setData({baseUrl: 'https://my-site.com'});
-        mock = new MockAdapter(axios);
-        mock.onPost('https://my-site.com/cart/change-shipping').reply(200, response);
-        mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response);
-        mock.onPost('https://my-site.com/cart/remove-item').reply(200, response);
-        delete global.window.location;
-        global.window.location = {href: '', reload: () => true};
+        mock = new MockAdapter(axios)
+        mock.restore()
+        mock.onPost('https://my-site.com/cart/change-shipping').reply(200, response)
+        mock.onPost('https://my-site.com/cart/add-to-cart').reply(200, response)
+        mock.onPost('https://my-site.com/cart/remove-item').reply(200, response)
+        delete global.window.location
+        global.window.location = {href: '', reload: () => true}
     })
 
-    afterEach(() => {
-        mock.restore();
-    });
-
     it('find props data (product, related product and shipping method) in HTML', () => {
-        expect(wrapper.html()).toContain('it is description of related product');
-        expect(wrapper.html()).toContain('it is description of second product');
-        expect(wrapper.find('select#shipping-select option').text()).toBe("First shipping, 1-2 days, 15.25");
-    });
+        expect(wrapper.html()).to.contain('it is description of related product')
+        expect(wrapper.html()).to.contain('it is description of second product')
+        expect(wrapper.find('select#shipping-select option').text()).to.be.eq("First shipping, 1-2 days, 15.25")
+    })
 
     it('update row total after qty was changed', (done) => {
-        expect(wrapper.find('#row-total-85').text()).toBe('Total: 0.88');
+        expect(wrapper.find('#row-total-85').text()).to.be.eq('Total: 0.88')
         let nodeQty = wrapper.find('input#productQty85');
-        nodeQty.element.value = 5;
-        nodeQty.trigger('change');
-        flushPromises().then(() => {
-            expect(wrapper.find('#row-total-85').text()).toBe('Total: 0.05');
-            done();
-        });
+        nodeQty.element.value = 5
+        nodeQty.trigger('change')
+        flushPromises()
+            .then(() => {
+            expect(wrapper.find('#row-total-85').text()).to.be.eq('Total: 0.05')
+        }).finally(() => (done()))
 
     });
 
     it('emit nav_cart after qty was changed', (done) => {
-        let nodeQty = wrapper.find('input#productQty85');
-        nodeQty.element.value = 5;
-        const rootWrapper = createWrapper(wrapper.vm.$root);
-        nodeQty.trigger('change');
+        let nodeQty = wrapper.find('input#productQty85')
+        nodeQty.element.value = 5
+        const rootWrapper = createWrapper(wrapper.vm.$root)
+        nodeQty.trigger('change')
         flushPromises().then(() => {
-            expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2);
-            expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15);
-            done();
-        });
-    });
+            expect(rootWrapper.emitted().nav_cart[0][0].items).to.be.eq(2)
+            expect(rootWrapper.emitted().nav_cart[0][0].total).to.be.eq(155.15)
+        }).finally(() => (done()))
+    })
 
     it('removes product from cart', (done) => {
         let nodeQty = wrapper.find('button#remove-85');
         const rootWrapper = createWrapper(wrapper.vm.$root);
         nodeQty.trigger('click');
         flushPromises().then(() => {
-            expect(rootWrapper.emitted().nav_cart[0][0].items).toEqual(2);
-            expect(rootWrapper.emitted().nav_cart[0][0].total).toEqual(155.15); // total from request
-            expect(wrapper.find('input#productQty85').exists()).toBe(false);
-            expect(wrapper.find('span#subtotal').text()).toEqual("" + (99.99 + 15.25)); // total of first product + shipping cost
-            done();
-        });
+            expect(rootWrapper.emitted().nav_cart[0][0].items).to.be.eq(2);
+            expect(rootWrapper.emitted().nav_cart[0][0].total).to.be.eq(155.15); // total from request
+            expect(wrapper.find('input#productQty85').exists()).to.be.false;
+            expect(wrapper.find('span#subtotal').text()).to.be.eq("" + (99.99 + 15.25)); // total of first product + shipping cost
+        }).finally(() => (done()))
     });
 
     // it('add related product to the cart', (done) => {
@@ -121,20 +120,18 @@ describe('Cart.vue', () => {
     //
     //     related.trigger('click');
     //     flushPromises().then(() => {
-    //         expect(mockMethod).toHaveBeenCalled();
-    //         done();
-    //     });
+    //         expect(mockMethod).to.HaveBeenCalled()
+    //     }).finally(() => (done()))
     // });
 
     it('payment', (done) => {
         mock.onPost('https://my-site.com/checkout')
-            .reply(200, {redirect_to: wrapper.vm.baseUrl + '/payment_url'});
+            .reply(200, {redirect_to: wrapper.vm.baseUrl + '/payment_url'})
 
-        wrapper.find('button#checkout').trigger('click');
+        wrapper.find('button#checkout').trigger('click')
 
         flushPromises().then(() => {
-            expect(global.window.location.href).toEqual('https://my-site.com/payment_url');
-            done();
-        });
-    });
-});
+            expect(global.window.location.href).to.be.eq('https://my-site.com/payment_url')
+        }).finally(() => (done()))
+    })
+})

@@ -44,7 +44,6 @@ export default {
   props: ['orders',],
   data() {
     return {
-      baseUrl: '',
       ordersList: [],
       orderAction: null,
     }
@@ -52,12 +51,9 @@ export default {
   created() {
     this.ordersList = this.orders.data;
   },
-  mounted() {
-    this.baseUrl = window.location.origin;
-  },
   watch: {
     orderAction(val) {
-      axios.post(this.baseUrl + '/order/action', {
+      axios.post(this.$baseUrl + '/order/action', {
         id: val.order,
         action: val.action,
       }).then(response => {

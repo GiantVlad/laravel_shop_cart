@@ -18,14 +18,13 @@ export default {
   data() {
     return {
       products: [],
-      baseUrl: '',
       csrf: '',
     }
   },
   computed: {},
   methods: {
     searchProducts(keyword) {
-      axios.get(this.baseUrl + '/search', {params: {keyword}})
+      axios.get(this.$baseUrl + '/search', {params: {keyword}})
           .then(response => {
             this.$root.$emit('product_filter', {property_id: null, option: null, value: null});
             this.products = response.data.data;
@@ -39,7 +38,7 @@ export default {
           });
     },
     filterProducts(data) {
-      axios.get(this.baseUrl + '/filter', {params: data})
+      axios.get(this.$baseUrl + '/filter', {params: data})
           .then(response => {
             this.products = response.data.data;
           })
@@ -83,7 +82,6 @@ export default {
     }
   },
   created() {
-    this.baseUrl = window.location.origin;
     this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
     this.$root.$on('product_search', data => {
       this.searchProducts(data.keyword);

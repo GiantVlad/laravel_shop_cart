@@ -85,13 +85,11 @@ export default {
   data() {
     return {
       order: Order(),
-      baseUrl: '',
     }
   },
   created() {
     // add columns payment status and shipping code
-    this.baseUrl = window.location.origin;
-    axios.get(this.baseUrl + '/order-data/' + this.orderId)
+    axios.get(this.$baseUrl + '/order-data/' + this.orderId)
         .then(response => {
           this.order = new Order(response.data.data);
         })

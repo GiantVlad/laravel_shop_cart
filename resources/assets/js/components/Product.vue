@@ -2,7 +2,7 @@
   <div class="col-lg-4 col-sm-6 product-cart">
     <div class="cart-wrapper">
       <div class="cart-header">
-        <a :href="baseUrl+'/shop/' + product.id">
+        <a :href="$baseUrl+'/shop/' + product.id">
           <h4 class="header">{{ product.name }}</h4>
         </a>
         <!--                <p>Category: {{product.catalogs.name}}</p>-->
@@ -12,11 +12,11 @@
       </div>
 
       <div class="thumbnail">
-        <a :href="baseUrl+'/shop/' + product.id">
+        <a :href="$baseUrl+'/shop/' + product.id">
           <div class="img-wrapper">
             <vue-slide-up-down :active="active">
               <img class="center-block" :alt="'product id '+product.id"
-                   :src="baseUrl+'/images/'+product.image" :class="{'is-displayed':active}">
+                   :src="$baseUrl+'/images/'+product.image" :class="{'is-displayed':active}">
             </vue-slide-up-down>
             <vue-slide-up-down :active="!active">
               <p class="product-shop-desc" :class="{'is-displayed':!active}">Description:<br>{{ product.description }}
@@ -44,7 +44,6 @@ export default {
   props: ['product'],
   data() {
     return {
-      baseUrl: '',
       csrf: '',
       active: true,
     }
@@ -56,7 +55,7 @@ export default {
       this.active = !this.active
     },
     addToCart(product_id) {
-      axios.post(this.baseUrl + '/cart/add-to-cart', {
+      axios.post(this.$baseUrl + '/cart/add-to-cart', {
         productId: product_id,
         isRelated: 0,
         productQty: 1,
@@ -65,7 +64,7 @@ export default {
         this.$root.$emit('nav_cart', response.data.data)
       }).catch(e => {
         if (e.response && e.response.status === 401) {
-          window.location.href = this.baseUrl + '/login';
+          window.location.href = this.$baseUrl + '/login';
         } else {
           console.log(e)
         }
@@ -74,7 +73,6 @@ export default {
     },
   },
   mounted() {
-    this.baseUrl = window.location.origin;
     this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
   }
 }

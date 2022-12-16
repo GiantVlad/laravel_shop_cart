@@ -30,6 +30,8 @@ import { Integrations } from "@sentry/tracing";
 import moment from 'moment'
 //bootstrap 3 plugin
 import * as uiv from 'uiv'
+Vue.prototype.$baseUrl = 'aaa'
+// xwindow.location.origin
 
 Sentry.init({
     Vue,
@@ -40,6 +42,7 @@ Sentry.init({
     // for finer control
     tracesSampleRate: 1.0,
 });
+
 Vue.use(uiv)
 Vue.filter('formatDate', (value, format = false) => {
     if (value) {
