@@ -9,15 +9,19 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 
 <p><img src="https://preview.ibb.co/dyyGMb/sshot_shop.png" alt="sshot_shop" border="0"></p>
 
-4. Setup docker and docker-compose on your local machine.
-5. Create the .local_data folder in the root directory of the project
-6. Install git. Fetch this project from Github (git clone).
-5. Copy ".env.example" file and rename to ".env". Edit the .env file (connect to DB).
-6. Run "docker-compose up" (you may need to restart docker-compose up 3-4 times).
+1. Setup docker and docker-compose on your local machine.
+2. Create the .local_data folder in the root directory of the project
+3. Install git. Fetch this project from Github (git clone).
+4. Copy ".env.example" file and rename to ".env". Edit the .env file (connect to DB).
+5. Run "docker-compose up" (you may need to restart docker-compose up 3-4 times).
+
 
 
 ### Local endpoints:
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
+
+It uses roadrunner, Laravel/Octane and temporal.
+If you prefer more traditional nginx/php server, checkout to the version 0.01 please.
 
 _Uladzimir Sadkou_: hofirma@gmail.com 
