@@ -19,7 +19,7 @@ services:
       - temporal
       - postgresql
       - mariadb
-    # restart: on-failure
+    restart: on-failure
 #    healthcheck:
 #      interval: 1s
 #      timeout: 3s
@@ -134,6 +134,18 @@ services:
       - TEMPORAL_PERMIT_WRITE_API=true
     ports:
       - "8088:8088"
+
+  temporal-ui:
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:latest
+#    networks:
+#      - temporal-network
+    ports:
+      - 8099:8080
 
 volumes:
   app_content:

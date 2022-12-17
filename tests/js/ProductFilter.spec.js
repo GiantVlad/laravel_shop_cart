@@ -1,8 +1,10 @@
 import { shallowMount, createWrapper } from '@vue/test-utils'
 import ProductFilter from '../../resources/assets/js/components/ProductFilter.vue'
+import chai from 'chai'
 
 describe('ProductFilter.vue', () => {
-    let  wrapper_numb, wrapper_select;
+    let  wrapper_numb, wrapper_select
+    const expect = chai.expect
     beforeEach(()=> {
         wrapper_numb = shallowMount(ProductFilter, {
             propsData: {
@@ -16,11 +18,11 @@ describe('ProductFilter.vue', () => {
                         {id: 8, property_id: 2, value: "5", unit_id: 1},
                         {id: 9, property_id: 2, value: "10", unit_id: 1},
                         {id: 10, property_id: 2, value: "20", unit_id: 1},
-                        {id: 11, property_id: 2, value: "50", unit_id: 1}
+                        {id: 11, property_id: 2, value: "50", unit_id: 1},
                     ],
                 }
             }
-        });
+        })
 
         wrapper_select = shallowMount(ProductFilter, {
             propsData: {
@@ -40,37 +42,36 @@ describe('ProductFilter.vue', () => {
                     ],
                 }
             }
-        });
-    });
+        })
+    })
 
     it('contains input for property with type "number"', () => {
-        expect(wrapper_numb.find('input#select-property-min-'+wrapper_numb.props('property').id).exists()).toBe(true)
-        expect(wrapper_numb.find('input#select-property-max-'+wrapper_numb.props('property').id).exists()).toBe(true)
-    });
+        expect(wrapper_numb.find('input#select-property-min-'+wrapper_numb.props('property').id).exists()).to.be.true
+        expect(wrapper_numb.find('input#select-property-max-'+wrapper_numb.props('property').id).exists()).to.be.true
+    })
 
     it('contains checkboxes for property with type "select"', () => {
-        expect(wrapper_select.findAll('input')).toHaveLength(6)
-    });
+        expect(wrapper_select.findAll('input')).to.have.lengthOf(6)
+    })
 
     it('checks that event has been emitted, when max/min inputs were changed', () => {
         let node = wrapper_numb.find('input#select-property-min-'+wrapper_numb.props('property').id)
         node.setValue(15);
         node.trigger('change');
-        expect(wrapper_numb.vm.min).toBe('15')
+        expect(wrapper_numb.vm.min).to.be.eq('15')
 
         let rootWrapper = createWrapper(wrapper_numb.vm.$root)
-        expect(rootWrapper.emitted().product_filter).toBeTruthy()
-        expect(rootWrapper.emitted().product_filter[0][0].option).toEqual('min_max')
-        expect(rootWrapper.emitted().product_filter[0][0].value).toEqual(['15', null])
-    });
+        expect(rootWrapper.emitted().product_filter[0][0].option).to.be.eq('min_max')
+        expect(rootWrapper.emitted().product_filter[0][0].value[0]).to.be.eq('15')
+        expect(rootWrapper.emitted().product_filter[0][0].value[1]).to.be.null
+    })
 
     it('checks that event has been emitted, when the checkbox was changed', () => {
         let node = wrapper_select.findAll('.checkbox > label').filter(w => w.text() === 'Bosch').at(0)
         node.find('input').setChecked()
         const rootWrapper = createWrapper(wrapper_select.vm.$root)
-        expect(rootWrapper.emitted().product_filter).toBeTruthy()
-        expect(rootWrapper.emitted().product_filter[0][0].option).toEqual('checked')
-        expect(rootWrapper.emitted().product_filter[0][0].value[0].id).toEqual(3)
-        expect(rootWrapper.emitted().product_filter[0][0].value[0].value).toBeTruthy()
+        expect(rootWrapper.emitted().product_filter[0][0].option).to.be.eq('checked')
+        expect(rootWrapper.emitted().product_filter[0][0].value[0].id).to.be.eq(3)
+        expect(rootWrapper.emitted().product_filter[0][0].value[0].value).to.be.true
     })
-});
+})

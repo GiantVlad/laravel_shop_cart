@@ -1,4 +1,6 @@
-require('jsdom-global')();
+require('jsdom-global')(undefined, {
+    url: 'https://my-site.com'
+});
 
 window.Date = Date;
 
@@ -8,4 +10,3 @@ meta.content = '123456';
 window.document.getElementsByTagName('head')[0].appendChild(meta)
 
 global.document = window.document;
-global.expect = require('expect');

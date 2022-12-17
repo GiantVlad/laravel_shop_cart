@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <div class="col-sm-7">
-                <form method="post" :action="baseUrl+'/cart/add-to-cart'">
+                <form method="post" :action="$baseUrl+'/cart/add-to-cart'">
                     <p>{{ itemData.description }}</p>
                     <p>Price: <span id="single-price">{{ itemData.price }}</span></p>
                     <input type="hidden" name="_token" :value="csrf">
@@ -23,7 +23,7 @@
             <div class="col-sm-5">
                 <img class="img-thumbnail" :alt="'product id'+itemData.id"
                      width="400" height="300"
-                     :src="baseUrl+'/images/'+itemData.image">
+                     :src="$baseUrl+'/images/'+itemData.image">
             </div>
         </div>
         <div class="row" v-for="property in itemData.properties">
@@ -40,18 +40,16 @@
         props: ['itemData'],
         data() {
             return {
-                baseUrl: '',
                 csrf: '',
                 qty: 1
             }
         },
         computed: {
-            total () {
+            total() {
                 return Math.round(this.itemData.price*100)* this.qty/100;
             }
         },
         mounted() {
-            this.baseUrl = window.location.origin;
             this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
         }
     }

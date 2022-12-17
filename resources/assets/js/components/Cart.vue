@@ -105,7 +105,6 @@ export default {
   props: ['products', 'shipping', 'related-product', 'payments',],
   data() {
     return {
-      baseUrl: '',
       total: 0,
       csrf: '',
       selectedShipping: null,
@@ -116,7 +115,7 @@ export default {
   watch: {
     selectedShipping(val) {
       this.subtotal(val)
-      axios.post(this.baseUrl + '/cart/change-shipping', {
+      axios.post(this.$baseUrl + '/cart/change-shipping', {
         shippingMethodId: val,
         subtotal: this.total,
       }).then(response => {
@@ -127,7 +126,7 @@ export default {
       })
     },
     selectedPayment(val) {
-      axios.post(this.baseUrl + '/cart/change-payment', {
+      axios.post(this.$baseUrl + '/cart/change-payment', {
         paymentMethodId: val,
       }).then(response => {
         this.$root.$emit('nav_cart', response.data.data)
@@ -159,7 +158,7 @@ export default {
         itemsInfo.isRelatedProduct.push(pr.is_related);
       })
 
-      axios.post(this.baseUrl + '/checkout',
+      axios.post(this.$baseUrl + '/checkout',
           itemsInfo
       ).then(response => {
         if (typeof response.data !== 'undefined') {
@@ -167,7 +166,7 @@ export default {
           if (typeof response.data.redirect_to !== 'undefined') {
             window.location.href = response.data.redirect_to;
           } else {
-            window.location.href = this.baseUrl + '/orders';
+            window.location.href = this.$baseUrl + '/orders';
           }
         }
         //window.location.reload()
@@ -177,7 +176,7 @@ export default {
       });
     },
     addRelated() {
-      axios.post(this.baseUrl + '/cart/add-related', {
+      axios.post(this.$baseUrl + '/cart/add-related', {
         id: this.relatedProduct.id,
       }).then(response => {
         window.location.reload()
@@ -192,7 +191,7 @@ export default {
         e.target.value = this.items[idx].qty;
         return;
       }
-      axios.post(this.baseUrl + '/cart/add-to-cart', {
+      axios.post(this.$baseUrl + '/cart/add-to-cart', {
         productId: this.items[idx].id,
         productQty: new_val,
         subtotal: this.total,
@@ -221,7 +220,7 @@ export default {
     },
     remove(item) {
       let total = this.total - (+item.price * +item.qty)
-      axios.post(this.baseUrl + '/cart/remove-item', {
+      axios.post(this.$baseUrl + '/cart/remove-item', {
         productId: item.id,
         isRelated: Boolean(item.is_related),
         subtotal: total,
@@ -247,7 +246,6 @@ export default {
     this.selectedPayment = payMethod !== undefined ? payMethod.id : null;
   },
   mounted() {
-    this.baseUrl = window.location.origin;
     this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
   },
 }

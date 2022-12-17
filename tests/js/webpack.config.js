@@ -1,15 +1,20 @@
-var path = require('path')
-var { VueLoaderPlugin } = require('vue-loader');
+const path = require('path')
+const { VueLoaderPlugin } = require('vue-loader');
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
     //entry: './resources/assets/js/app.js',
     output: {
         path: path.resolve(__dirname, './tmp'),
         publicPath: '/tmp/',
-        filename: 'build.js'
+        filename: 'build.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
+        devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
     },
+    devtool: 'inline-cheap-module-source-map',
     resolve: {
-        //extensions: [ '.tsx', '.ts', '.js', '.vue' ],
+        // extensions: [ '.tsx', '.ts', '.js', '.vue' ],
+        fallback: { "path": false, "constants": false, "stream": false },
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
         }
@@ -18,9 +23,10 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin()
     ],
-    externals: {
-        fs: '{}'
-    },
+    // externals: {
+    //     fs: '{}',
+    // },
+    externals: [nodeExternals()],
     module: {
         rules: [
             {

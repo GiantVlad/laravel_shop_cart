@@ -16,6 +16,7 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 5. Run "docker-compose up" (you may need to restart docker-compose up 3-4 times).
 
 
+
 ### Local endpoints:
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
