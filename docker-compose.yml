@@ -10,6 +10,7 @@ services:
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION}
     ports:
       - "80:80"
+      - "6001:6001"
     env_file: .env
     environment:
       RR_VERSION: ${RR_VERSION}
@@ -25,9 +26,9 @@ services:
 #      timeout: 3s
 #      retries: 3
 #      start_period: 10s
-  #  volumes:
+    volumes:
       #- app_content:/app
-#      - ./.docker/roadrunner/config/rr.yaml:/etc/rr.yaml:ro
+      - ./:/app
 
   mariadb:
     image: bitnami/mariadb:10
