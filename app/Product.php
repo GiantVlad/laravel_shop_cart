@@ -29,7 +29,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = array('name', 'description', 'price', 'catalog_id', 'image');
+    protected $fillable = ['name', 'description', 'price', 'catalog_id', 'image'];
     
     public const LIST_LIMIT = 100;
     

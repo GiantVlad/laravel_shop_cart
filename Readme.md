@@ -21,6 +21,11 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
 
+reset roadrunner server
+```
+docker-compose exec roadrunner rr -c /etc/.rr.yaml reset
+```
+
 It uses roadrunner, Laravel/Octane and temporal.
 If you prefer more traditional nginx/php server, checkout to the version 0.01 please.
 
