@@ -1,7 +1,7 @@
 version: "2.7"
 
 rpc:
-  listen: tcp://:6001
+  listen: tcp://127.0.0.1:6001
 
 server:
   command: "/app/temporal/roadrunner-worker"
