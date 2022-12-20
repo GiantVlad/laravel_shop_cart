@@ -77,7 +77,7 @@ class AdminShippingMethodsController extends Controller
         //$status = $request->status ? 1 : 0;
         $this->shippingMethod->where('id', $request->method_id)->update(['enable' => $request->get('status')]);
         $shippingMethods = $this->shippingMethod->list();
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return view('admin.shipping-methods-load', compact('shippingMethods'))->render();
         }
         

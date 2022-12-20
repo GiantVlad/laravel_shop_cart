@@ -13,8 +13,9 @@ services:
       - "6001:6001"
     env_file: .env
     environment:
-      RR_VERSION: ${RR_VERSION}
+#      RR_VERSION: ${RR_VERSION}
       APP_BASE_PATH: /app
+      PHP_IDE_CONFIG: "serverName=roadrunner.local"
     working_dir: /app
     depends_on:
       - temporal

@@ -40,7 +40,7 @@ class AdminProductsController extends Controller
             Product::where('catalog_id', $category_id)->paginate(10) :
             Product::paginate(10);
 
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return view('admin.products-load', compact('products'))->render();
         }
 
@@ -194,7 +194,7 @@ class AdminProductsController extends Controller
     {
         $product = Product::findOrFail($product_id);
 
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return view('admin.product-properties', compact('product'))->render();
         }
     

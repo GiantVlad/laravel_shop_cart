@@ -267,10 +267,8 @@ class CartController extends Controller
         } else {
             $this->cartService->addToCart($userId, $productId, $qty);
         }
-        
         $cart = $this->cartService->getCart($userId);
-
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             $dto = new CartPostDTO(max((count($cart) - 3), 0), ($cart['total'] ?? 0));
     
             return new CartPostResource($dto);
