@@ -30,8 +30,7 @@ import { Integrations } from "@sentry/tracing";
 import moment from 'moment'
 //bootstrap 3 plugin
 import * as uiv from 'uiv'
-Vue.prototype.$baseUrl = 'aaa'
-// xwindow.location.origin
+Vue.prototype.$baseUrl = window.location.origin
 
 Sentry.init({
     Vue,

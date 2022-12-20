@@ -26,6 +26,9 @@ reset roadrunner server
 docker-compose exec roadrunner rr -c /etc/.rr.yaml reset
 ```
 
+How to use [xdebug with roadrunner](https://roadrunner.dev/docs/php-debugging/2.x/en) 
+
+
 It uses roadrunner, Laravel/Octane and temporal.
 If you prefer more traditional nginx/php server, checkout to the version 0.01 please.
 

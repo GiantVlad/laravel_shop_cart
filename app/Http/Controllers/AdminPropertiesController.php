@@ -22,7 +22,7 @@ class AdminPropertiesController extends Controller
     {
         $properties = Property::all();
 
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return view('admin.property-modal', compact('properties'))->render();
         }
     
@@ -42,7 +42,7 @@ class AdminPropertiesController extends Controller
             $propertyValues = ['property_id' => $id, 'type' => 'number'];
         }
 
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return view('admin.property-values', compact('propertyValues'))->render();
         }
     
@@ -77,7 +77,7 @@ class AdminPropertiesController extends Controller
         }
         $propertyValue->products()->syncWithoutDetaching([$request->product_id]);
         
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return (int)$request->get('product_id');
         }
     
@@ -114,7 +114,7 @@ class AdminPropertiesController extends Controller
             );
         }
 
-        if ($request->ajax()) {
+        if ($request->getContentTypeFormat() === 'json') {
             return $property->id;
         }
     

@@ -1,0 +1,5 @@
+docker build -f DockerfileSource --build-arg RR_VERSION=2.12.1 --build-arg PHP_IMAGE_VERSION=8.1-cli-alpine -t lara_shop_roadrunner .
+
+docker image tag lara_shop_roadrunner gaintvlad/lara_shop_roadrunner:latest
+
+docker image push gaintvlad/lara_shop_roadrunner:latest

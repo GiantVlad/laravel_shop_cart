@@ -6,7 +6,7 @@ rpc:
 server:
   command: "/app/temporal/roadrunner-worker"
   env:
-    - XDEBUG_SESSION: 1
+    - XDEBUG_SESSION: 0
 
 http:
   address: :80
@@ -29,9 +29,8 @@ http:
     response:
       output: "output-header"
   pool:
-    num_workers: 1
-    allocate_timeout: 2s
-    #max_jobs: 64
+    num_workers: 2
+    max_jobs: 64
     debug: false
 
 temporal:

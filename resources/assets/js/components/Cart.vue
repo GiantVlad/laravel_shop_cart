@@ -4,7 +4,7 @@
       <div class="row">
         <input type="hidden" name="productId" :value="item.id">
         <div class="col-md-2">
-          <a :href="'/product/'+ item.id">
+          <a :href="'/shop/'+ item.id">
             <img class="img-thumbnail"
                  :alt="'product id '+item.id"
                  height="240"
