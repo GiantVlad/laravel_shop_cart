@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCreated;
+use App\Events\PaymentCreated;
 use App\Http\Requests\CheckoutRequest;
 use App\Repositories\OrderRepository;
 use App\Services\Cart\CartService;
 use App\Services\Payment\PaymentMethodManager;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,8 +24,9 @@ class CheckoutController extends Controller
      * @return void
      */
     public function __construct(
-        private RelatedProduct $relatedProduct,
-        private CartService $cartService,
+        private readonly RelatedProduct $relatedProduct,
+        private readonly CartService $cartService,
+        private readonly Dispatcher $eventDispatcher,
     ) {
         $this->middleware('auth')->except('logout');
     }
@@ -54,7 +58,9 @@ class CheckoutController extends Controller
             $user,
             $requestData
         );
-        
+    
+        $this->eventDispatcher->dispatch(new OrderCreated($order));
+    
         $this->cartService->forget($user->id);
     
         $paymentRequestData = [

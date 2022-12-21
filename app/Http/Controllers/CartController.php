@@ -19,13 +19,11 @@ use App\ShippingMethod;
 use App\Services\Cart\CartService;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
-use JetBrains\PhpStorm\Pure;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class CartController extends Controller

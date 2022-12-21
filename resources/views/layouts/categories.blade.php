@@ -1,4 +1,4 @@
-@if ( isset($parent_catalogs))
+@if (isset($parent_catalogs))
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
@@ -17,7 +17,7 @@
         </div>
     </div>
 @endif
-@if ( isset($catalogs))
+
     <div class="container">
         <div class="row">
             @foreach($catalogs as $catalog)
@@ -27,4 +27,3 @@
             @endforeach
         </div>
     </div>
-@endif
