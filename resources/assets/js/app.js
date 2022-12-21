@@ -25,6 +25,7 @@ import NavSearch from './components/NavSearch'
 import ModalWrapper from './components/ModalWrapper'
 import OrderInfo from './components/OrderInfo'
 import OrdersList from './components/OrdersList'
+import Categories from './components/Categories'
 import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
 import moment from 'moment'
@@ -62,5 +63,6 @@ const app = new Vue({
         NavSearch,
         ModalWrapper,
         ProductList,
+        Categories,
     },
 });

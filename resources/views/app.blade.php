@@ -14,7 +14,7 @@
 <body class="general-body">
 <div id="app">
     @include('layouts.nav')
-    @include('layouts.categories')
+    @yield('categories')
     @include('layouts.modal')
 
     <div class="container">

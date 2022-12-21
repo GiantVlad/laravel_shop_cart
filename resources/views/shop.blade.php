@@ -1,4 +1,7 @@
 @extends('app')
+@section('categories')
+    <categories></categories>
+@stop
 @section('content')
     <div class="jumbotron jumbotron-fluid">
         <div class="container">

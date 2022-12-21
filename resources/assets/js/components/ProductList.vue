@@ -14,14 +14,18 @@ import Product from "./Product";
 export default {
   name: 'ProductList',
   components: {Product, VueSlideUpDown},
-  props: ['keyword'],
+  props: ['keyword', 'category'],
   data() {
     return {
       products: [],
       csrf: '',
     }
   },
-  computed: {},
+  watch: {
+    category(oldVal, newVal) {
+      console.log(oldVal, newVal)
+    },
+  },
   methods: {
     searchProducts(keyword) {
       axios.get(this.$baseUrl + '/search', {params: {keyword}})
@@ -89,16 +93,22 @@ export default {
     this.$root.$on('product_filters', data => {
       const filters = this.parseFilterValues(data.filters);
       filters.category_id = this.parseCategory();
-      this.filterProducts(filters);
-    });
+      this.filterProducts(filters)
+    })
   },
   mounted() {
-    const category_id = this.parseCategory();
-    if (category_id) {
-      this.filterProducts({category_id: this.parseCategory()});
+    if (this.category !== null) {
+      this.filterProducts({category: this.category})
     } else {
       this.searchProducts(this.keyword);
     }
+    this.$root.$on('category_changed', categoryId => {
+      if (categoryId) {
+        const filters = {} // this.parseFilterValues(data.filters);
+        filters.category_id = categoryId
+        this.filterProducts(filters)
+      }
+    });
   }
 }
 </script>
