@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Temporal\PaymentWorkflowInterface;
-use App\Temporal\WarehouseWorkflowInterface;
+use App\Temporal\OrderCompletedWorkflowInterface;
 use Temporal\Client\WorkflowClientInterface;
 use Temporal\Client\WorkflowOptions;
 
@@ -20,18 +20,18 @@ class WorkflowService
             WorkflowOptions::new()
                 ->withWorkflowTaskTimeout(60)
         );
-    
-        $workflow->start($paymentId);
+        
+        $this->workflowClient->start($workflow, $paymentId);
     }
     
     public function sendOrderToWarehouse(int $orderId): void
     {
         $workflow = $this->workflowClient->newWorkflowStub(
-            WarehouseWorkflowInterface::class,
+            OrderCompletedWorkflowInterface::class,
             WorkflowOptions::new()
                 ->withWorkflowTaskTimeout(60)
         );
-        
-        $workflow->start($orderId);
+    
+        $this->workflowClient->start($workflow, $orderId);
     }
 }

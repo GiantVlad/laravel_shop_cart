@@ -5,11 +5,13 @@ namespace App\Services\Warehouse;
 use App\Services\Warehouse\DTO\WarehouseOrderDTO;
 use App\Services\Warehouse\ValueObject\WarehouseOrderStatus;
 
-class WarehouseServiceStab implements WarehouseServiceInterface
+class WarehouseServiceStub implements WarehouseServiceInterface
 {
     
     public function createNewOrder(WarehouseOrderDTO $orderDTO): bool
     {
+        sleep(2);
+
         return true;
     }
     
