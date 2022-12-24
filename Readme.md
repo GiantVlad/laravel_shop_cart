@@ -16,14 +16,17 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 5. Run "docker-compose up" (you may need to restart docker-compose up 3-4 times).
 
 
-
 ### Local endpoints:
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
 
-reset roadrunner server
+ro reset roadrunner server
 ```
 docker-compose exec roadrunner rr -c /etc/.rr.yaml reset
+```
+to observe roadrunner workers
+```
+docker-compose exec roadrunner rr -c /etc/.rr.yaml workers -i
 ```
 
 How to use [xdebug with roadrunner](https://roadrunner.dev/docs/php-debugging/2.x/en) 
