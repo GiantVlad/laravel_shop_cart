@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Dispatch;
@@ -8,13 +10,17 @@ use App\OrderData;
 use App\Payment;
 use App\Product;
 use App\RelatedProduct;
+use App\Services\Order\OrderStatuses;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderRepository
 {
     public function __construct(
+        private Order $mOrder,
         private Product $mProduct,
         private RelatedProduct $mRelatedProduct,
         private Repository $config,
@@ -74,5 +80,14 @@ class OrderRepository
         });
         
         return $order;
+    }
+    
+    public function getDailyOrders(Carbon $day): Collection
+    {
+        return $this->mOrder->newQuery()
+            ->join('order_data', 'orders.id', '=', 'order_data.order_id')
+            ->whereDate('orders.created_at', $day->toDateString())
+            ->whereNotIn('status', [OrderStatuses::DELETED])
+            ->get();
     }
 }
