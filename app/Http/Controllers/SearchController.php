@@ -14,11 +14,6 @@ use Illuminate\Support\Collection;
 
 class SearchController extends Controller
 {
-    /**
-     * @param Request $request
-     *
-     * @return ProductCollection
-     */
     public function search(Request $request): ProductCollection
     {
         $keyword = $request->input('keyword');
@@ -31,11 +26,6 @@ class SearchController extends Controller
         return new ProductCollection($products);
     }
     
-    /**
-     * @param Request $request
-     *
-     * @return ProductCollection
-     */
     public function filter(
         Request $request,
         Catalog $catalog,
@@ -72,7 +62,9 @@ class SearchController extends Controller
                     $values = array_map('intval', $values);
                     $properties->add(new FilterSelectorDTO($values, $property_id));
                 } elseif ($property->type === Property::TYPE_NUMBER) {
-                    $properties->add(new FilterNumberDTO((float)$values[0], (float)$values[1], $property_id));
+                    $properties->add(
+                        new FilterNumberDTO((float)($values[0] ?? 0), (float)($values[1] ?? 0), $property_id)
+                    );
                 }
             }
         }

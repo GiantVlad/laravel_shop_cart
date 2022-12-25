@@ -11,11 +11,11 @@
     </template>
     <template v-else>
       <div class="form-group">
-        <input type="text" :id="'select-property-min-' + property.id" class="form-control"
+        <input type="number" :id="'select-property-min-' + property.id" class="form-control"
                placeholder="min" v-model="min" @change="filter('min_max')">
       </div>
       <div class="form-group">
-        <input type="text" :id="'select-property-max-' + property.id" class="form-control"
+        <input type="number" :id="'select-property-max-' + property.id" class="form-control"
                placeholder="max" v-model="max" @change="filter('min_max')">
       </div>
     </template>

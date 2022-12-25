@@ -6,6 +6,7 @@ use App\DTO\FilterNumberDTO;
 use App\DTO\FilterSelectorDTO;
 use App\Product;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ProductRepository
@@ -27,13 +28,15 @@ class ProductRepository
             });
         foreach ($filters as $filterDto) {
             $query->whereHas('properties', function ($q) use ($filterDto) {
-                $q->when($filterDto instanceof FilterNumberDTO, function ($nQuery) use ($filterDto) {
+                $q->when($filterDto instanceof FilterNumberDTO, function (Builder $nQuery) use ($filterDto) {
                     $nQuery->where('property_values.property_id', $filterDto->getId());
                     if ($filterDto->getMinValue()) {
-                        $nQuery->where('property_values.value', '>=', $filterDto->getMinValue());
+                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) >= ?')
+                            ->addBinding($filterDto->getMinValue());
                     }
                     if ($filterDto->getMaxValue()) {
-                        $nQuery->where('property_values.value', '<=', $filterDto->getMaxValue());
+                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) <= ?')
+                            ->addBinding($filterDto->getMaxValue());
                     }
                 })
                 ->when($filterDto instanceof FilterSelectorDTO, function ($sQuery) use ($filterDto) {

@@ -34,11 +34,16 @@ Route::post('/order/action', 'OrderController@doAction')->name('change.order.sta
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@getChildCatalogs');
+    Route::get('/properties', 'ShopController@getFilterProperties');
     Route::get('/{id}', 'ShopController@getProduct')->name('product');
 });
 
+Route::prefix('filter')->group( function() {
+    Route::get('/', 'SearchController@filter')->name('filter');
+    Route::get('/properties', 'FilterController@getFilterProperties')->name('get-filter-properties');
+});
+
 Route::get('search', 'SearchController@search')->name('search');
-Route::get('filter', 'SearchController@filter')->name('filter');
 
 Auth::routes();
 

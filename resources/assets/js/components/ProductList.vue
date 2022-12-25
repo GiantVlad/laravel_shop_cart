@@ -19,6 +19,7 @@ export default {
     return {
       products: [],
       csrf: '',
+      filter: {},
     }
   },
   watch: {
@@ -92,8 +93,9 @@ export default {
     });
     this.$root.$on('product_filters', data => {
       const filters = this.parseFilterValues(data.filters);
-      filters.category_id = this.parseCategory();
-      this.filterProducts(filters)
+      filters.category_id = this.filters?.category_id;
+      this.filters = filters
+      this.filterProducts(this.filters)
     })
   },
   mounted() {
@@ -104,9 +106,8 @@ export default {
     }
     this.$root.$on('category_changed', categoryId => {
       if (categoryId) {
-        const filters = {} // this.parseFilterValues(data.filters);
-        filters.category_id = categoryId
-        this.filterProducts(filters)
+        this.filters.category_id = categoryId
+        this.filterProducts(this.filters)
       }
     });
   }

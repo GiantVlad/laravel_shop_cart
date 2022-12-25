@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\DTO\CategoriesDTO;
 use App\Http\Resources\CategoriesResource;
-use App\Http\Resources\CategoryCollection;
 use App\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -16,11 +15,6 @@ use App\Catalog;
 
 class ShopController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     private Catalog $catalog;
     private ViewFactoryContract $viewFactory;
     
@@ -30,16 +24,12 @@ class ShopController extends Controller
         $this->viewFactory = $viewFactory;
     }
     
-    /**
-     * @return View
-     */
     public function list(Request $request): View
     {
         $keyword = $request->get('keyword');
 
         /** @var ViewInstance $view */
         $view = $this->viewFactory->make('shop', ['keyword' => $keyword]);
-        $view->nest('links', 'layouts.links');
 
         return $view;
     }
@@ -54,9 +44,6 @@ class ShopController extends Controller
     public function getChildCatalogs(int $id): JsonResource
     {
         $childCatalogs = $id === 0 ? $this->catalog->whereNull('parent_id')->get() : $this->catalog->where('parent_id', $id)->get();
-        $catalog_ids = $this->catalog->getCatalogIdsTree($id);
-
-        // $products = Product::whereIn('catalog_id', $catalog_ids)->with('catalogs')->with('properties')->get();
         $parentId = $id;
         $parentCatalogsArray = [];
         while ($parentId !== null) {
@@ -68,9 +55,6 @@ class ShopController extends Controller
             }
         }
         $parentCatalogsArray = array_reverse($parentCatalogsArray);
-        // $properties = Property::with('propertyValues')->orderBy('priority')->get();
-        
-        //$view->nest('filter', 'layouts.filter', ['properties' => $properties]);
 
         return new CategoriesResource(new CategoriesDTO($childCatalogs, new Collection($parentCatalogsArray)));
     }
