@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoriesResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         /** @var CategoriesDTO $categoriesDto */
         $categoriesDto = $this->resource;

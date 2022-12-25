@@ -2,6 +2,11 @@
 @section('categories')
     <categories></categories>
 @stop
+
+@section('left-column')
+    <product-filters></product-filters>
+@stop
+
 @section('content')
     <div class="jumbotron jumbotron-fluid">
         <div class="container">

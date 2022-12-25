@@ -10,17 +10,20 @@
 
 <script>
 import ProductFilter from './ProductFilter'
+import axios from "axios";
 
 export default {
   name: "ProductFilters",
-  props: ['properties'],
+  props: [],
   components: {ProductFilter},
   data() {
     return {
       filters: [],
+      properties: [],
     }
   },
   created() {
+    this.getProperties()
     this.$root.$on('product_filter', data => {
       if (data.property_id) {
         this.filters = this.filters.filter(el => el.property_id !== data.property_id);
@@ -32,7 +35,14 @@ export default {
     apply() {
       this.$root.$emit('product_filters', {filters: this.filters});
     },
-  }
+    getProperties() {
+      axios.get(this.$baseUrl + '/filter/properties/')
+          .then(res => {
+            this.properties = res.data?.data ?? []
+          })
+          .catch(e => (console.log(e)))
+    }
+  },
 }
 </script>
 

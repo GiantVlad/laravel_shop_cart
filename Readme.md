@@ -20,11 +20,11 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
 
-ro reset roadrunner server
+To reset roadrunner server execute
 ```
 docker-compose exec roadrunner rr -c /etc/.rr.yaml reset
 ```
-to observe roadrunner workers
+To observe roadrunner workers execute
 ```
 docker-compose exec roadrunner rr -c /etc/.rr.yaml workers -i
 ```
