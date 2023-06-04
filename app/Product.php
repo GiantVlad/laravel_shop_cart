@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $image
  * @property int $qty (optional)
  * @property bool $is_related (optional)
- * @property Collection $properties
+ * @property Collection<PropertyValue> $properties
  *
  * @method Product findOrFail(int $id)
  */

@@ -29,8 +29,11 @@ To observe roadrunner workers execute
 docker-compose exec roadrunner rr -c /etc/.rr.yaml workers -i
 ```
 
-How to use [xdebug with roadrunner](https://roadrunner.dev/docs/php-debugging/2.x/en) 
-
+How to use [xdebug with roadrunner](https://roadrunner.dev/docs/php-debugging/2023.x/en)
+. Set in the rr settings: pool.num_workers: 1, pool.debug: false.
+If you have any active XDebug listener while starting RoadRunner with XDebug enabled — disable it. This will prevent false-positive debug session.
+Start server, enable listener and run:
+``docker-compose exec roadrunner rr -c /etc/.rr.yaml reset http``
 
 It uses roadrunner, Laravel/Octane and temporal.
 If you prefer more traditional nginx/php server, checkout to the version 0.01 please.

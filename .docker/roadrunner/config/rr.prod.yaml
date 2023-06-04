@@ -1,4 +1,4 @@
-version: "2.7"
+version: "3"
 
 rpc:
   listen: tcp://127.0.0.1:6001
@@ -18,6 +18,17 @@ http:
   headers:
     response:
       X-Powered-By: RoadRunner
+  ssl:
+    # force redirect to https connection
+    redirect: true
+    # custom https port (default 443)
+    port: 443
+    # ssl cert
+    cert: server.crt
+    # ssl private key
+    key: server.key
+    # rootCA certificate path
+    rootCa: root.crt
   static:
     dir: "/app/public"
     forbid: [".htaccess", ".php", ".sql", ".config", "php_errors.log"]
@@ -29,7 +40,7 @@ http:
     response:
       output: "output-header"
   pool:
-    num_workers: 2
+    num_workers: 3
     max_jobs: 64
     debug: false
 
