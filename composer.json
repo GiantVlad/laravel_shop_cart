@@ -4,36 +4,44 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/GiantVlad/braintreehttp_php.git"
+        }
+    ],
     "require": {
         "php": "^8.1",
-        "nyholm/psr7": "^1.5.1",
-        "doctrine/dbal": "^2.13.9",
-        "grpc/grpc" : "^1.42.0",
-        "guzzlehttp/guzzle": "^7.5",
-        "laravel/framework": "^9.44",
-        "laravel/helpers": "^1.5",
-        "laravel/octane": "^1.3",
-        "laravel/tinker": "^2.7",
-        "laravel/ui": "^3.4",
+        "nyholm/psr7": "^1.8.0",
+        "doctrine/dbal": "^3.6.3",
+        "grpc/grpc" : "^1.52.0",
+        "guzzlehttp/guzzle": "^7.7.0",
+        "laravel/framework": "^v10.13.1",
+        "laravel/helpers": "^v1.6.0",
+        "laravel/octane": "^v1.5.6",
+        "laravel/tinker": "^v2.8.1",
+        "laravel/ui": "^v4.2.2",
         "paypal/rest-api-sdk-php": "dev-2.0-beta",
-        "predis/predis": "^1.1",
-        "sentry/sentry-laravel": "^2.14",
-        "spatie/laravel-ignition": "^1.6",
-        "spiral/roadrunner": "^2.12",
-        "spiral/tokenizer": "^2.14",
-        "temporal/sdk": "^1.4",
-        "twbs/bootstrap": "^3.4"
+        "predis/predis": "^v2.1.2",
+        "sentry/sentry-laravel": "^3.4.1",
+        "spatie/laravel-ignition": "^2.1.3",
+        "spiral/roadrunner": "^v2.12.3",
+        "spiral/tokenizer": "^2.14.1",
+        "temporal/sdk": "^v2.5.1",
+        "twbs/bootstrap": "^v3.4.1",
+        "giantvlad/braintreehttp": "^0.4.2"
     },
     "require-dev": {
-        "filp/whoops": "~2.14",
-        "mockery/mockery": "^1.5",
-        "nunomaduro/collision": "^v6.3",
-        "nunomaduro/larastan": "^2.2",
-        "phpunit/phpunit": "^9.5",
-        "fakerphp/faker": "^1.21"
+        "filp/whoops": "~2.15.2",
+        "mockery/mockery": "^1.5.1",
+        "nunomaduro/collision": "^v7.5.2",
+        "nunomaduro/larastan": "^v2.6.0",
+        "phpunit/phpunit": "^10.2.0",
+        "fakerphp/faker": "^v1.22.0"
     },
     "autoload": {
         "psr-4": {
+            "BraintreeHttp\\": "vendor/giantvlad/braintreehttp/lib/BraintreeHttp/",
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
@@ -65,6 +73,9 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\Payment;
 
-use PayPal\Core\PayPalHttpClient;
 use PayPal\Core\SandboxEnvironment;
 use PayPal\v1\Payments\PaymentCreateRequest;
 

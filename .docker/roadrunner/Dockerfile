@@ -1,10 +1,10 @@
 ARG RR_VERSION
-ARG RR_IMAGE=spiralscout/roadrunner:${RR_VERSION}
+ARG RR_IMAGE=ghcr.io/roadrunner-server/roadrunner:${RR_VERSION}
 
 FROM ${RR_IMAGE} as rr
 FROM gaintvlad/lara_shop_roadrunner:latest
 
-ARG XDEBUG_VERSION=3.1.5
+ARG XDEBUG_VERSION=3.2.1
 ARG WWWUSER=1000
 ARG WWWGROUP=1000
 
@@ -20,10 +20,12 @@ RUN set -eux; \
 RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.connect_timeout_ms=2000" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
-#    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
+
 
 # Copy Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

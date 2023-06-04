@@ -31,7 +31,7 @@ class ShippingMethod extends Model
     protected $fillable = array('class_name', 'enable', 'priority');
     
     /**
-     * @return Collection<ShippingMethod>
+     * @return Collection
      */
     public function getAllEnabled(): Collection
     {
@@ -79,15 +79,17 @@ class ShippingMethod extends Model
     }
     
     /**
-     * @param Collection $shippingMethods
+     * @param Collection<ShippingMethod> $shippingMethods
      * @return Collection
      */
     private function addImplementation(Collection $shippingMethods): Collection
     {
         if ($shippingMethods->isNotEmpty()) {
-            $shippingMethods->filter(
-                fn(ShippingMethod $shippingMethod) => class_exists(self::NAMESPACE . $shippingMethod->class_name)
-            );
+            
+            $shippingMethods->filter(static function($shippingMethod, int $idx): bool {
+                /**  @var ShippingMethod $shippingMethod */
+                return class_exists(self::NAMESPACE . $shippingMethod->class_name);
+            });
             
             $shippingMethods->map(static function($shippingMethod) {
                 /** @var ShippingMethod $shippingMethod */

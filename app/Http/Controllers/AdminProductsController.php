@@ -102,12 +102,14 @@ class AdminProductsController extends Controller
         $categories = Catalog::all('id', 'name');
         $product = null;
         if ($id) {
+            /** @var Product $product */
             $product = Product::with('properties')->findOrFail($id);
             if (!$product instanceof Product) {
                 return back()->withErrors('Server Error... Product not found');
             }
         }
         
+        /** @var PropertyValue $property */
         foreach ($product->properties as $property) {
             if ($property->properties->type === 'selector') {
                 $property->properties->selectProperties =
