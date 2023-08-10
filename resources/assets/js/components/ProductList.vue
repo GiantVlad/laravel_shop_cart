@@ -105,7 +105,7 @@ export default {
       this.searchProducts(this.keyword);
     }
     this.$root.$on('category_changed', categoryId => {
-      if (categoryId) {
+      if (categoryId && this.filters !== undefined) {
         this.filters.category_id = categoryId
         this.filterProducts(this.filters)
       }
