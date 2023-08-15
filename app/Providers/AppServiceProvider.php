@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Temporal\Client\GRPC\ServiceClient;
 use Temporal\Client\WorkflowClient;
@@ -16,6 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot ()
     {
+        if(env('APP_HTTPS_FOR_STATIC', false))
+        {
+            $this->app->get('request')->server->set('HTTPS','on');
+            URL::forceScheme('https');
+        }
 //        if (!$this->app->runningInConsole()) {
 //            $catalog = new Catalog;
 //            View::share('catalogs', $catalog->parentsNode());

@@ -1,0 +1,198 @@
+version: '3'
+services:
+  roadrunner:
+    #image: gaintvlad/lara_shop_roadrunner:1.001
+    build:
+      context: ./
+      dockerfile: ./.docker/roadrunner/DockerfileProd
+      args:
+        RR_VERSION: ${RR_VERSION}
+        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION}
+    image: ul1acr.azurecr.io/lara_shop/l_roadrunner
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    ports:
+      - "80:80"
+    env_file: .env.prod
+    environment:
+      #      RR_VERSION: ${RR_VERSION}
+      APP_BASE_PATH: /app
+      #PHP_IDE_CONFIG: "serverName=roadrunner.local"
+    working_dir: /app
+    depends_on:
+      - temporal
+      - postgresql
+      - mariadb
+    restart: on-failure
+    #    healthcheck:
+    #      interval: 1s
+    #      timeout: 3s
+    #      retries: 3
+    #      start_period: 10s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mariadb:
+    image: bitnami/mariadb:10
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+    environment:
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=secret
+      - MARIADB_ROOT_PASSWORD=rootsecret123
+      - MARIADB_DATABASE=shop
+      - MARIADB_SKIP_TEST_DB=yes
+#    ports:
+#      - '${DOCKER_MYSQL_PORT:-3307}:3306'
+#    volumes:
+#      - './.local_data/sql:/bitnami/mariadb'
+
+#  mariadb_test:
+#    image: bitnami/mariadb:10
+#    restart: unless-stopped
+#    environment:
+#      - MARIADB_USER=admin
+#      - MARIADB_PASSWORD=secret
+#      - MARIADB_ROOT_PASSWORD=rootsecret123
+#      - MARIADB_DATABASE=shop
+#      - MARIADB_SKIP_TEST_DB=yes
+#    ports:
+#      - '${DOCKER_MYSQL_TEST_PORT:-3308}:3306'
+
+  redis:
+    image: redis:6.2.5-alpine
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+#    ports:
+#      - '${DOCKER_REDIS_PORT:-6380}:6379'
+#    command:
+#      - '--appendonly yes'
+#      - '--databases'
+#      - '512'
+#    volumes:
+#      - './.local_data/redis:/data'
+
+#  mailhog:
+#    image: mailhog/mailhog
+#    restart: on-failure
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.25'
+#          memory: 1G
+#    environment:
+#      MH_UI_WEB_PATH: mailhog
+#    ports:
+#      - '8025:8025'
+
+  postgresql:
+    container_name: temporal-postgresql
+    image: postgres:9.6
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+    environment:
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_USER: temporal
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - './.local_data/temporal_sql:/var/lib/postgresql/data'
+
+  temporal:
+#    image: temporalio/auto-setup:latest
+    build:
+      context: ./
+      dockerfile: ./.docker/temporal/Dockerfile
+    image: gaintvlad/l_temporal
+    depends_on:
+      - postgresql
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "tctl",
+          "--address",
+          "temporal:7233",
+          "workflow",
+          "list"
+        ]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=postgresql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+#    ports:
+#      - "7233:7233"
+#    volumes:
+#      - ./.docker/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
+
+  temporal-admin-tools:
+    image: temporalio/admin-tools:latest
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+
+  temporal-web:
+    image: temporalio/web:latest
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_GRPC_ENDPOINT=temporal:7233
+      - TEMPORAL_PERMIT_WRITE_API=true
+    ports:
+      - "8088:8088"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+
+  temporal-ui:
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    image: temporalio/ui:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1G
+    #    networks:
+    #      - temporal-network
+#    ports:
+#      - 8099:8080
