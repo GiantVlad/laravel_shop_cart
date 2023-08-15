@@ -18,5 +18,6 @@
 .env.*.local
 .env.local
 .env
+.env.prod
 build/
 node_modules/

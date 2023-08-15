@@ -10,6 +10,7 @@ services:
         PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION}
     ports:
       - "80:80"
+      - "443:443"
       - "6001:6001"
     env_file: .env
     environment:
@@ -58,6 +59,8 @@ services:
       - MARIADB_SKIP_TEST_DB=yes
     ports:
       - '${DOCKER_MYSQL_TEST_PORT:-3308}:3306'
+    volumes:
+      - './.local_data/test_sql:/bitnami/mariadb'
 
   redis:
     image: redis:6.2.5-alpine

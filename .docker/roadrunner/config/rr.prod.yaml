@@ -20,15 +20,15 @@ http:
       X-Powered-By: RoadRunner
   ssl:
     # force redirect to https connection
-    redirect: true
+    redirect: false
     # custom https port (default 443)
     port: 443
     # ssl cert
-    cert: server.crt
+    cert: /app/ssl/certificate.crt
     # ssl private key
-    key: server.key
+    key: /app/ssl/private.key
     # rootCA certificate path
-    rootCa: root.crt
+    rootCa: /app/ssl/ca_bundle.crt
   static:
     dir: "/app/public"
     forbid: [".htaccess", ".php", ".sql", ".config", "php_errors.log"]

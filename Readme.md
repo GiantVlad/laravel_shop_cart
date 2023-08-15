@@ -15,10 +15,25 @@ There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
 4. Copy ".env.example" file and rename to ".env". Edit the .env file (connect to DB).
 5. Run "docker-compose up" (you may need to restart docker-compose up 3-4 times).
 
+It uses roadrunner, Laravel/Octane and temporal.
+If you prefer more traditional nginx/php server, checkout to the version 0.01 please.
 
 ### Local endpoints:
 - localhost  -- Main App
 - localhost:8088 -- [Temporal](https://temporal.io) UI 
+
+HTTPS locally
+```
+mkdir ssl && cd ssl && mkcert -install
+```
+
+Populate database
+```
+docker-compose exec roadrunner /bin/bash
+composer install
+php artisan migrate
+php artisan db:seed --class=DatabaseSeeder
+```
 
 To reset roadrunner server execute
 ```
@@ -34,8 +49,5 @@ How to use [xdebug with roadrunner](https://roadrunner.dev/docs/php-debugging/20
 If you have any active XDebug listener while starting RoadRunner with XDebug enabled — disable it. This will prevent false-positive debug session.
 Start server, enable listener and run:
 ``docker-compose exec roadrunner rr -c /etc/.rr.yaml reset http``
-
-It uses roadrunner, Laravel/Octane and temporal.
-If you prefer more traditional nginx/php server, checkout to the version 0.01 please.
 
 _Uladzimir Sadkou_: hofirma@gmail.com 
