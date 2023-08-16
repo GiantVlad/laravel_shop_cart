@@ -3,7 +3,7 @@
 ## This is a Laravel + Vue.js e-commerce template that will make it easy for you to start your own online store.
 
 
-There is the [DEMO](http://uls.northeurope.cloudapp.azure.com/) ULE-shop.
+There is the [DEMO](https://lara-shop.westeurope.cloudapp.azure.com/) ULE-shop.
 
 [Video presentation](https://youtu.be/McmVr2FEo-0)
 
