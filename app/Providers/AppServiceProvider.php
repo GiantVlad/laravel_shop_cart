@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Temporal\Client\GRPC\ServiceClient;
 use Temporal\Client\WorkflowClient;
 use Temporal\Client\WorkflowClientInterface;
@@ -15,22 +17,17 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot ()
+    public function boot (): void
     {
         if(env('APP_HTTPS_FOR_STATIC', false))
         {
-            $this->app->get('request')->server->set('HTTPS','on');
-            URL::forceScheme('https');
+            try {
+                $this->app->get('request')->server->set('HTTPS', 'on');
+                URL::forceScheme('https');
+            } catch (\Throwable $e) {
+            }
+            
         }
-//        if (!$this->app->runningInConsole()) {
-//            $catalog = new Catalog;
-//            View::share('catalogs', $catalog->parentsNode());
-//        }
-//
-//        //Delete records from "product_property" table
-//        Product::deleting(function ($product) {
-//            $product->properties()->detach();
-//        });
     }
 
     /**
