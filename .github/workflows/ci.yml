@@ -3,9 +3,9 @@ name: CI
 on:
   pull_request:
     branches: [ master ]
-  push:
-    branches:
-      - master
+#  push:
+#    branches:
+#      - master
 
 permissions:
   contents: 'read'
@@ -195,7 +195,7 @@ jobs:
         with:
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
-          file: ./Dockerfile
+          file: .docker/roadrunner/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
