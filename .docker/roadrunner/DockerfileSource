@@ -225,7 +225,7 @@ RUN apk add $PHPIZE_DEPS libstdc++ linux-headers
 #RUN pecl install grpc; \
 #	docker-php-ext-enable grpc
 
-RUN git clone -b v1.48.0 https://github.com/grpc/grpc \
+RUN git clone -b v1.60.1 https://github.com/grpc/grpc \
     && cd grpc \
     && git submodule update --init --depth 1 \
     && EXTRA_DEFINES=GRPC_POSIX_FORK_ALLOW_PTHREAD_ATFORK make \
