@@ -1,4 +1,4 @@
-ARG RR_VERSION
+ARG RR_VERSION=2023.3.10
 ARG RR_IMAGE=ghcr.io/roadrunner-server/roadrunner:${RR_VERSION}
 
 FROM ${RR_IMAGE} as rr
@@ -17,11 +17,11 @@ RUN set -eux; \
 	docker-php-ext-enable xdebug; \
 	apk del .build-deps
 
-RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.connect_timeout_ms=2000" >> /usr/local/etc/php/conf.d/xdebug.ini
+#RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.connect_timeout_ms=2000" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
 #    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
@@ -41,6 +41,9 @@ WORKDIR /app
 COPY .docker/roadrunner/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 
 COPY ./ /app
+
+#ARG COMPOSER_ALLOW_SUPERUSER=1
+#RUN composer update
 
 RUN composer install \
       --no-dev \
