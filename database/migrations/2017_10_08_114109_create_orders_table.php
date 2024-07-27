@@ -16,7 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('commentary');
-            $table->float('total', 8, 2);
+            $table->float('total', 2);
             $table->enum('status', ['process', 'completed', 'deleted']);
             $table->timestamps();
         });

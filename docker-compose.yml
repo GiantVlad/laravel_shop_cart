@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   roadrunner:
     #image: gaintvlad/lara_shop_roadrunner:1.001
@@ -35,7 +34,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   mariadb:
-    image: bitnami/mariadb:10
+    image: bitnami/mariadb:latest
     restart: unless-stopped
     environment:
       - MARIADB_USER=admin
@@ -49,7 +48,7 @@ services:
       - './.local_data/sql:/bitnami/mariadb'
 
   mariadb_test:
-    image: bitnami/mariadb:10
+    image: bitnami/mariadb:latest
     restart: unless-stopped
     environment:
       - MARIADB_USER=admin
@@ -84,7 +83,7 @@ services:
 
   postgresql:
     container_name: temporal-postgresql
-    image: postgres:9.6
+    image: postgres:12-alpine
     environment:
       POSTGRES_PASSWORD: temporal
       POSTGRES_USER: temporal
@@ -112,7 +111,7 @@ services:
       timeout: 5s
       retries: 30
     environment:
-      - DB=postgresql
+      - DB=postgres12
       - DB_PORT=5432
       - POSTGRES_USER=temporal
       - POSTGRES_PWD=temporal
