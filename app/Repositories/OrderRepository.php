@@ -76,7 +76,7 @@ class OrderRepository
                 'order_id' => $order->id,
                 'payment_method_id' => $requestData['paymentMethodId'],
             ]);
-            $order->dispatches()->saveMany([$payment]);
+            $order->payments()->saveMany([$payment]);
         });
         
         return $order;

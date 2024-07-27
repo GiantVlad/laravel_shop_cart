@@ -27,7 +27,7 @@ class Order extends Model
     use HasFactory;
     
     /**
-     * @var string[]
+     * @var array<int, string>
      */
     protected $fillable = array('commentary', 'total', 'status', 'order_label');
     

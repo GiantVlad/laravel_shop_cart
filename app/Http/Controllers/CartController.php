@@ -243,6 +243,7 @@ class CartController extends Controller
     public function addRelated(CartAddRelatedRequest $request): JsonResponse
     {
         $id = (int)$request->validated()['id'];
+        
         $this->cartService->addRelatedProduct($request->user()->id, $id);
         
         return response()->json();

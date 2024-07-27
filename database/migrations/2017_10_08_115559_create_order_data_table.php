@@ -18,7 +18,7 @@ class CreateOrderDataTable extends Migration
             $table->integer('order_id');
             $table->integer('product_id');
             $table->integer('is_related_product');
-            $table->float('price', 8, 2);
+            $table->float('price', 2);
             $table->integer('qty');
             $table->timestamps();
         });

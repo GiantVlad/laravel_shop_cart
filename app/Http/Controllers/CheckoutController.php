@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderCreated;
 use App\Events\PaymentCreated;
+use App\Exceptions\PaymentException;
 use App\Http\Requests\CheckoutRequest;
 use App\Repositories\OrderRepository;
 use App\Services\Cart\CartService;
 use App\Services\Payment\PaymentMethodManager;
+use App\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -53,6 +55,9 @@ class CheckoutController extends Controller
 
         $subtotal = $requestData['subtotal'];
         $user = $request->user();
+        if (!$user instanceof User) {
+            throw new PaymentException('Invalid user');
+        }
         
         $order = $orderRepository->createOrder(
             $user,

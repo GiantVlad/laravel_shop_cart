@@ -29,7 +29,7 @@ class PaymentMethod extends Model
     use HasFactory;
     
     /**
-     * @var string[]
+     * @var array<int, string>
      */
     protected $fillable = ['class_name', 'priority', 'config_key', 'enabled', 'label'];
 }

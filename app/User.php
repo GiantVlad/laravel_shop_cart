@@ -20,7 +20,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array<int, string>
      */
     protected $fillable = [
         'name', 'email', 'password', 'cart',
@@ -40,7 +40,7 @@ class User extends Authenticatable
      */
     public function orders(): HasMany
     {
-        return $this->hasMany('Order', 'user_id', 'id');
+        return $this->hasMany(Order::class, 'user_id', 'id');
     }
     
     /**
