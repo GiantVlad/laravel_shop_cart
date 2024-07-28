@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   composer-validate:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     name: "Composer Validate"
     steps:
       - name: 'Checkout Code'
@@ -24,7 +24,7 @@ jobs:
 
   composer-install:
     needs: composer-validate
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     name: "Composer Install"
     steps:
       - name: 'Checkout Code'
@@ -33,7 +33,7 @@ jobs:
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           ini-values: memory_limit=-1
           coverage: none
           tools: composer:v2
@@ -81,7 +81,7 @@ jobs:
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           ini-values: memory_limit=-1
           coverage: none
           tools: composer:v2
@@ -105,7 +105,7 @@ jobs:
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           ini-values: memory_limit=-1
           coverage: none
           tools: composer:v2

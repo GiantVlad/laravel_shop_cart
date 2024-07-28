@@ -1,8 +1,8 @@
-ARG RR_VERSION=2023.3.10
+ARG RR_VERSION=2024.2.0
 ARG RR_IMAGE=ghcr.io/roadrunner-server/roadrunner:${RR_VERSION}
 
 FROM ${RR_IMAGE} as rr
-FROM gaintvlad/lara_shop_roadrunner:latest
+FROM gaintvlad/lara_shop_roadrunner:8.3-2024.2
 
 ARG XDEBUG_VERSION=3.2.1
 ARG WWWUSER=1000
