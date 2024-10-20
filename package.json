@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@sentry/tracing": "^6.17.9",
-    "@sentry/vue": "^7.26.0",
+    "@sentry/vue": "^8.33.1",
     "bootstrap": "^3.4.1",
     "follow-redirects": ">=1.15.6",
     "moment": "^2.29.4",
