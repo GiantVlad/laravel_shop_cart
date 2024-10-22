@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
+use Inertia\Inertia;
 
 class HomeController extends Controller
 {
@@ -14,14 +15,14 @@ class HomeController extends Controller
     public function __construct()
     {
     }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return View
-     */
-    public function index() : View
+    
+    public function index()
     {
-        return view('home');
+        return Inertia::render('Home', [
+            'user' => [
+                'id' => 12,
+                'name' => 'my name',
+            ],
+        ]);
     }
 }

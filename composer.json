@@ -16,6 +16,7 @@
         "giantvlad/braintreehttp": "^0.4.2",
         "grpc/grpc": "^1.57.0",
         "guzzlehttp/guzzle": "^7.9.2",
+        "inertiajs/inertia-laravel": "^1.3",
         "laravel/framework": "^v11.18.1",
         "laravel/helpers": "^v1.7.0",
         "laravel/octane": "^v2.5.2",

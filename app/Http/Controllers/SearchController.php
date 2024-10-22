@@ -11,10 +11,12 @@ use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use App\Product;
 use Illuminate\Support\Collection;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SearchController extends Controller
 {
-    public function search(Request $request): ProductCollection
+    public function search(Request $request): Response
     {
         $keyword = $request->input('keyword');
         $products = Product::where("name", "LIKE", "%$keyword%")
@@ -23,7 +25,9 @@ class SearchController extends Controller
             ->limit(Product::LIST_LIMIT)
             ->get();
         
-        return new ProductCollection($products);
+        return Inertia::render('ProductList', [
+            'products' => $products,
+        ]);
     }
     
     public function filter(

@@ -1,4 +1,4 @@
-@extends('app')
+@extends('app_old')
 
 @section('content')
     <div class="jumbotron jumbotron-fluid">
@@ -11,15 +11,15 @@
 
             @if(!empty($products))
                 <cart
-                    :products="{{ json_encode($products) }}"
-                    :shipping="{{ json_encode($shippingMethods) }}"
-                    :payments="{{ json_encode($payments) }}"
-                    @if (!empty($relatedProduct))
-                        :related-product="{{json_encode($relatedProduct)}}"
-                    @else
-                        :related-product="{}"
-                    @endif
-                    >
+                        :products="{{ json_encode($products) }}"
+                        :shipping="{{ json_encode($shippingMethods) }}"
+                        :payments="{{ json_encode($payments) }}"
+                        @if (!empty($relatedProduct))
+                            :related-product="{{json_encode($relatedProduct)}}"
+                        @else
+                            :related-product="{}"
+                        @endif
+                >
                 </cart>
             @endif
 

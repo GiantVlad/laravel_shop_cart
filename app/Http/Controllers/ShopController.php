@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\CategoriesDTO;
 use App\Http\Resources\CategoriesResource;
+use App\Http\Resources\ProductCollection;
 use App\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Collection;
 use Illuminate\View\View as ViewInstance;
 use \Illuminate\Contracts\View\Factory as ViewFactoryContract;
 use App\Catalog;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ShopController extends Controller
 {
@@ -24,21 +27,27 @@ class ShopController extends Controller
         $this->viewFactory = $viewFactory;
     }
     
-    public function list(Request $request): View
+    public function list(Request $request)
     {
-        $keyword = $request->get('keyword');
-
-        /** @var ViewInstance $view */
-        $view = $this->viewFactory->make('shop', ['keyword' => $keyword]);
-
-        return $view;
+        $products = Product::query()
+            ->orderBy('updated_at', 'desc')
+            ->limit(Product::LIST_LIMIT)
+            ->get();
+        
+        //$productResource =  new ProductCollection($products);
+        return Inertia::render('ProductList', [
+            'products' => $products,
+        ]);
     }
     
-    public function getProduct(int $id): View
+    public function getProduct(int $id): Response
     {
         $product = Product::with('properties')->findOrFail($id);
         
-        return view('shop.single', ['product' => $product]);
+        return Inertia::render('Product', [
+            'product' => $product,
+        ]);
+        // return view('shop.single', ['product' => $product]);
     }
     
     public function getChildCatalogs(int $id): JsonResource
