@@ -47,7 +47,6 @@ class ShopController extends Controller
         return Inertia::render('Product', [
             'product' => $product,
         ]);
-        // return view('shop.single', ['product' => $product]);
     }
     
     public function getChildCatalogs(int $id): JsonResource

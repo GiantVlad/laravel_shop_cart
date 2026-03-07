@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Property;
 use App\PropertyValue;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -18,12 +19,18 @@ class AdminPropertiesController extends Controller
      * @param Request $request
      * @return string
      */
-    public function getProperties(Request $request): string
+    public function getProperties(Request $request): JsonResponse|string
     {
         $properties = Property::all();
 
-        if ($request->getContentTypeFormat() === 'json') {
-            return view('admin.property-modal', compact('properties'))->render();
+        if ($request->expectsJson()) {
+            return response()->json([
+                'properties' => $properties->map(static fn (Property $property): array => [
+                    'id' => $property->id,
+                    'name' => $property->name,
+                    'type' => $property->type,
+                ]),
+            ]);
         }
     
         return '';
@@ -34,7 +41,7 @@ class AdminPropertiesController extends Controller
      * @param int $id
      * @return string
      */
-    public function getPropertyValues(Request $request, int $id): string
+    public function getPropertyValues(Request $request, int $id): JsonResponse|string
     {
         $propertyValues = PropertyValue::where('property_id', $id)->get();
 
@@ -42,8 +49,23 @@ class AdminPropertiesController extends Controller
             $propertyValues = ['property_id' => $id, 'type' => 'number'];
         }
 
-        if ($request->getContentTypeFormat() === 'json') {
-            return view('admin.property-values', compact('propertyValues'))->render();
+        if ($request->expectsJson()) {
+            if (is_array($propertyValues)) {
+                return response()->json([
+                    'propertyValues' => [],
+                    'propertyType' => $propertyValues['type'],
+                    'propertyId' => $propertyValues['property_id'],
+                ]);
+            }
+
+            return response()->json([
+                'propertyValues' => $propertyValues->map(static fn (PropertyValue $value): array => [
+                    'id' => $value->id,
+                    'value' => $value->value,
+                ]),
+                'propertyType' => Property::TYPE_SELECTOR,
+                'propertyId' => $id,
+            ]);
         }
     
         return '';
@@ -54,7 +76,7 @@ class AdminPropertiesController extends Controller
      * @return int
      * @throws ValidationException
      */
-    public function addPropertyToProduct(Request $request): int
+    public function addPropertyToProduct(Request $request): JsonResponse|int
     {
         $this->validate($request, [
             'property_value' => 'required',
@@ -77,8 +99,8 @@ class AdminPropertiesController extends Controller
         }
         $propertyValue->products()->syncWithoutDetaching([$request->product_id]);
         
-        if ($request->getContentTypeFormat() === 'json') {
-            return (int)$request->get('product_id');
+        if ($request->expectsJson()) {
+            return response()->json(['productId' => (int)$request->get('product_id')]);
         }
     
         return 0;
@@ -89,7 +111,7 @@ class AdminPropertiesController extends Controller
      * @return int
      * @throws ValidationException
      */
-    public function createProperty(Request $request): int
+    public function createProperty(Request $request): JsonResponse|int
     {
         $this->validate($request, [
             'property_name' => 'required | min:2 | max:50',
@@ -114,8 +136,8 @@ class AdminPropertiesController extends Controller
             );
         }
 
-        if ($request->getContentTypeFormat() === 'json') {
-            return $property->id;
+        if ($request->expectsJson()) {
+            return response()->json(['propertyId' => $property->id]);
         }
     
         return 0;

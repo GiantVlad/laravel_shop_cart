@@ -34,7 +34,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   mariadb:
-    image: bitnami/mariadb:latest
+    image: mariadb:11.7.2
     restart: unless-stopped
     environment:
       - MARIADB_USER=admin
@@ -48,7 +48,7 @@ services:
       - './.local_data/sql:/bitnami/mariadb'
 
   mariadb_test:
-    image: bitnami/mariadb:latest
+    image: mariadb:11.7.2
     restart: unless-stopped
     environment:
       - MARIADB_USER=admin

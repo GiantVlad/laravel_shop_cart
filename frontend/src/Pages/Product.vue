@@ -1,148 +1,111 @@
 <template>
-  <div class="product-cart">
-    <div class="cart-wrapper">
-      <div class="cart-header">
-        <a :href="'/shop/' + product.id">
-          <h4 class="header">{{ product.name }}</h4>
-        </a>
+  <article class="product-card card h-100 border-0 shadow-sm">
+    <a :href="`/shop/${product.id}`" class="product-card__media-link">
+      <div class="product-card__media">
+        <img
+          class="product-card__image"
+          :alt="product.name"
+          :src="`/images/${product.image}`"
+        >
+      </div>
+    </a>
 
-        <!--                <p>Category: {{product.catalogs.name}}</p>-->
-      </div>
-      <div class="effect" @click="slide">
-        <span class="glyphicon glyphicon-triangle-bottom" :class="{'up':!active}"></span>
-      </div>
+    <div class="card-body d-flex flex-column">
+      <a :href="`/shop/${product.id}`" class="product-card__title-link text-decoration-none">
+        <h2 class="product-card__title h5 mb-2">{{ product.name }}</h2>
+      </a>
 
-      <div class="thumbnail">
-        <a :href="'/shop/' + product.id">
-          <div class="img-wrapper">
-            <vue-slide-up-down :active="active">
-              <img class="center-block" :alt="'product id ' + product.id"
-                   :src="'/images/'+product.image" :class="{'is-displayed':active}">
-            </vue-slide-up-down>
-            <vue-slide-up-down :active="!active">
-              <p class="product-shop-desc" :class="{'is-displayed':!active}">Description:<br>{{ product.description }}
-              </p>
-            </vue-slide-up-down>
-          </div>
-        </a>
-      </div>
-      <p>Price: {{ product.price }}
-        <button type="button" class="btn btn-link add-to-cart" @click="addToCart(product.id)">
-          ADD TO CART
-        </button>
+      <p class="product-card__description text-body-secondary mb-3">
+        {{ product.description }}
       </p>
+
+      <div class="mt-auto d-flex align-items-center justify-content-between gap-3">
+        <p class="product-card__price mb-0">${{ formattedPrice }}</p>
+        <Link
+          href="/cart/add-to-cart"
+          method="post"
+          as="button"
+          type="button"
+          class="btn btn-dark btn-sm px-3"
+          :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
+        >
+          Add to cart
+        </Link>
+      </div>
     </div>
-  </div>
+  </article>
 </template>
 
 <script>
-import {Vue3SlideUpDown} from 'vue3-slide-up-down'
-import axios from 'axios'
 import Layout from "../Layouts/MainLayout.vue";
+import { Link } from '@inertiajs/vue3'
 
 export default {
   name: 'Product',
-  components: {Vue3SlideUpDown},
+  components: { Link },
   props: ['product'],
   layout: Layout,
-  data() {
-    return {
-      csrf: '',
-      active: true,
-    }
-  },
   computed: {
-  },
-  methods: {
-    slide() {
-      this.active = !this.active
-    },
-    addToCart(product_id) {
-      axios.post(this.$baseUrl + '/cart/add-to-cart', {
-        productId: product_id,
-        isRelated: 0,
-        productQty: 1,
-        _token: this.csrf
-      }).then(response => {
-        this.$root.$emit('nav_cart', response.data.data)
-      }).catch(e => {
-        if (e.response && e.response.status === 401) {
-          window.location.href = this.$baseUrl + '/login';
-        } else {
-          console.log(e)
-        }
-        //this.errors.push(e)
-      })
+    formattedPrice() {
+      return Number(this.product.price).toFixed(2)
     },
   },
-  mounted() {
-    // this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
-  }
 }
 </script>
 
-<style lang="scss" scoped>
-.product-cart {
-  margin-bottom: 15px;
+<style scoped>
+.product-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf6ef 100%);
+}
 
-  .cart-wrapper {
-    border: 1px solid gray;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    text-align: center;
+.product-card__media-link {
+  display: block;
+  background:
+    radial-gradient(circle at top left, rgba(207, 163, 94, 0.18), transparent 42%),
+    linear-gradient(135deg, #fffaf2 0%, #f2eadf 100%);
+}
 
-    .cart-header {
-      height: 6em;
-      position: relative;
-    }
+.product-card__media {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
 
-    .effect {
-      margin-top: 5px;
+.product-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-      .glyphicon {
-        vertical-align: top;
-        -webkit-transition: 0.6s ease-out;
-        -moz-transition: 0.6s ease-out;
-        transition: 0.6s ease-out;
-      }
+.product-card__title-link {
+  color: #1c1a17;
+}
 
-      .glyphicon.up {
-        -webkit-transform: rotateZ(180deg);
-        -moz-transform: rotateZ(180deg);
-        transform: rotateZ(180deg);
-      }
+.product-card__title {
+  line-height: 1.35;
+  min-height: 2.7em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-      .glyphicon-triangle-bottom {
-        cursor: pointer;
-      }
+.product-card__description {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-    }
-
-    .thumbnail {
-      a:hover {
-        text-decoration: none;
-      }
-
-      .img-wrapper {
-        width: 100%;
-        padding-bottom: 100%; /* your aspect ratio here! */
-        position: relative;
-        height: 20em;
-
-        .product-shop-desc {
-          text-align: justify;
-          padding: 0px 7px;
-        }
-
-        img {
-          position: relative;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          max-width: 100%;
-        }
-      }
-    }
-  }
+.product-card__price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #201a12;
 }
 </style>

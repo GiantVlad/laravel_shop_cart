@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\ShippingMethod;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminShippingMethodsController extends Controller
 {
@@ -24,11 +25,18 @@ class AdminShippingMethodsController extends Controller
     /**
      * @return View
      */
-    public function list(): View
+    public function list(): Response
     {
-        $shippingMethods = $this->shippingMethod->list();
+        $shippingMethods = $this->shippingMethod->list()->map(static function (ShippingMethod $method): array {
+            return [
+                'id' => $method->id,
+                'label' => $method->label,
+                'priority' => $method->priority,
+                'enabled' => (bool)$method->enable,
+            ];
+        });
 
-        return view('admin.shipping-methods', ['shippingMethods' => $shippingMethods]);
+        return Inertia::render('Admin/ShippingMethods/Index', ['shippingMethods' => $shippingMethods]);
     }
     
     /**
@@ -68,7 +76,7 @@ class AdminShippingMethodsController extends Controller
      * @return string
      * @throws ValidationException
      */
-    public function changeStatus(Request $request): string
+    public function changeStatus(Request $request): \Illuminate\Http\JsonResponse|string
     {
         $this->validate($request, [
             'status' => 'required',
@@ -76,9 +84,16 @@ class AdminShippingMethodsController extends Controller
         ]);
         //$status = $request->status ? 1 : 0;
         $this->shippingMethod->where('id', $request->method_id)->update(['enable' => $request->get('status')]);
-        $shippingMethods = $this->shippingMethod->list();
-        if ($request->getContentTypeFormat() === 'json') {
-            return view('admin.shipping-methods-load', compact('shippingMethods'))->render();
+        $shippingMethods = $this->shippingMethod->list()->map(static function (ShippingMethod $method): array {
+            return [
+                'id' => $method->id,
+                'label' => $method->label,
+                'priority' => $method->priority,
+                'enabled' => (bool)$method->enable,
+            ];
+        });
+        if ($request->expectsJson()) {
+            return response()->json(['shippingMethods' => $shippingMethods]);
         }
         
         return '';

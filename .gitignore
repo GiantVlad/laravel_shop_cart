@@ -18,5 +18,5 @@ yarn-error.log
 /Vagrantfile
 /.phpunit.result.cache
 .local_data/
-
+.DS_Store
 ssl/*

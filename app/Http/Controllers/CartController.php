@@ -24,6 +24,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
+use Inertia\Inertia;
+use Inertia\Response;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class CartController extends Controller
@@ -163,74 +165,12 @@ class CartController extends Controller
      * @throws InvalidArgumentException
      * @phpstan-ignore-next-line
      */
-    public function index(Request $request, ShippingMethod $shippingMethod, PaymentMethodManager $paymentMethodList): View
-    {
-        $cartProducts = $this->cacheRepository->get(CartService::CART_KEY . $request->user()->id);
-        
-        if (empty($cartProducts)) {
-            return view('empty-cart');
-        }
-
-        $products = [];
-        $index = 0;
-        $productsIds = [];
-
-        $shippingMethods = $shippingMethod->getAllEnabled();
-        $paymentMethods = $paymentMethodList->getAllEnabled();
-        
-        foreach ($cartProducts as $key => $cartProduct) {
-            if ($key === 'total') {
-                continue;
-            }
-            if ($key === 'shippingMethodId') {
-                $shippingMethods->map(function($method) use ($cartProducts) {
-                    /** @var ShippingMethod $method */
-                    if ($method->id == $cartProducts['shippingMethodId']) {
-                        $method->selected = true;
-                    } else {
-                        $method->selected = false;
-                    }
-                    return $method;
-                });
-
-                continue;
-            }
-            if ($key === 'paymentMethodId') {
-                $paymentMethods->map(function($method) use ($cartProducts) {
-                    /** @var ShippingMethod $method */
-                    if ($method->id == $cartProducts['paymentMethodId']) {
-                        $method->selected = true;
-                    } else {
-                        $method->selected = false;
-                    }
-                    return $method;
-                });
-        
-                continue;
-            }
-            
-            $product = $this->product->findOrFail($key);
-            
-            if ($product instanceof Product) {
-                $product->is_related = $cartProduct['isRelatedProduct'];
-                $product->qty = $cartProduct['productQty'];
-                $products[$index] = $product;
-                $productsIds[] = $products[$index]->id;
-                $index++;
-            }
-        }
-        
-        $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
-        
-        return view(
-            'cart',
-            [
-                'products' => $products,
-                'relatedProduct' => $relatedProduct,
-                'shippingMethods' => $shippingMethods,
-                'payments' => $paymentMethods,
-            ],
-        );
+    public function index(
+        Request $request,
+        ShippingMethod $shippingMethod,
+        PaymentMethodManager $paymentMethodList
+    ): Response {
+        return $this->renderCartPage($request->user()->id, $shippingMethod, $paymentMethodList);
     }
     
     /**
@@ -256,7 +196,11 @@ class CartController extends Controller
      * @phpstan-ignore-next-line
      * @throws InvalidArgumentException
      */
-    public function addToCart(CartAddRequest $request): CartPostResource|RedirectResponse|Redirector
+    public function addToCart(
+        CartAddRequest $request,
+        ShippingMethod $shippingMethod,
+        PaymentMethodManager $paymentMethodList,
+    ): CartPostResource|RedirectResponse|Redirector|Response
     {
         $productId = (int)$request->get('productId');
         $qty = (int)$request->get('productQty');
@@ -266,13 +210,91 @@ class CartController extends Controller
         } else {
             $this->cartService->addToCart($userId, $productId, $qty);
         }
-        $cart = $this->cartService->getCart($userId);
-        if ($request->getContentTypeFormat() === 'json') {
+        $cart = $this->cartService->getCart($userId) ?? [];
+        if ($request->expectsJson()) {
             $dto = new CartPostDTO(max((count($cart) - 3), 0), ($cart['total'] ?? 0));
-    
+
             return new CartPostResource($dto);
         }
 
-        return redirect('cart');
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('get.cart');
+        }
+
+        return $this->renderCartPage($userId, $shippingMethod, $paymentMethodList);
+    }
+
+    private function renderCartPage(
+        int $userId,
+        ShippingMethod $shippingMethod,
+        PaymentMethodManager $paymentMethodList,
+    ): Response {
+        $cartProducts = $this->cacheRepository->get(CartService::CART_KEY . $userId);
+
+        if (empty($cartProducts)) {
+            return Inertia::render(
+                'Cart',
+                [
+                    'products' => [],
+                    'relatedProduct' => null,
+                    'shippingMethods' => [],
+                    'payments' => [],
+                ],
+            );
+        }
+
+        $products = [];
+        $index = 0;
+        $productsIds = [];
+
+        $shippingMethods = $shippingMethod->getAllEnabled();
+        $paymentMethods = $paymentMethodList->getAllEnabled();
+
+        foreach ($cartProducts as $key => $cartProduct) {
+            if ($key === 'total') {
+                continue;
+            }
+            if ($key === 'shippingMethodId') {
+                $shippingMethods->map(function ($method) use ($cartProducts) {
+                    /** @var ShippingMethod $method */
+                    $method->selected = $method->id == $cartProducts['shippingMethodId'];
+
+                    return $method;
+                });
+
+                continue;
+            }
+            if ($key === 'paymentMethodId') {
+                $paymentMethods->map(function ($method) use ($cartProducts) {
+                    $method->selected = $method->id == $cartProducts['paymentMethodId'];
+
+                    return $method;
+                });
+
+                continue;
+            }
+
+            $product = $this->product->findOrFail($key);
+
+            if ($product instanceof Product) {
+                $product->is_related = $cartProduct['isRelatedProduct'];
+                $product->qty = $cartProduct['productQty'];
+                $products[$index] = $product;
+                $productsIds[] = $products[$index]->id;
+                $index++;
+            }
+        }
+
+        $relatedProduct = $this->relatedProduct->getRelatedProduct($productsIds);
+
+        return Inertia::render(
+            'Cart',
+            [
+                'products' => $products,
+                'relatedProduct' => $relatedProduct,
+                'shippingMethods' => $shippingMethods,
+                'payments' => $paymentMethods,
+            ],
+        );
     }
 }

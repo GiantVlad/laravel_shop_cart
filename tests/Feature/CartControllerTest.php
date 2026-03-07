@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Product;
 use App\RelatedProduct;
 use App\Services\Cart\CartService;
 use App\Services\Recommended\Recommended;
 use App\ShippingMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use App\User;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class CartControllerTest extends TestCase
 {
@@ -20,6 +23,7 @@ class CartControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->user = User::factory()->create();
         $this->cartService = app()->get(CartService::class);
     }
@@ -35,6 +39,13 @@ class CartControllerTest extends TestCase
         $response = $this->actingAs($this->user)->get('/cart');
 
         $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Cart', false)
+                ->where('products', [])
+                ->where('shippingMethods', [])
+                ->where('payments', [])
+        );
     }
 
     public function testAddRelated(): void
@@ -46,7 +57,7 @@ class CartControllerTest extends TestCase
 
         $related->products()->attach($product->id);
 
-        $response = $this->actingAs($this->user)->postJson('/cart/add-related', ['id' => '1']);
+        $response = $this->actingAs($this->user)->postJson('/cart/add-related', ['id' => $product->id]);
 
         $response->assertSuccessful();
     }
@@ -122,9 +133,7 @@ class CartControllerTest extends TestCase
         $response->assertSuccessful();
     }
     
-    /**
-     * @dataProvider shippingMethodValidatorDP
-     */
+    #[DataProvider('shippingMethodValidatorDP')]
     public function testChangeShippingValidation
     (
         int|string|null $shippingMethodId,
@@ -144,7 +153,7 @@ class CartControllerTest extends TestCase
         $response->assertJsonStructure(['message', 'errors' => [$invalidField]]);
     }
 
-    public function shippingMethodValidatorDP(): \Generator
+    public static function shippingMethodValidatorDP(): \Generator
     {
         $callback = function (bool $enabled = true) {
             ShippingMethod::query()->delete();
@@ -175,9 +184,7 @@ class CartControllerTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /**
-     * @dataProvider removeItemValidatorDP
-     */
+    #[DataProvider('removeItemValidatorDP')]
     public function testRemoveItemValidation(?int $productId, ?int $isRelated, ?int $subtotal, string $errorField): void
     {
         Product::factory()->create();
@@ -193,7 +200,7 @@ class CartControllerTest extends TestCase
     /**
      * @return array[]
      */
-    public function removeItemValidatorDP(): array
+    public static function removeItemValidatorDP(): array
     {
         return [
             'productId' => [null, 0, 0, 'productId'],

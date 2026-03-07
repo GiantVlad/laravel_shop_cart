@@ -5,19 +5,19 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.4",
-    "laravel-vite-plugin": "^1.0.5",
-    "sass": "^1.80.3",
-    "sass-embedded": "^1.79.5",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "laravel-vite-plugin": "^1.2.0",
+    "sass": "^1.85.1",
+    "sass-embedded": "^1.85.1",
     "vue-router": "^4.4.5"
   },
   "dependencies": {
-    "@inertiajs/vue3": "^1.2.0",
+    "@inertiajs/vue3": "^2.0.5",
     "@popperjs/core": "^2.11.8",
-    "axios": "^1.7.7",
+    "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
-    "vue": "^3.5.12",
+    "vue": "^3.5.13",
     "vue3-slide-up-down": "^2.1.0"
   },
   "type": "module"

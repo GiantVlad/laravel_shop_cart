@@ -18,9 +18,11 @@ class Dispatch extends JsonResource
      */
     public function toArray($request)
     {
+        $className = $this->whenLoaded('method')?->class_name;
+
         return [
             'id' => $this->id,
-            'label' => ShippingMethod::getLabel($this->whenLoaded('method')?->class_name),
+            'label' => $className ? ShippingMethod::getLabel($className) : '',
         ];
     }
 }

@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Order;
 use App\OrderData;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminOrdersController extends Controller
 {
@@ -19,11 +20,25 @@ class AdminOrdersController extends Controller
     /**
      * @return View
      */
-    public function list(): View
+    public function list(): Response
     {
-        $orders = $this->order->orderBy('created_at', 'desc')->paginate(15);
+        $orders = $this->order
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->through(static function (Order $order): array {
+                return [
+                    'id' => $order->id,
+                    'label' => $order->order_label,
+                    'createdAt' => $order->created_at?->format('Y-M-d H:i'),
+                    'userName' => $order->user?->name,
+                    'userEmail' => $order->user?->email,
+                    'total' => $order->total,
+                    'status' => $order->status,
+                ];
+            });
 
-        return view('admin.orders', ['orders' => $orders]);
+        return Inertia::render('Admin/Orders/Index', ['orders' => $orders, 'keyword' => null]);
     }
     
     /**
@@ -37,7 +52,7 @@ class AdminOrdersController extends Controller
      * @param Request $request
      * @return View|RedirectResponse
      */
-    public function search(Request $request): View|RedirectResponse
+    public function search(Request $request): Response|RedirectResponse
     {
         $keyword = $request->get('keyword');
 
@@ -45,9 +60,23 @@ class AdminOrdersController extends Controller
             return back();
         }
 
-        $selectedOrder = $this->order->getOrderByLabel($keyword)->paginate(15);
+        $selectedOrder = $this->order
+            ->getOrderByLabel($keyword)
+            ->with('user')
+            ->paginate(15)
+            ->through(static function (Order $order): array {
+                return [
+                    'id' => $order->id,
+                    'label' => $order->order_label,
+                    'createdAt' => $order->created_at?->format('Y-M-d H:i'),
+                    'userName' => $order->user?->name,
+                    'userEmail' => $order->user?->email,
+                    'total' => $order->total,
+                    'status' => $order->status,
+                ];
+            });
         
-        return view('admin.orders', ['orders' => $selectedOrder]);
+        return Inertia::render('Admin/Orders/Index', ['orders' => $selectedOrder, 'keyword' => $keyword]);
     }
     
     /**

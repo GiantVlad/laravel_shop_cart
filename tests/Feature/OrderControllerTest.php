@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Dispatch;
+use App\Http\Middleware\VerifyCsrfToken;
 use App\OrderData;
 use App\Payment;
 use App\Services\Order\OrderStatuses;
@@ -13,6 +14,7 @@ use App\Services\Payment\PaymentResponse;
 use Tests\TestCase;
 use App\User;
 use App\Order;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class OrderControllerTest extends TestCase
 {
@@ -21,6 +23,7 @@ class OrderControllerTest extends TestCase
     public function setUp() :void
     {
         parent::setUp();
+        $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->user = User::factory()->create();
     }
     
@@ -34,23 +37,44 @@ class OrderControllerTest extends TestCase
 
         $response = $this->actingAs($this->user)->get('/orders');
         $response->assertSuccessful();
-        $response->assertViewHas('orders');
-        $response->assertViewIs('shop.orders');
-        $data = $response->viewData('orders')->resolve()['data'];
-        $this->assertCount(5, $data);
-        $item = $data->first()->resolve();
-        $this->assertArrayHasKey('id', $item);
-        $this->assertArrayHasKey('total', $item);
-        $this->assertArrayHasKey('status', $item);
-        $this->assertArrayHasKey('label', $item);
-        $this->assertArrayHasKey('created_at', $item);
-        $this->assertArrayHasKey('uri', $item);
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Orders', false)
+                ->has('orders.data', 5)
+                ->has('orders.data.0.id')
+                ->has('orders.data.0.total')
+                ->has('orders.data.0.status')
+                ->has('orders.data.0.label')
+                ->has('orders.data.0.created_at')
+                ->has('orders.data.0.uri')
+        );
     }
 
     public function testListUserNotAuth(): void
     {
         $response = $this->get('/orders');
         $response->assertRedirect(route('login'));
+    }
+
+    public function testGetOrderPage(): void
+    {
+        /** @var Order $order */
+        $order = Order::factory()
+            ->has(Payment::factory()->count(1))
+            ->has(Dispatch::factory()->count(1))
+            ->create([
+                'user_id' => $this->user->id,
+            ]);
+
+        $response = $this->actingAs($this->user)->get('/order/' . $order->id);
+
+        $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Order', false)
+                ->where('order.id', $order->id)
+                ->where('order.label', $order->order_label)
+        );
     }
 
     public function testDoActionUndo(): void
