@@ -27,9 +27,11 @@
         </a>
       </div>
       <p>Price: {{ product.price }}
-        <button type="button" class="btn btn-link add-to-cart" @click="addToCart(product.id)">
+        <Link href="/cart/add-to-cart" method="post" as="button" type="button"
+              :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
+        >
           ADD TO CART
-        </button>
+        </Link>
       </p>
     </div>
   </div>
@@ -37,47 +39,24 @@
 
 <script>
 import {Vue3SlideUpDown} from 'vue3-slide-up-down'
-import axios from 'axios'
 import Layout from "../Layouts/MainLayout.vue";
+import { Link } from '@inertiajs/vue3'
 
 export default {
   name: 'Product',
-  components: {Vue3SlideUpDown},
+  components: { Vue3SlideUpDown, Link },
   props: ['product'],
   layout: Layout,
   data() {
     return {
-      csrf: '',
       active: true,
     }
-  },
-  computed: {
   },
   methods: {
     slide() {
       this.active = !this.active
     },
-    addToCart(product_id) {
-      axios.post(this.$baseUrl + '/cart/add-to-cart', {
-        productId: product_id,
-        isRelated: 0,
-        productQty: 1,
-        _token: this.csrf
-      }).then(response => {
-        this.$root.$emit('nav_cart', response.data.data)
-      }).catch(e => {
-        if (e.response && e.response.status === 401) {
-          window.location.href = this.$baseUrl + '/login';
-        } else {
-          console.log(e)
-        }
-        //this.errors.push(e)
-      })
-    },
   },
-  mounted() {
-    // this.csrf = document.head.querySelector('meta[name="csrf-token"]').content;
-  }
 }
 </script>
 

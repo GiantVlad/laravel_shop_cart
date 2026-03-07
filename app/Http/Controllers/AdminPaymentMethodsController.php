@@ -7,9 +7,10 @@ use App\PaymentMethod;
 use App\Repositories\PaymentMethodRepository;
 use App\Services\Payment\PaymentMethodManager;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminPaymentMethodsController extends Controller
 {
@@ -24,7 +25,7 @@ class AdminPaymentMethodsController extends Controller
     /**
      * @return View
      */
-    public function list(): View
+    public function list(): Response
     {
         $paymentMethodsFromCfg = $this->config->get('payments.methods') ?? [];
         $keys = array_keys($paymentMethodsFromCfg);
@@ -58,7 +59,10 @@ class AdminPaymentMethodsController extends Controller
             ];
         }
         
-        return view('admin.payment-methods', ['paymentMethods' => $result]);
+        return Inertia::render('Admin/PaymentMethods/Index', [
+            'paymentMethods' => $result,
+            'statuses' => AdminPaymentMethodStatuses::STATUSES,
+        ]);
     }
     
     /**

@@ -14,7 +14,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Order;
 use App\Services\Cart\CartService;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -39,9 +40,9 @@ class OrderController extends Controller
      * The list of orders.
      *
      * @param Request $request
-     * @return View
+     * @return Response
      */
-    public function list(Request $request): View
+    public function list(Request $request): Response
     {
         $userId = $request->user()->id;
         $orders = new OrderCollection(
@@ -49,8 +50,8 @@ class OrderController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(15)
         );
-        
-        return view('shop.orders', ['orders' => $orders]);
+
+        return Inertia::render('Orders', ['orders' => $orders]);
     }
     
     /**
@@ -111,20 +112,25 @@ class OrderController extends Controller
     /**
      * @param int $id
      * @param Request $request
-     * @return View|RedirectResponse
+     * @return Response|RedirectResponse
      */
-    public function getOrder(int $id, Request $request): View|RedirectResponse
+    public function getOrder(int $id, Request $request): Response|RedirectResponse
     {
         $userId = $request->user()->id;
         $selectedOrder = $this->order
             ->where(['id' => $id, 'user_id' => $userId])
+            ->with('orderData.product')
+            ->with('dispatches.method')
+            ->with('payments.method')
             ->first();
         
         if (!$selectedOrder instanceof Order) {
             return  back()->with('error', 'Order not found');
         }
-        
-        return view('shop.order', ['orderId' => $id]);
+
+        return Inertia::render('Order', [
+            'order' => (new OrderDetailResource($selectedOrder))->resolve(),
+        ]);
     }
     
     /**

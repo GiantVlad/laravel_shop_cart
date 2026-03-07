@@ -1,33 +1,39 @@
 <template>
-  <div>
-    <nav class="navbar bg-light">
-      <div class="container-fluid">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="nav-search"
-                 v-model="keyword">
-            <Link class="btn btn-default" href="/search" method="get" as="button" :data="{ keyword }">
-            <i class="bi-search"></i>
-          </Link>
-        </form>
-      </div>
-    </nav>
-  </div>
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      <form class="d-flex" role="search" @submit.prevent="submit">
+        <input
+          id="nav-search"
+          v-model.trim="keyword"
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        >
+        <button class="btn btn-outline-secondary" type="submit">
+          <i class="bi-search"></i>
+        </button>
+      </form>
+    </div>
+  </nav>
 </template>
 
 <script>
-import { Link } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 
 export default {
   name: "NavSearch",
   props: ['searchUrl'],
-  components: { Link },
   data() {
     return {
       keyword: '',
     }
   },
-  mounted() {
-  }
+  methods: {
+    submit() {
+      router.get(this.searchUrl, { keyword: this.keyword || null })
+    },
+  },
 }
 </script>
 

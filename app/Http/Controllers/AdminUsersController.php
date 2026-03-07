@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminUsersController extends Controller
 {
@@ -25,11 +26,20 @@ class AdminUsersController extends Controller
     /**
      * @return View
      */
-    public function list(): View
+    public function list(): Response
     {
-        $users = $this->user->paginate(15);
+        $users = $this->user
+            ->paginate(15)
+            ->through(static fn (User $user): array => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ]);
         
-        return view('admin.users', ['users' => $users]);
+        return Inertia::render('Admin/Users/Index', [
+            'users' => $users,
+            'keyword' => null,
+        ]);
     }
     
     /**
@@ -43,7 +53,7 @@ class AdminUsersController extends Controller
      * @param Request $request
      * @return View|RedirectResponse
      */
-    public function search(Request $request): View|RedirectResponse
+    public function search(Request $request): Response|RedirectResponse
     {
         $keyword = $request->keyword;
 
@@ -51,8 +61,13 @@ class AdminUsersController extends Controller
             $users = $this->user->where("name", "LIKE","%$keyword%")
                 ->orWhere("email", "LIKE", "%$keyword%")
                 ->orWhere("id", "=", "$keyword")
-                ->paginate(15);
-            return view('admin.users', ['users' => $users]);
+                ->paginate(15)
+                ->through(static fn (User $user): array => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ]);
+            return Inertia::render('Admin/Users/Index', ['users' => $users, 'keyword' => $keyword]);
         }
 
         return back();
@@ -62,7 +77,7 @@ class AdminUsersController extends Controller
      * @param int $id
      * @return View|RedirectResponse
      */
-    public function showEditForm(int $id): View|RedirectResponse
+    public function showEditForm(int $id): Response|RedirectResponse
     {
         if ($id) {
             $user = $this->user->findOrFail($id);
@@ -73,7 +88,13 @@ class AdminUsersController extends Controller
             return back()->withErrors('User not found');
         }
 
-        return view('admin.edit-user', ['user' => $user]);
+        return Inertia::render('Admin/Users/Edit', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
     }
     
     /**

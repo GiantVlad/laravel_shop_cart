@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Catalog;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AdminCategoriesController extends Controller
@@ -20,12 +22,21 @@ class AdminCategoriesController extends Controller
     /**
      * @return View
      */
-    public function list()
+    public function list(): Response
     {
         $categories = Catalog::leftJoin('catalogs as cat_parent', 'cat_parent.id' , '=', 'catalogs.parent_id')
-            ->get(['catalogs.*', 'cat_parent.name as parent_name']);
+            ->get(['catalogs.*', 'cat_parent.name as parent_name'])
+            ->map(static function (Catalog $category): array {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'priority' => $category->priority,
+                    'parentName' => $category->parent_name,
+                    'imageUrl' => $category->image ? url($category->image) : null,
+                ];
+            });
         
-        return view('admin.categories', ['categories' => $categories]);
+        return Inertia::render('Admin/Categories/Index', ['categories' => $categories]);
     }
     
     /**
@@ -64,7 +75,7 @@ class AdminCategoriesController extends Controller
      * @param int|null $id
      * @return View
      */
-    public function showEditForm(int $id=null): View
+    public function showEditForm(?int $id = null): Response
     {
         $parentCategories = Catalog::all('id', 'name');
         $category = null;
@@ -72,10 +83,20 @@ class AdminCategoriesController extends Controller
             $category = Catalog::findOrFail($id);
         }
 
-        return view(
-            'admin.edit-category',
-            ['category'=> $category, 'parent_categories_names' => $parentCategories]
-        );
+        return Inertia::render('Admin/Categories/Edit', [
+            'category' => $category ? [
+                'id' => $category->id,
+                'name' => $category->name,
+                'description' => $category->description,
+                'priority' => $category->priority,
+                'parentId' => $category->parent_id,
+                'imageUrl' => $category->image ? url($category->image) : null,
+            ] : null,
+            'parentCategories' => $parentCategories->map(static fn (Catalog $item): array => [
+                'id' => $item->id,
+                'name' => $item->name,
+            ]),
+        ]);
     }
     
     /**
