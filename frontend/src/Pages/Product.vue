@@ -8,15 +8,30 @@
           :src="`/images/${product.image}`"
         >
       </div>
-    </a>
+      <div class="effect" @click="slide">
+        <span class="glyphicon glyphicon-triangle-bottom" :class="{'up':!active}"></span>
+      </div>
 
-    <div class="card-body d-flex flex-column">
-      <a :href="`/shop/${product.id}`" class="product-card__title-link text-decoration-none">
-        <h2 class="product-card__title h5 mb-2">{{ product.name }}</h2>
-      </a>
-
-      <p class="product-card__description text-body-secondary mb-3">
-        {{ product.description }}
+      <div class="thumbnail">
+        <a :href="'/shop/' + product.id">
+          <div class="img-wrapper">
+            <vue-slide-up-down :active="active">
+              <img class="center-block" :alt="'product id ' + product.id"
+                   :src="'/images/'+product.image" :class="{'is-displayed':active}">
+            </vue-slide-up-down>
+            <vue-slide-up-down :active="!active">
+              <p class="product-shop-desc" :class="{'is-displayed':!active}">Description:<br>{{ product.description }}
+              </p>
+            </vue-slide-up-down>
+          </div>
+        </a>
+      </div>
+      <p>Price: {{ product.price }}
+        <Link href="/cart/add-to-cart" method="post" as="button" type="button"
+              :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
+        >
+          ADD TO CART
+        </Link>
       </p>
 
       <div class="mt-auto d-flex align-items-center justify-content-between gap-3">
@@ -37,17 +52,23 @@
 </template>
 
 <script>
+import {Vue3SlideUpDown} from 'vue3-slide-up-down'
 import Layout from "../Layouts/MainLayout.vue";
 import { Link } from '@inertiajs/vue3'
 
 export default {
   name: 'Product',
-  components: { Link },
+  components: { Vue3SlideUpDown, Link },
   props: ['product'],
   layout: Layout,
-  computed: {
-    formattedPrice() {
-      return Number(this.product.price).toFixed(2)
+  data() {
+    return {
+      active: true,
+    }
+  },
+  methods: {
+    slide() {
+      this.active = !this.active
     },
   },
 }

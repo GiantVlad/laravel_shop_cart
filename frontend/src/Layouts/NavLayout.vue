@@ -13,38 +13,29 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse pt-3 pt-lg-0" id="navbarNav">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 gap-lg-4 w-100">
-          <Link class="shop-nav__section-link text-decoration-none" href="/shop">{{ appName }}</Link>
-          <nav-search class="shop-nav__search" :search-url="'/search'"></nav-search>
-          <ul class="navbar-nav ms-lg-auto align-items-lg-center gap-lg-2">
-            <nav-cart v-if="userName" :count="cart?.count" :total="cart?.total" />
-            <template v-if="!userName">
-              <li class="nav-item"><Link class="nav-link" href="/login">Login</Link></li>
-              <li class="nav-item"><Link class="nav-link" href="/register">Register</Link></li>
-            </template>
-            <template v-else>
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {{ userName }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                  <li><Link class="dropdown-item" href="/orders">Orders</Link></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><Link class="dropdown-item" href="/logout" method="post" as="button" type="button">Logout</Link></li>
-                </ul>
-              </li>
-            </template>
-          </ul>
-        </div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <Link class="navbar-text text-decoration-none me-3" href="/shop">{{ appName }}</Link>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <nav-cart v-if="userName" :count="cart?.count" :total="cart?.total" />
+          <template v-if="!userName">
+            <li class="nav-item"><Link class="nav-link" href="/login">Login</Link></li>
+            <li class="nav-item"><Link class="nav-link" href="/register">Register</Link></li>
+          </template>
+          <template v-else>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ userName }}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><Link class="dropdown-item" href="/orders">Orders</Link></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><Link class="dropdown-item" href="/logout" method="post" as="button" type="button">Logout</Link></li>
+              </ul>
+            </li>
+          </template>
+        </ul>
       </div>
+      <nav-search :search-url="'/search'"></nav-search>
     </div>
   </nav>
 </template>

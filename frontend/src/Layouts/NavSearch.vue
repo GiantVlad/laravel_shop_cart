@@ -1,17 +1,21 @@
 <template>
-  <form class="nav-search d-flex" role="search" @submit.prevent="submit">
-    <input
-      id="nav-search"
-      v-model.trim="keyword"
-      class="form-control"
-      type="search"
-      placeholder="Search products"
-      aria-label="Search"
-    >
-    <button class="btn btn-outline-secondary nav-search__button" type="submit" aria-label="Submit search">
-      <i class="bi-search"></i>
-    </button>
-  </form>
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      <form class="d-flex" role="search" @submit.prevent="submit">
+        <input
+          id="nav-search"
+          v-model.trim="keyword"
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        >
+        <button class="btn btn-outline-secondary" type="submit">
+          <i class="bi-search"></i>
+        </button>
+      </form>
+    </div>
+  </nav>
 </template>
 
 <script>
