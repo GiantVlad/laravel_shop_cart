@@ -4,7 +4,7 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "/app/temporal/roadrunner-worker"
+  command: "php /app/artisan octane:start --host=0.0.0.0 --port=80"
   env:
     - XDEBUG_SESSION: 0
 
@@ -44,10 +44,7 @@ http:
     max_jobs: 64
     debug: false
 
-temporal:
-  address: temporal:7233
-  activities:
-    num_workers: 6
+# temporal section removed
 
 reload:
   interval: 1s
@@ -56,9 +53,7 @@ reload:
     http:
       recursive: true
       dirs: [ "/app/app" ]
-    temporal:
-      recursive: true
-      dirs: [ "/app/app" ]
+
 
 status:
   address: roadrunner:2114

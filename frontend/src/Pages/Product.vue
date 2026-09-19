@@ -26,6 +26,7 @@
           </div>
         </a>
       </div>
+    </a>
       <p>Price: {{ product.price }}
         <Link href="/cart/add-to-cart" method="post" as="button" type="button"
               :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
@@ -47,7 +48,6 @@
           Add to cart
         </Link>
       </div>
-    </div>
   </article>
 </template>
 

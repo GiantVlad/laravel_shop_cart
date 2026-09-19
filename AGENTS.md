@@ -1,48 +1,26 @@
-# Repository Guidelines
+# AGENTS.md — lara_shop
 
-## Project Structure & Module Organization
-This repository is a Laravel 12 backend with a Vue 3 + Inertia frontend.
+Laravel 10 + Vue 2 + Inertia + RoadRunner + Temporal e-commerce template (switching to sync controllers + Horizon/Redis, keeping business logic).
 
-- `app/`: core backend code (controllers, services, repositories, DTOs, Temporal workflows).
-- `routes/`: HTTP/API route definitions (`web.php`, `api.php`).
-- `resources/views/`: Blade templates (storefront and admin pages).
-- `frontend/`: Vite-powered Vue application (`src/Pages`, `src/Layouts`, `main.js`).
-- `database/migrations`, `database/seeders`, `database/factories`: schema and test/seed data.
-- `tests/Unit`, `tests/Feature`: PHPUnit test suites.
-- `public/`: built assets and static files.
+## Dev setup
+- `docker-compose up` (may need 2-3 restarts on first boot).
+- Create `.local_data/`. Copy `.env.example` → `.env`.
+- `docker-compose exec roadrunner /bin/bash` → `composer install` → `php artisan migrate` → `php artisan db:seed --class=DatabaseSeeder`.
+- JS: `npm install`.
 
-## Build, Test, and Development Commands
-Run from repository root unless noted.
+## Build & test
+- PHP static analysis: `./vendor/bin/phpstan analyse --memory-limit=2G --no-progress -c phpstan.neon ./`
+- Backend tests: `php artisan test` (uses sqlite; see `.env.testing` for mariadb_test).
+- Frontend tests: `npm run test` (mocha via mochapack; `tests/js/**/*.spec.js`).
+- JS build: `npm run dev` / `watch` / `prod` (laravel-mix, vue-loader).
 
-- `docker-compose up`: start local stack (RoadRunner, DB, supporting services).
-- `docker-compose exec roadrunner composer install`: install PHP dependencies in container.
-- `docker-compose exec roadrunner php artisan migrate --seed`: apply migrations and seed data.
-- `docker-compose exec roadrunner php artisan test`: run PHPUnit unit + feature tests.
-- `docker-compose exec roadrunner vendor/bin/phpstan analyse`: static analysis (`level: 7`).
-- `cd frontend && npm install`: install frontend dependencies.
-- `cd frontend && npm run dev`: run Vite dev server.
-- `cd frontend && npm run build`: produce production frontend build.
+## Conventions
+- App modules: `app/*.php` (Admin, Catalog, Order, Product, Temporal, etc.); controllers/services/repositories under `app/`.
+- Tests: PHPUnit feature (`tests/Feature`), unit (`tests/Unit`), JS (`tests/js`).
+- Temporal references in `app/` — being removed; keep business logic intact, replace delivery with sync controllers + Laravel Jobs (Horizon/Redis).
 
-## Coding Style & Naming Conventions
-- Follow PSR-12 for PHP (4-space indentation, one class per file, strict naming).
-- Keep Laravel conventions: controllers in `app/Http/Controllers`, services in `app/Services`, repositories in `app/Repositories`.
-- Use `PascalCase` for PHP classes, `camelCase` for methods/variables, and descriptive migration names.
-- Vue SFC components under `frontend/src` use `PascalCase` filenames (for example `ProductList.vue`).
-
-## Testing Guidelines
-- PHPUnit is configured via `phpunit.xml`; test files must end with `*Test.php`.
-- Put business-logic unit tests in `tests/Unit`; HTTP/integration coverage in `tests/Feature`.
-- Prefer factories/seeders over hard-coded fixtures.
-- Run tests before opening a PR: `docker-compose exec roadrunner php artisan test`.
-
-## Commit & Pull Request Guidelines
-Recent history shows short, imperative commit subjects (for example: `Upgrade php to 8.3`, `FE upgrade. Vue3 + Inertia`).
-
-- Keep commit titles concise, action-first, and scoped to one change.
-- Reference issue IDs in the PR description.
-- PRs should include: purpose, risk/rollback notes, migration impact, and screenshots for UI changes.
-- If dependencies are bumped, mention affected package names and versions.
-
-## Security & Configuration Tips
-- Do not commit secrets; keep `.env` local and update `.env.example` when adding new variables.
-- Payment, Temporal, and external service keys must be provided via environment variables.
+## Pitfalls
+- RoadRunner needs reset for code changes: `docker-compose exec roadrunner rr -c /etc/.rr.yaml reset`.
+- XDebug + RoadRunner: set `pool.num_workers: 1`, `pool.debug: false`; disable active listener before reset.
+- CI uses PHP 8.1 with grpc extension; `phpunit.xml` sets `QUEUE_DRIVER=sync` and `DB_HOST=mariadb_test`.
+- `.env` and `.local_data/` are required; don't hand-edit generated `.rr.yaml` settings without checking docs.

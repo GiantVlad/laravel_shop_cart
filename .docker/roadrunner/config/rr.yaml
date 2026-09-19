@@ -1,15 +1,15 @@
 version: "3"
 
 rpc:
-  listen: tcp://127.0.0.1:6001
+  listen: "tcp://127.0.0.1:6001"
 
 server:
   command: "/app/temporal/roadrunner-worker"
   env:
-    - XDEBUG_SESSION: 1
+    - XDEBUG_SESSION: 0
 
 http:
-  address: :80
+  address: "0.0.0.0:80"
   #max_request_size: 256
   middleware: [ "static", "headers", "gzip" ]
   uploads:
@@ -19,11 +19,16 @@ http:
     response:
       X-Powered-By: RoadRunner
   ssl:
-    address: :443
-    key: "/app/ssl/localhost-key.pem"
-    cert: "/app/ssl/localhost.pem"
-    root_ca: "/app/ssl/localhost.pem"
-    #client_auth_type: require_and_verify_client_cert
+    # force redirect to https connection
+    redirect: false
+    # custom https port (default 443)
+    port: 443
+    # ssl cert
+    cert: /app/ssl/certificate.crt
+    # ssl private key
+    key: /app/ssl/private.key
+    # rootCA certificate path
+    rootCa: /app/ssl/ca_bundle.crt
   static:
     dir: "/app/public"
     forbid: [".htaccess", ".php", ".sql", ".config", "php_errors.log"]
@@ -35,15 +40,11 @@ http:
     response:
       output: "output-header"
   pool:
-    num_workers: 2
-    allocate_timeout: 30s
+    num_workers: 3
     max_jobs: 64
     debug: false
 
-temporal:
-  address: temporal:7233
-  activities:
-    num_workers: 6
+# temporal section removed
 
 reload:
   interval: 1s
@@ -52,9 +53,7 @@ reload:
     http:
       recursive: true
       dirs: [ "/app/app" ]
-    temporal:
-      recursive: true
-      dirs: [ "/app/app" ]
+
 
 status:
   address: roadrunner:2114

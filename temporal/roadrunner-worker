@@ -14,7 +14,6 @@ use Spiral\Goridge\Relay;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunner\Worker as RoadRunnerWorker;
 use Spiral\RoadRunner;
-use App\Temporal\Locator;
 use Temporal\Worker\WorkerOptions;
 use Temporal\WorkerFactory;
 
@@ -79,18 +78,7 @@ $worker = $factory->newWorker(
         ->withMaxConcurrentActivityTaskPollers(2)
         ->withMaxConcurrentWorkflowTaskPollers(10)
 );
-$locator = Locator::create('/app/app/Temporal/');
-
-// workflow types
-foreach ($locator->getWorkflowTypes() as $workflowType) {
-    $worker->registerWorkflowTypes($workflowType);
-}
 
 $app = $appFactory->createApplication();
-
-// activities
-foreach ($locator->getActivityTypes() as $activityType) {
-    $worker->registerActivityImplementations($app->get($activityType));
-}
 
 $factory->run();
