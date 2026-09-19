@@ -9,6 +9,10 @@ const userName = computed(() => page.props.userName)
 const cart = computed(() => page.props.cart)
 </script>
 
+<style scoped>
+main { padding-top: 5rem; }
+</style>
+
 <template>
   <main>
     <header>

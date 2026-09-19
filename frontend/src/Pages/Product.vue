@@ -8,41 +8,18 @@
           :src="`/images/${product.image}`"
         >
       </div>
-      <div class="effect" @click="slide">
-        <span class="glyphicon glyphicon-triangle-bottom" :class="{'up':!active}"></span>
-      </div>
-
-      <div class="thumbnail">
-        <a :href="'/shop/' + product.id">
-          <div class="img-wrapper">
-            <vue-slide-up-down :active="active">
-              <img class="center-block" :alt="'product id ' + product.id"
-                   :src="'/images/'+product.image" :class="{'is-displayed':active}">
-            </vue-slide-up-down>
-            <vue-slide-up-down :active="!active">
-              <p class="product-shop-desc" :class="{'is-displayed':!active}">Description:<br>{{ product.description }}
-              </p>
-            </vue-slide-up-down>
-          </div>
-        </a>
-      </div>
     </a>
-      <p>Price: {{ product.price }}
-        <Link href="/cart/add-to-cart" method="post" as="button" type="button"
-              :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
-        >
-          ADD TO CART
-        </Link>
-      </p>
-
-      <div class="mt-auto d-flex align-items-center justify-content-between gap-3">
-        <p class="product-card__price mb-0">${{ formattedPrice }}</p>
+      <div class="product-body p-3">
+        <h3 class="product-card__title mb-2">
+          <a :href="`/shop/${product.id}`" class="product-card__title-link text-decoration-none">{{ product.name }}</a>
+        </h3>
+        <p class="product-card__price mb-3">${{ formattedPrice }}</p>
         <Link
           href="/cart/add-to-cart"
           method="post"
           as="button"
           type="button"
-          class="btn btn-dark btn-sm px-3"
+          class="btn btn-primary btn-sm px-4 rounded-pill fw-semibold shadow-sm"
           :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
         >
           Add to cart
@@ -52,24 +29,18 @@
 </template>
 
 <script>
-import {Vue3SlideUpDown} from 'vue3-slide-up-down'
 import Layout from "../Layouts/MainLayout.vue";
 import { Link } from '@inertiajs/vue3'
 
 export default {
   name: 'Product',
-  components: { Vue3SlideUpDown, Link },
+  components: { Link },
   props: ['product'],
   layout: Layout,
-  data() {
-    return {
-      active: true,
+  computed: {
+    formattedPrice() {
+      return this.product.price ? parseFloat(this.product.price).toFixed(2) : '0.00';
     }
-  },
-  methods: {
-    slide() {
-      this.active = !this.active
-    },
   },
 }
 </script>

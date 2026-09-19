@@ -54,6 +54,9 @@ export default {
 
 <style scoped>
 .shop-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1030;
   background:
     linear-gradient(135deg, #fcf5e8 0%, #f4ece0 55%, #efe8db 100%);
   border-bottom: 1px solid rgba(116, 88, 47, 0.14);

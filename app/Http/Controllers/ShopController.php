@@ -31,12 +31,12 @@ class ShopController extends Controller
     {
         $products = Product::query()
             ->orderBy('updated_at', 'desc')
-            ->limit(Product::LIST_LIMIT)
-            ->get();
+            ->paginate(Product::LIST_LIMIT);
         
         //$productResource =  new ProductCollection($products);
         return Inertia::render('ProductList', [
             'products' => $products,
+            'links' => $products->links(),
         ]);
     }
     
