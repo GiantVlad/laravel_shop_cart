@@ -11,7 +11,7 @@
 
 <script>
 import Product from "./Product.vue";
-import Layout from "../Layouts/MainLayout.vue";
+import Layout from "../Layouts/AppLayout.vue";
 import AdminPagination from "./Admin/Shared/AdminPagination.vue";
 
 export default {

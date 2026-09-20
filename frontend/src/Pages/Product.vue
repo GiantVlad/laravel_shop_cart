@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Layout from "../Layouts/MainLayout.vue";
+import Layout from "../Layouts/AppLayout.vue";
 import { Link } from '@inertiajs/vue3'
 
 export default {
