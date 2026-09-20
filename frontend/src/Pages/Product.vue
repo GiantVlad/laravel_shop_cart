@@ -1,36 +1,37 @@
 <template>
-  <article class="product-card card h-100 border-0 shadow-sm">
-    <a :href="`/shop/${product.id}`" class="product-card__media-link">
-      <div class="product-card__media">
-        <img
-          class="product-card__image"
-          :alt="product.name"
-          :src="`/images/${product.image}`"
-        >
-      </div>
-    </a>
-      <div class="product-body p-3">
-        <h3 class="product-card__title mb-2">
-          <a :href="`/shop/${product.id}`" class="product-card__title-link text-decoration-none">{{ product.name }}</a>
-        </h3>
-        <p class="product-card__price mb-3">${{ formattedPrice }}</p>
-        <Link
-          href="/cart/add-to-cart"
-          method="post"
-          as="button"
-          type="button"
-          class="btn btn-primary btn-sm px-4 rounded-pill fw-semibold shadow-sm"
-          :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
-        >
-          Add to cart
-        </Link>
-      </div>
-  </article>
+  <Card class="overflow-hidden shadow-1 border-round-xl h-full" style="background: linear-gradient(180deg, #fff 0%, #fbf6ef 100%);">
+    <template #header>
+      <a :href="`/shop/${product.id}`" class="block" style="background: linear-gradient(135deg,#fffaf2 0%,#f2eadf 100%);">
+        <div class="flex align-items-center justify-content-center" style="aspect-ratio:4/3;padding:1.25rem;">
+          <img
+            :alt="product.name"
+            :src="`/images/${product.image}`"
+            class="w-full h-full object-fit-contain"
+          />
+        </div>
+      </a>
+    </template>
+    <template #title>
+      <a :href="`/shop/${product.id}`" class="no-underline text-900 font-semibold text-lg line-height-normal">{{ product.name }}</a>
+    </template>
+    <template #content>
+      <p class="text-xl font-bold mb-3" style="color:#201a12;">${{ formattedPrice }}</p>
+      <Link
+        href="/cart/add-to-cart"
+        method="post"
+        as="button"
+        class="p-button p-button-sm p-button-rounded p-button-primary shadow-2 font-semibold px-4"
+        :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
+      >
+        Add to cart
+      </Link>
+    </template>
+  </Card>
 </template>
 
 <script>
-import Layout from "../Layouts/AppLayout.vue";
 import { Link } from '@inertiajs/vue3'
+import Layout from "../Layouts/AppLayout.vue";
 
 export default {
   name: 'Product',
@@ -46,58 +47,6 @@ export default {
 </script>
 
 <style scoped>
-.product-card {
-  border-radius: 1rem;
-  overflow: hidden;
-  background: linear-gradient(180deg, #ffffff 0%, #fbf6ef 100%);
-}
-
-.product-card__media-link {
-  display: block;
-  background:
-    radial-gradient(circle at top left, rgba(207, 163, 94, 0.18), transparent 42%),
-    linear-gradient(135deg, #fffaf2 0%, #f2eadf 100%);
-}
-
-.product-card__media {
-  aspect-ratio: 4 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem;
-}
-
-.product-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.product-card__title-link {
-  color: #1c1a17;
-}
-
-.product-card__title {
-  line-height: 1.35;
-  min-height: 2.7em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.product-card__description {
-  font-size: 0.95rem;
-  line-height: 1.55;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.product-card__price {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #201a12;
-}
+.object-fit-contain { object-fit: contain; }
+.no-underline { text-decoration: none; }
 </style>
