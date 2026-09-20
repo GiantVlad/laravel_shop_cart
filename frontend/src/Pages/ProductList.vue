@@ -1,7 +1,7 @@
 <template>
   <div class="shop-page container py-5">
     <div class="row g-4">
-      <div v-for="product in (products?.data || products)" :key="product?.id" class="col-sm-6 col-lg-4 col-xl-3">
+      <div v-for="product in (products?.data || products)" :key="product?.id" class="col-sm-6 col-lg-4 col-xl-3 h-full">
         <Product :product="product"/>
       </div>
     </div>
