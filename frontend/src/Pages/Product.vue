@@ -1,5 +1,5 @@
 <template>
-  <article class="surface-card shadow-2 border-round-xl overflow-hidden h-full" style="background: linear-gradient(180deg, #fff 0%, #fbf6ef 100%);">
+  <article class="surface-card shadow-2 border-round-xl overflow-hidden h-full flex flex-col" style="background: linear-gradient(180deg, #fff 0%, #fbf6ef 100%);">
     <a :href="`/shop/${product.id}`" class="block" style="background: linear-gradient(135deg,#fffaf2 0%,#f2eadf 100%);">
       <div class="flex align-items-center justify-content-center" style="aspect-ratio:4/3;padding:1.25rem;">
         <img
@@ -9,7 +9,7 @@
         />
       </div>
     </a>
-    <div class="p-4">
+    <div class="p-4 flex-grow-1 flex flex-col">
       <h3 class="mb-2">
         <a :href="`/shop/${product.id}`" class="no-underline text-900 font-semibold text-lg line-height-normal">{{ product.name }}</a>
       </h3>
@@ -18,7 +18,7 @@
         href="/cart/add-to-cart"
         method="post"
         as="button"
-        class="p-button p-button-sm p-button-rounded p-button-primary shadow-2 font-semibold px-4"
+        class="p-button p-button-sm p-button-rounded p-button-primary shadow-2 font-semibold px-4 mt-auto"
         :data="{ productId: product.id, isRelated: 0, productQty: 1 }"
       >
         Add to cart
