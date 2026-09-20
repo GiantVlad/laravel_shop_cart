@@ -1,20 +1,18 @@
 <template>
-  <Card class="overflow-hidden shadow-1 border-round-xl h-full" style="background: linear-gradient(180deg, #fff 0%, #fbf6ef 100%);">
-    <template #header>
-      <a :href="`/shop/${product.id}`" class="block" style="background: linear-gradient(135deg,#fffaf2 0%,#f2eadf 100%);">
-        <div class="flex align-items-center justify-content-center" style="aspect-ratio:4/3;padding:1.25rem;">
-          <img
-            :alt="product.name"
-            :src="`/images/${product.image}`"
-            class="w-full h-full object-fit-contain"
-          />
-        </div>
-      </a>
-    </template>
-    <template #title>
-      <a :href="`/shop/${product.id}`" class="no-underline text-900 font-semibold text-lg line-height-normal">{{ product.name }}</a>
-    </template>
-    <template #content>
+  <article class="surface-card shadow-2 border-round-xl overflow-hidden h-full" style="background: linear-gradient(180deg, #fff 0%, #fbf6ef 100%);">
+    <a :href="`/shop/${product.id}`" class="block" style="background: linear-gradient(135deg,#fffaf2 0%,#f2eadf 100%);">
+      <div class="flex align-items-center justify-content-center" style="aspect-ratio:4/3;padding:1.25rem;">
+        <img
+          :alt="product.name"
+          :src="`/images/${product.image}`"
+          class="w-full h-full object-fit-contain"
+        />
+      </div>
+    </a>
+    <div class="p-4">
+      <h3 class="mb-2">
+        <a :href="`/shop/${product.id}`" class="no-underline text-900 font-semibold text-lg line-height-normal">{{ product.name }}</a>
+      </h3>
       <p class="text-xl font-bold mb-3" style="color:#201a12;">${{ formattedPrice }}</p>
       <Link
         href="/cart/add-to-cart"
@@ -25,8 +23,8 @@
       >
         Add to cart
       </Link>
-    </template>
-  </Card>
+    </div>
+  </article>
 </template>
 
 <script>

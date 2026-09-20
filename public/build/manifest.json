@@ -28,12 +28,12 @@
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "src/main.js": {
-    "file": "assets/main-lafaime3.js",
+    "file": "assets/main-Bl5fcQHw.js",
     "name": "main",
     "src": "src/main.js",
     "isEntry": true,
     "css": [
-      "assets/main-JmSRpFFq.css"
+      "assets/main-iWtINpqV.css"
     ],
     "assets": [
       "assets/bootstrap-icons-BtvjY1KL.woff2",
