@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-    <nav v-if="links.length > 3" aria-label="Pagination" class="mt-5 flex justify-center gap-2">
+    <nav v-if="links.length" aria-label="Pagination" class="mt-5 flex justify-center gap-2">
         <Link
             v-for="link in links"
             :key="`${link.label}-${link.url}`"
