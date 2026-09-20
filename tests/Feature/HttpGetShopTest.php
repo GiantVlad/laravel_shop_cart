@@ -60,7 +60,7 @@ class HttpGetShopTest extends TestCase
         $response->assertInertia(
             fn (Assert $page) => $page
                 ->component('ProductList', false)
-                ->has('products', Product::LIST_LIMIT)
+                ->has('products.data', Product::LIST_LIMIT)
         );
     }
     

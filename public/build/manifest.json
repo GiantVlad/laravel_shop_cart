@@ -1,12 +1,4 @@
 {
-  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
-    "file": "assets/bootstrap-icons-BOrJxbIo.woff",
-    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
-  },
-  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
-    "file": "assets/bootstrap-icons-BtvjY1KL.woff2",
-    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
-  },
   "node_modules/primeicons/fonts/primeicons.eot": {
     "file": "assets/primeicons-DMOk5skT.eot",
     "src": "node_modules/primeicons/fonts/primeicons.eot"
@@ -28,16 +20,14 @@
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "src/main.js": {
-    "file": "assets/main-BblTaQpd.js",
+    "file": "assets/main-CAAqmYF_.js",
     "name": "main",
     "src": "src/main.js",
     "isEntry": true,
     "css": [
-      "assets/main-BQVYdDqo.css"
+      "assets/main-Djwdm36D.css"
     ],
     "assets": [
-      "assets/bootstrap-icons-BtvjY1KL.woff2",
-      "assets/bootstrap-icons-BOrJxbIo.woff",
       "assets/primeicons-DMOk5skT.eot",
       "assets/primeicons-C6QP2o4f.woff2",
       "assets/primeicons-WjwUDZjB.woff",
