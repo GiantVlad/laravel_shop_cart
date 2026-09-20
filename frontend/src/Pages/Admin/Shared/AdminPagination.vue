@@ -11,6 +11,7 @@ defineProps({
 
 <template>
     <nav v-if="links.length" aria-label="Pagination" class="mt-5 flex justify-center gap-2">
+        <span class="text-xs text-gray-500">links count: {{ links.length }}</span>
         <Link
             v-for="link in links"
             :key="`${link.label}-${link.url}`"
