@@ -23,7 +23,7 @@
 
     <!-- Pagination -->
     <div class="mt-5 flex justify-content-center">
-      <AdminPagination :links="paginationLinks" />
+      <ShopPagination :paginator="products" />
     </div>
   </div>
 </template>
@@ -31,11 +31,11 @@
 <script>
 import ProductCard from "../Components/ProductCard.vue";
 import Layout from "../Layouts/AppLayout.vue";
-import AdminPagination from "./Admin/Shared/AdminPagination.vue";
+import ShopPagination from "../Components/ShopPagination.vue";
 
 export default {
   name: 'ProductList',
-  components: { ProductCard, AdminPagination },
+  components: { ProductCard, ShopPagination },
   props: {
     keyword: String,
     category: [String, Number],
@@ -43,17 +43,6 @@ export default {
     links: [Array, Object],
   },
   layout: Layout,
-  computed: {
-    paginationLinks() {
-      if (Array.isArray(this.products?.links) && this.products.links.length > 0) {
-        return this.products.links;
-      }
-      if (Array.isArray(this.links) && this.links.length > 0) {
-        return this.links;
-      }
-      return [];
-    }
-  }
 }
 </script>
 

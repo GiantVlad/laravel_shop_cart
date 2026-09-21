@@ -1,105 +1,215 @@
 <template>
-  <div>
-    <div v-if="items.length < 1">
-      <div class="py-5 text-center">
-        <h4>Your cart is empty</h4>
+  <div class="cart-page px-3 py-4">
+    <!-- Header -->
+    <div class="flex align-items-center justify-content-between mb-4 pb-2 border-bottom-1 border-surface-200">
+      <div>
+        <h1 class="text-3xl font-bold text-900 m-0">Your cart</h1>
+        <p class="text-sm text-500 m-0 mt-1">
+          {{ itemCount }} {{ itemCount === 1 ? 'item' : 'items' }} in your cart
+        </p>
       </div>
+      <Link href="/shop" class="no-underline">
+        <Button label="Continue shopping" icon="pi pi-arrow-left" severity="secondary" outlined size="small" />
+      </Link>
     </div>
-    <div v-else>
-      <div v-for="(item, idx) in items" :key="item.id" class="product-row">
-        <div class="row">
-          <input type="hidden" name="productId" :value="item.id">
-          <div class="col-md-2">
-            <Link :href="`/shop/${item.id}`">
-              <img class="img-thumbnail"
-                   :alt="'product id '+item.id"
-                   height="240"
-                   :src="'images/'+item.image">
-            </Link>
-          </div>
-          <div class="col-md-5">
-            <h4>{{ item.name }}</h4>
-            <p>{{ item.description }}</p>
-            <button class="btn btn-link" :id="'remove-'+item.id" type="button" @click="remove(item)">
-              Remove
-            </button>
-          </div>
-          <div class="col-md-2 form-group">
-            <label class="control-label" :for="'productQty'+item.id">QTY</label>
-            <input type="number" class="form-control" :name="'productQty'+item.id"
-                   :id="'productQty'+item.id" placeholder="QTY" :value="item.qty"
-                   min="1" max="99" required @change="onChangeQty(idx, $event)">
-          </div>
-          <div class="col-md-1"><p>Price: <span :id="'price'+item.id">{{ item.price }}</span></p>
-          </div>
-          <div class="col-md-1"><p :id="'row-total-'+item.id">Total: {{ item.rowTotal }}</p></div>
-          <input type="hidden" name="isRelatedProduct" v-model="item.is_related">
-        </div>
-        <hr/>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-md-offset-7">
-          <div class="form-group">
-            <label for="shipping-select">Select shipping method: </label>
-            <select class="form-control" id="shipping-select" v-model="selectedShipping">
-              <option v-if="!selectedShipping" :value="null">Select shipping method...</option>
-              <option v-for="method in shippingMethods" :key="method.id" :value="method.id">
-                {{ method.label + ', ' + method.time + ', ' + method.rate }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4 col-md-offset-7">
-          <div class="form-group">
-            <label for="payment-select">Select payment method: </label>
-            <select class="form-control" id="payment-select" v-model="selectedPayment">
-              <option v-if="!selectedPayment" :value="null">Select payment method...</option>
-              <option v-for="method in payments" :key="method.id" :value="method.id">
-                {{ method.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-10">
-          <p class="text-right">Subtotal: <span id="subtotal">{{ total }}</span></p>
-          <input type="hidden" name="subtotal" :value="total">
-        </div>
-        <div class="col-md-2">
-          <button type="button" id="checkout" class="btn btn-primary"
-                  :disabled="isPayDisabled"
-                  @click="pay"
-          >
-            Pay
-          </button>
-        </div>
-      </div>
-      <template v-if="Object.keys(relatedProduct).length > 0">
-        <hr/>
-        <h3 class="text-center">We also recommend:</h3>
-        <div class="row">
-          <div class="col-md-2">
-            <Link :href="`/shop/${relatedProduct.id}`">
-              <img class="img-thumbnail" width="304" height="236"
-                   :src="'images/'+relatedProduct.image">
-            </Link>
-          </div>
-          <div class="col-md-5">
-            <h4>{{ relatedProduct.name }}</h4>
-            <p>{{ relatedProduct.description }}</p>
-          </div>
 
-          <div class="col-md-2"><p>Price: {{ relatedProduct.price }}</p></div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-primary add-related" @click="addRelated">
-              Add to Cart
-            </button>
+    <!-- Empty state -->
+    <Card v-if="items.length < 1" class="border-1 border-surface-200 border-round-xl shadow-1">
+      <template #content>
+        <div class="empty-state text-center py-6 px-3">
+          <div class="inline-flex align-items-center justify-content-center bg-primary-50 border-circle mb-3"
+               style="width: 72px; height: 72px;">
+            <i class="pi pi-shopping-cart text-primary text-3xl"></i>
           </div>
+          <h2 class="text-xl font-bold text-900 m-0 mb-1">Your cart is empty</h2>
+          <p class="text-500 text-sm m-0 mb-4">Browse the catalogue and add something you like.</p>
+          <Link href="/shop" class="no-underline">
+            <Button label="Browse products" icon="pi pi-shopping-bag" />
+          </Link>
         </div>
       </template>
+    </Card>
+
+    <div v-else class="grid">
+      <!-- Items -->
+      <div class="col-12 lg:col-8">
+        <Card v-for="(item, idx) in items" :key="item.id"
+              class="cart-item border-1 border-surface-200 border-round-xl shadow-1 mb-3">
+          <template #content>
+            <div class="flex flex-column sm:flex-row gap-3">
+              <!-- Thumbnail -->
+              <Link :href="`/shop/${item.id}`" class="cart-item__thumb flex align-items-center justify-content-center no-underline flex-shrink-0">
+                <img :alt="item.name" :src="`/images/${item.image}`" class="cart-item__image" loading="lazy" />
+              </Link>
+
+              <!-- Details -->
+              <div class="flex flex-column flex-grow-1 min-w-0">
+                <div class="flex align-items-start justify-content-between gap-2">
+                  <Link :href="`/shop/${item.id}`" class="cart-item__title no-underline font-semibold text-900 hover:text-primary transition-colors">
+                    {{ item.name }}
+                  </Link>
+                  <Tag v-if="item.is_related" value="Recommended" severity="info" class="flex-shrink-0" />
+                </div>
+
+                <p class="cart-item__desc text-sm text-600 mt-1 mb-3">{{ item.description }}</p>
+
+                <div class="flex flex-wrap align-items-end justify-content-between gap-3 mt-auto">
+                  <!-- Quantity -->
+                  <div class="flex flex-column gap-1">
+                    <label class="text-xs font-semibold text-600" :for="`productQty${item.id}`">Quantity</label>
+                    <InputNumber
+                      :inputId="`productQty${item.id}`"
+                      :modelValue="item.qty"
+                      :min="1"
+                      :max="99"
+                      :step="1"
+                      :useGrouping="false"
+                      showButtons
+                      buttonLayout="horizontal"
+                      :allowEmpty="false"
+                      size="small"
+                      class="cart-qty"
+                      @update:modelValue="value => onChangeQty(idx, value)"
+                    />
+                  </div>
+
+                  <!-- Unit + row total -->
+                  <div class="flex align-items-end gap-4">
+                    <div class="text-right">
+                      <div class="text-xs text-500">Unit price</div>
+                      <div class="font-semibold text-900">{{ money(item.price) }}</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xs text-500">Subtotal</div>
+                      <div class="font-bold text-lg text-900">{{ money(rowTotal(item)) }}</div>
+                    </div>
+                  </div>
+
+                  <Button
+                    label="Remove"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    text
+                    size="small"
+                    :aria-label="`Remove ${item.name}`"
+                    @click="remove(item)"
+                  />
+                </div>
+              </div>
+            </div>
+          </template>
+        </Card>
+
+        <!-- Recommendation -->
+        <template v-if="Object.keys(relatedProduct).length > 0">
+          <div class="flex align-items-center gap-3 mt-5 mb-3">
+            <i class="pi pi-sparkles text-primary text-xl"></i>
+            <span class="font-bold text-lg text-900 white-space-nowrap flex-shrink-0">We also recommend</span>
+            <Divider class="flex-grow-1" />
+          </div>
+
+          <Card class="border-1 border-surface-200 border-round-xl shadow-1">
+            <template #content>
+              <div class="flex flex-column sm:flex-row align-items-center gap-3">
+                <Link :href="`/shop/${relatedProduct.id}`" class="cart-item__thumb flex align-items-center justify-content-center no-underline flex-shrink-0">
+                  <img :alt="relatedProduct.name" :src="`/images/${relatedProduct.image}`" class="cart-item__image" loading="lazy" />
+                </Link>
+                <div class="flex flex-column flex-grow-1 min-w-0">
+                  <Link :href="`/shop/${relatedProduct.id}`" class="cart-item__title no-underline font-semibold text-900 hover:text-primary transition-colors">
+                    {{ relatedProduct.name }}
+                  </Link>
+                  <p class="cart-item__desc text-sm text-600 mt-1 mb-0">{{ relatedProduct.description }}</p>
+                </div>
+                <div class="flex flex-column align-items-end gap-2 flex-shrink-0">
+                  <span class="font-bold text-lg text-900">{{ money(relatedProduct.price) }}</span>
+                  <Button label="Add to cart" icon="pi pi-shopping-cart" size="small" @click="addRelated" />
+                </div>
+              </div>
+            </template>
+          </Card>
+        </template>
+      </div>
+
+      <!-- Summary -->
+      <div class="col-12 lg:col-4">
+        <Card class="summary-card border-1 border-surface-200 border-round-xl shadow-1 lg:sticky" style="top: 6rem;">
+          <template #title>
+            <span class="text-lg font-bold text-900">Order summary</span>
+          </template>
+          <template #content>
+            <div class="flex flex-column gap-4">
+              <!-- Shipping -->
+              <div class="flex flex-column gap-1">
+                <label for="shipping-select" class="text-sm font-semibold text-900">Shipping method</label>
+                <Select
+                  inputId="shipping-select"
+                  v-model="selectedShipping"
+                  :options="shippingOptions"
+                  optionLabel="display"
+                  optionValue="id"
+                  placeholder="Select shipping method"
+                  class="w-full"
+                >
+                  <template #option="slotProps">
+                    <div class="flex flex-column">
+                      <span class="font-medium">{{ slotProps.option.label }}</span>
+                      <span class="text-xs text-500">
+                        {{ slotProps.option.time }} · {{ shippingRateLabel(slotProps.option) }}
+                      </span>
+                    </div>
+                  </template>
+                </Select>
+              </div>
+
+              <!-- Payment -->
+              <div class="flex flex-column gap-1">
+                <label for="payment-select" class="text-sm font-semibold text-900">Payment method</label>
+                <Select
+                  inputId="payment-select"
+                  v-model="selectedPayment"
+                  :options="payments"
+                  optionLabel="label"
+                  optionValue="id"
+                  placeholder="Select payment method"
+                  class="w-full"
+                />
+              </div>
+
+              <Divider class="my-0" />
+
+              <!-- Totals -->
+              <div class="flex flex-column gap-2">
+                <div class="flex justify-content-between text-sm">
+                  <span class="text-600">Subtotal ({{ itemCount }} {{ itemCount === 1 ? 'item' : 'items' }})</span>
+                  <span class="text-900 font-medium">{{ money(itemsTotal) }}</span>
+                </div>
+                <div class="flex justify-content-between text-sm">
+                  <span class="text-600">Shipping</span>
+                  <span class="text-900 font-medium">{{ shippingRate ? money(shippingRate) : '—' }}</span>
+                </div>
+                <Divider class="my-1" />
+                <div class="flex justify-content-between align-items-center">
+                  <span class="font-bold text-900">Total</span>
+                  <span class="font-bold text-2xl text-primary">{{ money(total) }}</span>
+                </div>
+              </div>
+
+              <Button
+                label="Pay"
+                icon="pi pi-credit-card"
+                class="w-full"
+                size="large"
+                :loading="paying"
+                :disabled="isPayDisabled"
+                @click="pay"
+              />
+              <small v-if="isPayDisabled" class="text-500 text-center block">
+                Choose a shipping and payment method to continue.
+              </small>
+            </div>
+          </template>
+        </Card>
+      </div>
     </div>
   </div>
 </template>
@@ -108,6 +218,12 @@
 import axios from 'axios'
 import Layout from "../Layouts/MainLayout.vue";
 import { Link, router } from '@inertiajs/vue3'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import Tag from 'primevue/tag'
+import Divider from 'primevue/divider'
+import Select from 'primevue/select'
+import InputNumber from 'primevue/inputnumber'
 
 export default {
   name: "Cart",
@@ -130,13 +246,14 @@ export default {
     },
   },
   layout: Layout,
-  components: { Link },
+  components: { Link, Card, Button, Tag, Divider, Select, InputNumber },
   data() {
     return {
       total: 0,
       selectedShipping: null,
       selectedPayment: null,
       items: [],
+      paying: false,
     }
   },
   watch: {
@@ -171,8 +288,38 @@ export default {
     isPayDisabled() {
       return !this.selectedShipping || !this.selectedPayment
     },
+    itemCount() {
+      return this.items.reduce((sum, item) => sum + Number(item.qty || 0), 0)
+    },
+    itemsTotal() {
+      return Math.round(this.items.reduce((sum, item) => sum + (+item.price * +item.qty), 0) * 100) / 100
+    },
+    shippingRate() {
+      if (!this.selectedShipping) {
+        return 0
+      }
+      const method = this.shippingMethods.find(method => method.id === this.selectedShipping)
+      return Number(method?.rate ?? 0)
+    },
+    shippingOptions() {
+      return this.shippingMethods.map(method => ({
+        ...method,
+        display: `${method.label} · ${method.time} · ${this.shippingRateLabel(method)}`,
+      }))
+    },
   },
   methods: {
+    money(value) {
+      const amount = Number(value ?? 0)
+      return '$' + amount.toFixed(2)
+    },
+    rowTotal(item) {
+      return Math.round(+item.price * +item.qty * 100) / 100
+    },
+    shippingRateLabel(method) {
+      const rate = Number(method?.rate ?? 0)
+      return rate > 0 ? '$' + rate.toFixed(2) : 'Free'
+    },
     pay() {
       let itemsInfo = {
         product_ids: [],
@@ -189,6 +336,7 @@ export default {
         itemsInfo.isRelatedProduct.push(pr.is_related);
       })
 
+      this.paying = true
       axios.post('/checkout',
           itemsInfo
       ).then(response => {
@@ -199,6 +347,8 @@ export default {
         }
       }).catch(e => {
         console.log(e);
+      }).finally(() => {
+        this.paying = false
       });
     },
     addRelated() {
@@ -210,10 +360,14 @@ export default {
         console.log(e)
       });
     },
-    onChangeQty(idx, e) {
-      const newVal = Number(e.target.value);
-      if (newVal < 1 || newVal > 99) {
-        e.target.value = this.items[idx].qty;
+    onChangeQty(idx, value) {
+      const newVal = Number(value);
+      if (!Number.isFinite(newVal) || newVal < 1 || newVal > 99) {
+        // revert the control to the stored value
+        this.items[idx].qty = this.items[idx].qty;
+        return;
+      }
+      if (newVal === this.items[idx].qty) {
         return;
       }
       axios.post('/cart/add-to-cart', {
@@ -227,7 +381,7 @@ export default {
         this.refreshSharedCart()
       }).catch(e => {
         console.log(e)
-      })
+      });
     },
     subtotal(val) {
       this.total = 0;
@@ -245,7 +399,7 @@ export default {
     },
     remove(item) {
       const total = this.total - (+item.price * +item.qty)
-      axios.post(this.$baseUrl + '/cart/remove-item', {
+      axios.post('/cart/remove-item', {
         productId: item.id,
         isRelated: Boolean(item.is_related),
         subtotal: total,
@@ -279,4 +433,56 @@ export default {
 </script>
 
 <style scoped>
+.cart-page {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.cart-item__thumb {
+  width: 104px;
+  height: 104px;
+  background-color: #f8fafc;
+  border: 1px solid var(--p-surface-200, #e2e8f0);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cart-item__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cart-item__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cart-item__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.cart-qty {
+  width: 9.5rem;
+}
+
+:deep(.cart-item .p-card-body),
+:deep(.summary-card .p-card-body) {
+  padding: 1.25rem;
+}
+
+:deep(.cart-item .p-card-content),
+:deep(.summary-card .p-card-content) {
+  padding: 0;
+}
+
+:deep(.summary-card .p-card-title) {
+  margin-bottom: 0.75rem;
+}
 </style>
