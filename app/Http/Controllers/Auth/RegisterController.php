@@ -6,6 +6,8 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisterController extends Controller
 {
@@ -37,6 +39,14 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    /**
+     * Show the application registration form (Inertia page).
+     */
+    public function showRegistrationForm(): Response
+    {
+        return Inertia::render('Register');
     }
 
     /**

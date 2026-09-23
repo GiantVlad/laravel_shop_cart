@@ -56,6 +56,15 @@ class PasswordResetPagesTest extends TestCase
         $user->forceDelete();
     }
 
+    public function testRegisterPageIsAnInertiaPage(): void
+    {
+        $this->get('/register')
+            ->assertSuccessful()
+            ->assertInertia(fn (Assert $page) => $page->component('Register', false))
+            ->assertDontSee('css/app.css', false)
+            ->assertDontSee('js/app.js', false);
+    }
+
     public function testPasswordPagesDoNotLoadTheLegacyBootstrapAssets(): void
     {
         $this->get('/password/reset')
