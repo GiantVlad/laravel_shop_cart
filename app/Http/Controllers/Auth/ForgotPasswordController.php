@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ForgotPasswordController extends Controller
 {
@@ -28,5 +31,15 @@ class ForgotPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    /**
+     * Show the "email me a reset link" form (Inertia page).
+     */
+    public function showLinkRequestForm(Request $request): Response
+    {
+        return Inertia::render('ForgotPassword', [
+            'status' => $request->session()->get('status'),
+        ]);
     }
 }
