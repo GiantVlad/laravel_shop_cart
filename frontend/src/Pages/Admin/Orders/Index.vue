@@ -26,21 +26,21 @@ const submit = () => {
 </script>
 
 <template>
-    <section class="content-card">
-        <div class="page-header">
+    <section class="admin-card">
+        <div class="admin-page-head">
             <div>
-                <p class="page-eyebrow">Commerce</p>
-                <h2 class="page-title">Orders</h2>
+                <p class="admin-page-eyebrow">Commerce</p>
+                <h2 class="admin-page-title">Orders</h2>
             </div>
         </div>
 
-        <form class="search-row" @submit.prevent="submit">
-            <input v-model="form.keyword" type="text" class="form-control" placeholder="Search by order label" />
-            <button class="btn btn-primary" type="submit" :disabled="form.processing">Search</button>
+        <form class="admin-search-row" @submit.prevent="submit">
+            <input v-model="form.keyword" type="text" class="admin-input" placeholder="Search by order label" />
+            <button class="admin-btn admin-btn--primary" type="submit" :disabled="form.processing">Search</button>
         </form>
 
-        <div class="table-responsive">
-            <table class="table admin-table align-middle">
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
                 <thead>
                     <tr>
                         <th>Label</th>
@@ -56,7 +56,7 @@ const submit = () => {
                         <td>{{ order.createdAt }}</td>
                         <td>
                             <div>{{ order.userName }}</div>
-                            <div class="text-muted">{{ order.userEmail }}</div>
+                            <div class="admin-muted">{{ order.userEmail }}</div>
                         </td>
                         <td>{{ order.total }}</td>
                         <td>{{ order.status }}</td>
@@ -65,44 +65,6 @@ const submit = () => {
             </table>
         </div>
 
-        <AdminPagination :links="orders.links" />
+        <AdminPagination :paginator="orders" />
     </section>
 </template>
-
-<style scoped>
-.content-card {
-    padding: 1.5rem;
-    border-radius: 1.25rem;
-    background: #fff;
-    box-shadow: 0 20px 50px rgba(44, 62, 80, 0.08);
-}
-
-.page-header {
-    margin-bottom: 1.5rem;
-}
-
-.page-eyebrow {
-    margin: 0 0 0.35rem;
-    color: #0d6efd;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.page-title {
-    margin: 0;
-}
-
-.search-row {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-@media (max-width: 767px) {
-    .search-row {
-        flex-direction: column;
-    }
-}
-</style>

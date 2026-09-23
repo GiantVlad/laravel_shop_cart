@@ -27,16 +27,16 @@ const toggleStatus = async (method) => {
 </script>
 
 <template>
-    <section class="content-card">
-        <div class="page-header">
+    <section class="admin-card">
+        <div class="admin-page-head">
             <div>
-                <p class="page-eyebrow">Logistics</p>
-                <h2 class="page-title">Shipping Methods</h2>
+                <p class="admin-page-eyebrow">Logistics</p>
+                <h2 class="admin-page-title">Shipping Methods</h2>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table admin-table align-middle">
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
                 <thead>
                     <tr>
                         <th>Label</th>
@@ -50,8 +50,8 @@ const toggleStatus = async (method) => {
                         <td>{{ method.label }}</td>
                         <td>{{ method.priority }}</td>
                         <td>{{ method.enabled ? 'Enabled' : 'Disabled' }}</td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary" type="button" @click="toggleStatus(method)">
+                        <td class="admin-actions">
+                            <button class="admin-btn admin-btn--sm admin-btn--outline" type="button" @click="toggleStatus(method)">
                                 {{ method.enabled ? 'Disable' : 'Enable' }}
                             </button>
                         </td>
@@ -61,29 +61,3 @@ const toggleStatus = async (method) => {
         </div>
     </section>
 </template>
-
-<style scoped>
-.content-card {
-    padding: 1.5rem;
-    border-radius: 1.25rem;
-    background: #fff;
-    box-shadow: 0 20px 50px rgba(44, 62, 80, 0.08);
-}
-
-.page-header {
-    margin-bottom: 1.5rem;
-}
-
-.page-eyebrow {
-    margin: 0 0 0.35rem;
-    color: #0d6efd;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.page-title {
-    margin: 0;
-}
-</style>
