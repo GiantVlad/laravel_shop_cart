@@ -262,6 +262,15 @@ export default {
     }
   },
   watch: {
+    // Inertia reloads keep this component alive (preserveState: true), so a cart
+    // change made server-side - adding the recommended product, removing an item -
+    // only reaches the rendered list if the local copy is re-synced from the props.
+    products: {
+      handler(products) {
+        this.items = [...products]
+        this.subtotal(this.selectedShipping)
+      },
+    },
     async selectedShipping(val) {
       // Payment options belong to the shipping method: drop the previous choice
       // and ask the server which methods the new shipping method accepts.
