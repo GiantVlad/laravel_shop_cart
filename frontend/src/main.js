@@ -31,6 +31,7 @@ const ShopPreset = definePreset(Aura, {
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 import './assets/app.css'
+import './assets/admin.css'
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
