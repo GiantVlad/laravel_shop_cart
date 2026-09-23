@@ -24,17 +24,17 @@ const removeCategory = (id) => {
 </script>
 
 <template>
-    <section class="content-card">
-        <div class="page-header">
+    <section class="admin-card">
+        <div class="admin-page-head">
             <div>
-                <p class="page-eyebrow">Catalog</p>
-                <h2 class="page-title">Categories</h2>
+                <p class="admin-page-eyebrow">Catalog</p>
+                <h2 class="admin-page-title">Categories</h2>
             </div>
-            <a class="btn btn-primary" href="/admin/add-category">Add New Category</a>
+            <a class="admin-btn admin-btn--primary" href="/admin/add-category">Add New Category</a>
         </div>
 
-        <div class="table-responsive">
-            <table class="table admin-table align-middle">
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -49,15 +49,15 @@ const removeCategory = (id) => {
                     <tr v-for="(category, index) in categories" :key="category.id">
                         <td>{{ index + 1 }}</td>
                         <td>
-                            <img v-if="category.imageUrl" :src="category.imageUrl" class="thumb" alt="" />
-                            <span v-else class="text-muted">No image</span>
+                            <img v-if="category.imageUrl" :src="category.imageUrl" class="admin-thumb" alt="" />
+                            <span v-else class="admin-muted">No image</span>
                         </td>
                         <td>{{ category.name }}</td>
                         <td>{{ category.priority }}</td>
                         <td>{{ category.parentName || 'No parent' }}</td>
-                        <td class="text-end actions">
-                            <a class="btn btn-sm btn-outline-primary" :href="`/admin/edit-category/${category.id}`">Edit</a>
-                            <button class="btn btn-sm btn-outline-danger" type="button" @click="removeCategory(category.id)">
+                        <td class="admin-actions">
+                            <a class="admin-btn admin-btn--sm admin-btn--outline" :href="`/admin/edit-category/${category.id}`">Edit</a>
+                            <button class="admin-btn admin-btn--sm admin-btn--danger" type="button" @click="removeCategory(category.id)">
                                 Remove
                             </button>
                         </td>
@@ -67,61 +67,3 @@ const removeCategory = (id) => {
         </div>
     </section>
 </template>
-
-<style scoped>
-.content-card,
-.page-header {
-    background: #fff;
-}
-
-.content-card {
-    padding: 1.5rem;
-    border-radius: 1.25rem;
-    box-shadow: 0 20px 50px rgba(44, 62, 80, 0.08);
-}
-
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.page-eyebrow {
-    margin: 0 0 0.35rem;
-    color: #0d6efd;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.page-title {
-    margin: 0;
-}
-
-.admin-table {
-    margin-bottom: 0;
-}
-
-.thumb {
-    width: 88px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 0.75rem;
-}
-
-.actions {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-}
-
-@media (max-width: 767px) {
-    .page-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-</style>
