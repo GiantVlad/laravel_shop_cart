@@ -12,19 +12,22 @@ defineProps({
 const page = usePage()
 
 const navigation = [
-  { label: 'Dashboard', href: '/admin' },
-  { label: 'Categories', href: '/admin/categories' },
-  { label: 'Products', href: '/admin/products' },
-  { label: 'Users', href: '/admin/users' },
-  { label: 'Orders', href: '/admin/orders' },
-  { label: 'Payment Methods', href: '/admin/payment-methods' },
-  { label: 'Shipping', href: '/admin/shipping-methods' },
+  { label: 'Dashboard', href: '/admin', match: ['/admin'] },
+  { label: 'Categories', href: '/admin/categories', match: ['/admin/categories', '/admin/add-category', '/admin/edit-category'] },
+  { label: 'Products', href: '/admin/products', match: ['/admin/products', '/admin/add-product', '/admin/edit-product'] },
+  { label: 'Users', href: '/admin/users', match: ['/admin/users', '/admin/edit-user'] },
+  { label: 'Orders', href: '/admin/orders', match: ['/admin/orders'] },
+  { label: 'Payment Methods', href: '/admin/payment-methods', match: ['/admin/payment-methods'] },
+  { label: 'Shipping', href: '/admin/shipping-methods', match: ['/admin/shipping-methods'] },
 ]
 
 const currentPath = computed(() => page.url.split('?')[0])
 
-const isActive = (href) =>
-  href === '/admin' ? currentPath.value === '/admin' : currentPath.value.startsWith(href)
+// Edit/create screens keep their section highlighted (/admin/edit-product/3 -> Products).
+const isActive = (item) =>
+  item.match.some((prefix) =>
+    prefix === '/admin' ? currentPath.value === '/admin' : currentPath.value.startsWith(prefix)
+  )
 
 const flashMessage = computed(() => page.props.flash?.message)
 const flashError = computed(() => page.props.flash?.error)
@@ -55,7 +58,7 @@ const adminName = computed(() => page.props.auth?.admin?.name ?? 'Admin')
           :key="item.href"
           :href="item.href"
           class="admin-nav-link"
-          :class="{ 'is-active': isActive(item.href) }"
+          :class="{ 'is-active': isActive(item) }"
         >
           {{ item.label }}
         </Link>
