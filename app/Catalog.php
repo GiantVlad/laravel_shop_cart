@@ -21,6 +21,16 @@ class Catalog extends Model
     {
         return $this->hasMany('App\Product', 'catalog_id', 'id');
     }
+
+    /**
+     * Direct child catalogs, ordered for display.
+     *
+     * @return HasMany
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany('App\Catalog', 'parent_id', 'id')->orderBy('priority');
+    }
     
     /**
      * @param int $id
