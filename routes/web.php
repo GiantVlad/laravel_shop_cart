@@ -34,8 +34,7 @@ Route::post('/order/action', 'OrderController@doAction')->name('change.order.sta
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@getChildCatalogs');
-    Route::get('/properties', 'ShopController@getFilterProperties');
-    Route::get('/{id}', 'ShopController@getProduct')->name('product');
+    Route::get('/{id}', 'ShopController@getProduct')->name('product')->whereNumber('id');
 });
 
 Route::prefix('filter')->group( function() {
