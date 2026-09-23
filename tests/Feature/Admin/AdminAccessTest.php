@@ -117,4 +117,9 @@ class AdminAccessTest extends TestCase
             ->get('/admin/password/reset')
             ->assertRedirect('/admin');
     }
+
+    public function testForgotPasswordFormRendersForGuests(): void
+    {
+        $this->get('/admin/password/reset')->assertSuccessful();
+    }
 }
