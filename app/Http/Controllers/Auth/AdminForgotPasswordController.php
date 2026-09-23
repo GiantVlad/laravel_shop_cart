@@ -35,7 +35,7 @@ class AdminForgotPasswordController extends Controller
 
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest:admin');
     }
 
     public function showLinkRequestForm(): View

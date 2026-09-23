@@ -108,4 +108,13 @@ class AdminAccessTest extends TestCase
 
         $this->assertGuest('admin');
     }
+
+    public function testLoggedInAdminCannotOpenTheForgotPasswordForm(): void
+    {
+        $admin = Admin::factory()->create();
+
+        $this->actingAs($admin, 'admin')
+            ->get('/admin/password/reset')
+            ->assertRedirect('/admin');
+    }
 }
