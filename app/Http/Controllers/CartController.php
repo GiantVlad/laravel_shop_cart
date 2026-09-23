@@ -11,6 +11,7 @@ use App\Http\Requests\CartRemoveItemRequest;
 use App\Http\Requests\CartChangeShippingRequest;
 use App\Http\Resources\CartPostResource;
 use App\Product;
+use App\PaymentMethod;
 use App\RelatedProduct;
 use App\Services\Cart\CartPostDTO;
 use App\Services\Payment\PaymentMethodManager;
@@ -19,6 +20,7 @@ use App\ShippingMethod;
 use App\Services\Cart\CartService;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +28,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Redirector;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Validation\ValidationException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class CartController extends Controller
@@ -41,6 +44,7 @@ class CartController extends Controller
         private CartService $cartService,
         private Recommended $recommendedService,
         private Cache $cacheRepository,
+        private PaymentMethodManager $paymentMethodList,
     ) {
         $this->middleware('auth')->except('logout');
     }
@@ -63,10 +67,54 @@ class CartController extends Controller
         if (array_key_exists('total', $cartProducts)) {
             $cartProducts['total'] = (float)$input['subtotal'];
             $cartProducts['shippingMethodId'] = (int)$input['shippingMethodId'];
+
+            // Payment options depend on the shipping method, so a payment method the
+            // new shipping method does not offer has to be re-chosen by the customer.
+            $selectedPaymentId = (int)($cartProducts['paymentMethodId'] ?? 0);
+            if ($selectedPaymentId > 0
+                && ! $this->paymentMethodList->isAvailableForShippingMethod($selectedPaymentId, (int)$input['shippingMethodId'])
+            ) {
+                $cartProducts['paymentMethodId'] = null;
+            }
+
             $this->cartService->storeCart($request->user()->id, $cartProducts);
         }
     
         return $this->getCartPostResource($cartProducts);
+    }
+    
+    /**
+     * Payment methods the given shipping method accepts, for the cart's payment selector.
+     *
+     * @param int $shippingMethodId
+     * @param ShippingMethod $shippingMethod
+     * @param PaymentMethodManager $paymentMethodList
+     * @return JsonResponse
+     */
+    public function paymentMethods(
+        int $shippingMethodId,
+        ShippingMethod $shippingMethod,
+        PaymentMethodManager $paymentMethodList
+    ): JsonResponse {
+        $shippingMethod->findOrFail($shippingMethodId);
+
+        if (! $shippingMethod->getStatusById($shippingMethodId)) {
+            throw ValidationException::withMessages([
+                'shippingMethodId' => 'The selected shipping method is disabled.',
+            ]);
+        }
+
+        $payments = $paymentMethodList->getAllEnabledForShippingMethod($shippingMethodId)
+            ->map(static function (PaymentMethod $method): array {
+                return [
+                    'id' => $method->id,
+                    'label' => $method->label,
+                    'config_key' => $method->config_key,
+                ];
+            })
+            ->values();
+
+        return response()->json(['payments' => $payments]);
     }
     
     /**
@@ -84,7 +132,22 @@ class CartController extends Controller
             return new CartPostResource(new CartPostDTO(0, 0));
         }
         
-        $cartProducts['paymentMethodId'] = (int)$input['paymentMethodId'];
+        $shippingMethodId = (int)($cartProducts['shippingMethodId'] ?? 0);
+        $paymentMethodId = (int)$input['paymentMethodId'];
+
+        if ($shippingMethodId < 1) {
+            throw ValidationException::withMessages([
+                'paymentMethodId' => 'Choose a shipping method before choosing how to pay.',
+            ]);
+        }
+
+        if (! $this->paymentMethodList->isAvailableForShippingMethod($paymentMethodId, $shippingMethodId)) {
+            throw ValidationException::withMessages([
+                'paymentMethodId' => 'The selected payment method is not available for this shipping method.',
+            ]);
+        }
+
+        $cartProducts['paymentMethodId'] = $paymentMethodId;
         $this->cartService->storeCart($request->user()->id, $cartProducts);
         
         return $this->getCartPostResource($cartProducts);
@@ -248,29 +311,31 @@ class CartController extends Controller
         $productsIds = [];
 
         $shippingMethods = $shippingMethod->getAllEnabled();
-        $paymentMethods = $paymentMethodList->getAllEnabled();
+        $selectedShippingId = (int)($cartProducts['shippingMethodId'] ?? 0);
+        $selectedPaymentId = (int)($cartProducts['paymentMethodId'] ?? 0);
+
+        $shippingMethods->map(static function ($method) use ($selectedShippingId) {
+            /** @var ShippingMethod $method */
+            $method->selected = $method->id == $selectedShippingId;
+
+            return $method;
+        });
+
+        // Nothing to choose from until a shipping method is picked; afterwards the
+        // exact payment methods that shipping method accepts.
+        $paymentMethods = $selectedShippingId > 0
+            ? $paymentMethodList->getAllEnabledForShippingMethod($selectedShippingId)
+            : new Collection();
+
+        $paymentMethods->map(static function ($method) use ($selectedPaymentId) {
+            /** @var PaymentMethod $method */
+            $method->selected = $method->id == $selectedPaymentId;
+
+            return $method;
+        });
 
         foreach ($cartProducts as $key => $cartProduct) {
-            if ($key === 'total') {
-                continue;
-            }
-            if ($key === 'shippingMethodId') {
-                $shippingMethods->map(function ($method) use ($cartProducts) {
-                    /** @var ShippingMethod $method */
-                    $method->selected = $method->id == $cartProducts['shippingMethodId'];
-
-                    return $method;
-                });
-
-                continue;
-            }
-            if ($key === 'paymentMethodId') {
-                $paymentMethods->map(function ($method) use ($cartProducts) {
-                    $method->selected = $method->id == $cartProducts['paymentMethodId'];
-
-                    return $method;
-                });
-
+            if (in_array($key, ['total', 'shippingMethodId', 'paymentMethodId'], true)) {
                 continue;
             }
 

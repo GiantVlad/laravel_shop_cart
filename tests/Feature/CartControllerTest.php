@@ -163,7 +163,14 @@ class CartControllerTest extends TestCase
         };
         yield 'shipping id null' => [null, 100.56, 'shippingMethodId'];
         yield 'shipping id string' => ['12a', 100.56, 'shippingMethodId'];
-        yield 'shipping id is not exists' => [1, 100.56, 'shippingMethodId'];
+        // Empty the table first: other suites leave shipping methods behind, and this
+        // case specifically expects id 1 to be unknown.
+        yield 'shipping id is not exists' => [
+            1,
+            100.56,
+            'shippingMethodId',
+            static fn (bool $enabled = true) => ShippingMethod::query()->delete(),
+        ];
         yield 'shipping is disabled' => [1, 100.56, 'shippingMethodId', $callback, false];
         yield 'subtotal is null' => [1, null, 'subtotal', $callback];
         yield 'subtotal is not number' => [1, 'a1001b', 'subtotal', $callback];

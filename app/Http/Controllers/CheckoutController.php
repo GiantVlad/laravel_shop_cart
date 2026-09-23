@@ -47,6 +47,15 @@ class CheckoutController extends Controller
     ): JsonResponse {
         $requestData = $request->validated();
         
+        // The payment selector only offers what the shipping method accepts; enforce
+        // it here too so a hand-crafted request cannot pick an impossible pair.
+        if (! $paymentManager->isAvailableForShippingMethod(
+            (int)$requestData['paymentMethodId'],
+            (int)$requestData['shippingMethodId']
+        )) {
+            throw new PaymentException('The selected payment method is not available for the selected shipping method.');
+        }
+        
         if (isset($requestData['related_product_id']) && (int)$requestData['related_product_id'] > 0) {
             /** @var RelatedProduct $relatedProduct */
             $relatedProduct = $this->relatedProduct->find((int)$requestData['related_product_id']);

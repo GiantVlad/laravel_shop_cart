@@ -11,6 +11,9 @@ Route::redirect('/', '/shop')->name('home-index');
 Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');
     $router->post('/change-payment', 'CartController@changePayment')->name('cart.change_payment');
+    $router->get('/payment-methods/{shippingMethodId}', 'CartController@paymentMethods')
+        ->whereNumber('shippingMethodId')
+        ->name('cart.payment_methods');
     $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
     $router->post('/add-to-cart', 'CartController@addToCart')->name('cart.add_to_cart');;
     $router->post('/remove-item', 'CartController@removeItem')->name('cart.remove_item');;

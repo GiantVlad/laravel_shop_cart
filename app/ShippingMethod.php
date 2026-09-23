@@ -7,6 +7,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class ShippingMethod
@@ -30,6 +31,16 @@ class ShippingMethod extends Model
     private const NAMESPACE = 'App\\Services\\Shipping\\';
     protected $fillable = array('class_name', 'enable', 'priority');
     
+    /**
+     * Payment methods this shipping method accepts.
+     *
+     * @return BelongsToMany
+     */
+    public function paymentMethods(): BelongsToMany
+    {
+        return $this->belongsToMany(PaymentMethod::class, 'payment_method_shipping_method');
+    }
+
     /**
      * @return Collection
      */

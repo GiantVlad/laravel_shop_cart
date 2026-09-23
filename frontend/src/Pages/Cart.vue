@@ -167,12 +167,16 @@
                 <Select
                   inputId="payment-select"
                   v-model="selectedPayment"
-                  :options="payments"
+                  :options="paymentOptions"
                   optionLabel="label"
                   optionValue="id"
-                  placeholder="Select payment method"
+                  :disabled="!selectedShipping"
+                  :placeholder="selectedShipping ? 'Select payment method' : 'Select a shipping method first'"
                   class="w-full"
                 />
+                <small v-if="!selectedShipping" class="text-500 text-xs">
+                  Payment options depend on the shipping method.
+                </small>
               </div>
 
               <Divider class="my-0" />
@@ -252,24 +256,34 @@ export default {
       total: 0,
       selectedShipping: null,
       selectedPayment: null,
+      paymentOptions: [],
       items: [],
       paying: false,
     }
   },
   watch: {
-    selectedShipping(val) {
+    async selectedShipping(val) {
+      // Payment options belong to the shipping method: drop the previous choice
+      // and ask the server which methods the new shipping method accepts.
+      this.selectedPayment = null
+      this.paymentOptions = []
+
       if (!val) {
         return
       }
+
       this.subtotal(val)
-      axios.post('/cart/change-shipping', {
-        shippingMethodId: val,
-        subtotal: this.total,
-      }).then(() => {
+      try {
+        await axios.post('/cart/change-shipping', {
+          shippingMethodId: val,
+          subtotal: this.total,
+        })
+        const { data } = await axios.get(`/cart/payment-methods/${val}`)
+        this.paymentOptions = data?.payments ?? []
         this.refreshSharedCart()
-      }).catch(e => {
+      } catch (e) {
         console.log(e)
-      })
+      }
     },
     selectedPayment(val) {
       if (!val) {
@@ -423,9 +437,11 @@ export default {
     const method = this.shippingMethods.find(method => method.selected === true);
     this.selectedShipping = method !== undefined ? method.id : null;
     this.items = [...this.products];
+    // The server sends the payment methods of the already selected shipping method.
+    this.paymentOptions = method !== undefined ? [...this.payments] : [];
     if (this.items.length > 0) {
       this.subtotal(this.selectedShipping);
-      const payMethod = this.payments.find(item => item.selected === true);
+      const payMethod = this.paymentOptions.find(item => item.selected === true);
       this.selectedPayment = payMethod !== undefined ? payMethod.id : null;
     }
   },
