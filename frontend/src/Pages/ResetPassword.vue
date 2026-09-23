@@ -53,6 +53,9 @@
             />
           </div>
           <small v-if="errors?.password" class="text-red-500 text-xs mt-1 block">{{ errors.password }}</small>
+          <small v-else class="text-500 text-xs mt-1 block">
+            At least 8 characters with a letter, a number and a special character.
+          </small>
         </div>
 
         <div>

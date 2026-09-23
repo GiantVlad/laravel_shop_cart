@@ -89,11 +89,11 @@ class PasswordResetPagesTest extends TestCase
         $this->post('/password/reset', [
             'token' => $token,
             'email' => $user->email,
-            'password' => 'new-secret-pass',
-            'password_confirmation' => 'new-secret-pass',
+            'password' => 'New-secret-pass1!',
+            'password_confirmation' => 'New-secret-pass1!',
         ])->assertRedirect('/');
 
-        $this->assertTrue(Hash::check('new-secret-pass', $user->fresh()->password));
+        $this->assertTrue(Hash::check('New-secret-pass1!', $user->fresh()->password));
 
         $user->forceDelete();
     }

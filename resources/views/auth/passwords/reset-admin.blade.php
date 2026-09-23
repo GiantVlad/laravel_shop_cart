@@ -14,6 +14,9 @@
     <div>
         <label for="password" class="admin-label">Password</label>
         <input id="password" type="password" class="admin-input" name="password" required>
+        <small style="display: block; margin-top: 0.35rem; font-size: 0.75rem; color: #64748b;">
+            At least 8 characters with a letter, a number and a special character.
+        </small>
     </div>
 
     <div>

@@ -65,12 +65,15 @@
               type="password"
               required
               autocomplete="new-password"
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               class="form-input"
               :class="{ 'input-error': errors?.password }"
             />
           </div>
           <small v-if="errors?.password" class="text-red-500 text-xs mt-1 block">{{ errors.password }}</small>
+          <small v-else class="text-500 text-xs mt-1 block">
+            At least 8 characters with a letter, a number and a special character.
+          </small>
         </div>
 
         <div>
