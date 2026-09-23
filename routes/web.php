@@ -6,7 +6,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'HomeController@index')->name('home-index');
+Route::redirect('/', '/shop')->name('home-index');
 
 Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');

@@ -37,15 +37,13 @@ class HttpGetShopTest extends TestCase
             ]);
     }
     /**
-     * A test home page.
+     * The root URL redirects to the shop page.
      *
      * @return void
      */
     public function testGetHomePage()
     {
-        $response = $this->get('/');
-        $response->assertSuccessful();
-        $response->assertInertia(fn (Assert $page) => $page->component('Home', false));
+        $this->get('/')->assertRedirect('/shop');
     }
 
     /**
