@@ -1,43 +1,43 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+import Paginator from 'primevue/paginator'
 
-defineProps({
-  links: {
-    type: Array,
-    default: () => [],
+const props = defineProps({
+  // A Laravel LengthAwarePaginator payload (total / per_page / current_page).
+  paginator: {
+    type: Object,
+    default: null,
   },
 })
 
-function cleanLabel(label) {
-  if (!label) return ''
-  return label
-    .replace('&laquo; Previous', '‹')
-    .replace('Next &raquo;', '›')
-    .replace('&laquo;', '‹')
-    .replace('&raquo;', '›')
+const totalRecords = computed(() => Number(props.paginator?.total ?? 0))
+const rows = computed(() => Number(props.paginator?.per_page ?? 15))
+const currentPage = computed(() => Number(props.paginator?.current_page ?? 1))
+const first = computed(() => (currentPage.value - 1) * rows.value)
+
+const visible = computed(() => totalRecords.value > rows.value && rows.value > 0)
+
+function onPage(event) {
+  const target = event.page + 1
+  if (target === currentPage.value) return
+
+  const url = new URL(window.location.href)
+  url.searchParams.set('page', String(target))
+  router.get(url.pathname + url.search, {}, { preserveScroll: true, preserveState: true })
 }
 </script>
 
 <template>
-  <nav v-if="links && links.length > 3" aria-label="Pagination" class="d-flex align-items-center gap-1">
-    <template v-for="link in links" :key="`${link.label}-${link.url}`">
-      <Link
-        v-if="link.url"
-        :href="link.url"
-        class="p-button p-button-sm p-button-rounded transition-colors duration-150 min-w-2rem h-2rem d-flex align-items-center justify-content-center text-xs font-semibold"
-        :class="link.active ? 'p-button-primary shadow-sm' : 'p-button-text p-button-secondary text-surface-700'"
-        v-html="cleanLabel(link.label)"
-      />
-      <span
-        v-else
-        class="p-button p-button-sm p-button-rounded p-button-text p-button-secondary opacity-40 pointer-events-none min-w-2rem h-2rem d-flex align-items-center justify-content-center text-xs"
-        v-html="cleanLabel(link.label)"
-      />
-    </template>
-  </nav>
+  <Paginator
+    v-if="visible"
+    class="admin-paginator"
+    :first="first"
+    :rows="rows"
+    :totalRecords="totalRecords"
+    :pageLinkSize="5"
+    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+    currentPageReportTemplate="{first}–{last} of {totalRecords}"
+    @page="onPage"
+  />
 </template>
-
-<style scoped>
-.min-w-2rem { min-width: 2.25rem; }
-.h-2rem { height: 2.25rem; }
-</style>
