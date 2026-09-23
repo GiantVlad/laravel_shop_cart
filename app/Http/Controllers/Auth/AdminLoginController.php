@@ -45,7 +45,9 @@ class AdminLoginController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         }
         
-        return redirect()->back()->withInput($request->only('email, remember'));
+        return redirect()->back()
+            ->withInput($request->only('email', 'remember'))
+            ->withErrors(['email' => 'These credentials do not match our records.']);
     }
     
     /**
