@@ -1,7 +1,12 @@
 <template>
   <Card class="product-card w-full h-full shadow-1 border-1 border-surface-200 border-round-xl overflow-hidden flex flex-column">
     <template #header>
-      <Link :href="`/shop/${product.id}`" class="block bg-surface-50 no-underline overflow-hidden">
+      <a
+        :href="`/shop/${product.id}`"
+        target="_blank"
+        rel="noopener"
+        class="block bg-surface-50 no-underline overflow-hidden"
+      >
         <div class="product-card__image-container flex align-items-center justify-content-center p-3">
           <img
             :alt="product.name"
@@ -10,16 +15,18 @@
             loading="lazy"
           />
         </div>
-      </Link>
+      </a>
     </template>
     
     <template #title>
-      <Link
+      <a
         :href="`/shop/${product.id}`"
+        target="_blank"
+        rel="noopener"
         class="product-card__title text-900 no-underline font-semibold hover:text-primary transition-colors transition-duration-150 block"
       >
         {{ product.name }}
-      </Link>
+      </a>
     </template>
 
     <template #content>
