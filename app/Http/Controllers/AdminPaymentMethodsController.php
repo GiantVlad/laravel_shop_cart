@@ -19,7 +19,6 @@ class AdminPaymentMethodsController extends Controller
         private PaymentMethodRepository $paymentMethodRepository,
         private PaymentMethodManager $paymentMethodManager,
     ) {
-        $this->middleware('auth:admin');
     }
     
     /**

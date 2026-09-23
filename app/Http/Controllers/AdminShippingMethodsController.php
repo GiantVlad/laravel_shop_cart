@@ -17,7 +17,6 @@ class AdminShippingMethodsController extends Controller
 
     public function __construct(ShippingMethod $shippingMethod, Order $order)
     {
-        $this->middleware('auth:admin');
         $this->shippingMethod = $shippingMethod;
         $this->order = $order;
     }

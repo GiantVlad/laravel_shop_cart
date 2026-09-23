@@ -19,7 +19,6 @@ class AdminUsersController extends Controller
      */
     public function __construct(User $user)
     {
-        $this->middleware('auth:admin');
         $this->user = $user;
     }
     

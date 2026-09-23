@@ -17,11 +17,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AdminProductsController extends Controller
 {
-    public function __construct ()
-    {
-        $this->middleware('auth:admin');
-    }
-
     public function list(): Response
     {
         //todo app settings

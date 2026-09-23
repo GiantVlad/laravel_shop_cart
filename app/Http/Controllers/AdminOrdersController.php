@@ -14,7 +14,6 @@ class AdminOrdersController extends Controller
 {
     public function __construct(private Order $order)
     {
-        $this->middleware('auth:admin');
     }
     
     /**
