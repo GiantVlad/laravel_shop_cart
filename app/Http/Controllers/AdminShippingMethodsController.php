@@ -46,24 +46,6 @@ class AdminShippingMethodsController extends Controller
     }
     
     /**
-     * @param Request $request
-     * @return View|RedirectResponse
-     */
-    public function search(Request $request): View|RedirectResponse
-    {
-        $keyword = $request->keyword;
-
-        if ($keyword!='') {
-            $selectedOrder = $this->order->getOrderById($keyword);
-
-            return view('admin.orders', ['orders' => $selectedOrder]);
-        }
-
-        return back();
-    }
-    
-    
-    /**
      * @param int $id
      */
     public function showEditForm (int $id): void
