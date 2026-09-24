@@ -105,14 +105,37 @@ return [
     */
 
     'redis' => [
-    
+
         'client' => 'predis',
         'cluster' => false,
+
+        /*
+         * Separate Redis databases per concern. They matter because several artisan
+         * commands flush the *whole* selected database:
+         *   - cache:clear  -> FLUSHDB on the cache connection (would drop sessions)
+         *   - horizon:clear / queue:flush -> drops everything on the queue connection
+         * Sessions therefore stay on `default` (db 0), the cache lives on db 1 and the
+         * queues (Horizon) on db 2. All three still share one redis container.
+         */
         'default' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
+        ],
+
+        'cache' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_CACHE_DB', 1),
+        ],
+
+        'queue' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_QUEUE_DB', 2),
         ],
 
     ],

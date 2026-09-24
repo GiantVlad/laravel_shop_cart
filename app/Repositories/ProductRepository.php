@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTO\FilterNumberDTO;
 use App\DTO\FilterSelectorDTO;
 use App\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -14,13 +15,15 @@ class ProductRepository
     public function __construct(
         private Product $mProduct
     ) {}
-    
+
     /**
-     * @param int[]|null $category_ids
+     * Shared filter query builder: category subtree + property filters.
+     *
      * @param Collection $filters
-     * @return EloquentCollection
+     * @param int[]|null $category_ids
+     * @return Builder
      */
-    public function getFilteredProducts(Collection $filters, ?array $category_ids = []): EloquentCollection
+    public function buildFilteredQuery(Collection $filters, ?array $category_ids = []): Builder
     {
         $query = $this->mProduct->newQuery()
             ->when(!empty($category_ids), function ($query) use ($category_ids) {
@@ -30,12 +33,16 @@ class ProductRepository
             $query->whereHas('properties', function ($q) use ($filterDto) {
                 $q->when($filterDto instanceof FilterNumberDTO, function (Builder $nQuery) use ($filterDto) {
                     $nQuery->where('property_values.property_id', $filterDto->getId());
+                    // DOUBLE, not a bare DECIMAL: CAST(x AS DECIMAL) means DECIMAL(10,0) on
+                    // MariaDB, so "20.56" is rounded to 21 and a 0..20.56 range drops its own
+                    // boundary - decimal property values were effectively compared as rounded
+                    // integers. Verified: cast('20.56' as double) = 20.56, as DECIMAL = 21.
                     if ($filterDto->getMinValue()) {
-                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) >= ?')
+                        $nQuery->whereRaw('CAST(property_values.value as DOUBLE) >= ?')
                             ->addBinding($filterDto->getMinValue());
                     }
                     if ($filterDto->getMaxValue()) {
-                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) <= ?')
+                        $nQuery->whereRaw('CAST(property_values.value as DOUBLE) <= ?')
                             ->addBinding($filterDto->getMaxValue());
                     }
                 })
@@ -46,7 +53,37 @@ class ProductRepository
                 });
             });
         }
-        
-        return $query->limit($this->mProduct::LIST_LIMIT)->orderBy('updated_at', 'desc')->get();
+
+        return $query;
+    }
+
+    /**
+     * @param int[]|null $category_ids
+     * @param Collection $filters
+     * @return EloquentCollection
+     */
+    public function getFilteredProducts(Collection $filters, ?array $category_ids = []): EloquentCollection
+    {
+        return $this->buildFilteredQuery($filters, $category_ids)
+            ->limit($this->mProduct::LIST_LIMIT)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Same filters, but paginated so the shop page keeps its paginator.
+     *
+     * @param int[]|null $category_ids
+     * @param Collection $filters
+     * @return LengthAwarePaginator
+     */
+    public function paginateFilteredProducts(
+        Collection $filters,
+        ?array $category_ids = [],
+        int $perPage = Product::LIST_LIMIT
+    ): LengthAwarePaginator {
+        return $this->buildFilteredQuery($filters, $category_ids)
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage);
     }
 }

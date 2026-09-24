@@ -1,42 +1,106 @@
-version: '3'
+# Production stack.
+#
+# Deploy from the repo root on the server:
+#   docker compose -f compose.yaml up -d --build
+#
+# Env file: every service loads its variables from ${ENV_FILE:-.env.prod}.
+#   - Default layout (file named .env.prod): pass it on the command line as
+#     `--env-file .env.prod`. A service level env_file only injects variables into the
+#     container, it does not feed the ${DB_*}/${DOCKER_*} interpolation in this file.
+#   - Server layout with the file named .env: add the line `ENV_FILE=.env` to it. Then a
+#     plain `docker compose -f compose.yaml ...` is enough - compose reads .env for
+#     interpolation by itself and the services load that same file as their env_file.
+#   - Any other name: set ENV_FILE=<name> inside the file and use --env-file <name>.
+#
+# Migrations (once per deploy, never automatically):
+#   docker compose -f compose.yaml run --rm roadrunner php artisan migrate --force
+#
+# RoadRunner workers cache routes and the Vite manifest, reset after changing routes
+# or rebuilding assets:
+#   docker compose -f compose.yaml exec roadrunner rr -c /etc/.rr.yaml reset
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+# One image, two processes (roadrunner = HTTP, horizon = queue workers). Declaring it as an
+# anchor plus a shared image name makes compose build it once and reuse it for both services.
+x-app-build: &app-build
+  context: ./
+  dockerfile: ./.docker/roadrunner/DockerfileProd
+
 services:
   roadrunner:
-    #image: gaintvlad/lara_shop_roadrunner:1.001
-    build:
-      context: ./
-      dockerfile: ./.docker/roadrunner/DockerfileProd
-      args:
-        RR_VERSION: ${RR_VERSION}
-        PHP_IMAGE_VERSION: ${PHP_IMAGE_VERSION}
-    image: ul1acr.azurecr.io/lara_shop/l_roadrunner
+    # image: ul1acr.azurecr.io/lara_shop/l_roadrunner   # build in CI and push instead of building on the host
+    image: lara_shop_app:prod
+    build: *app-build
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 1G
     ports:
-      - "80:80"
-    env_file: .env.prod
+      # loopback only - the host NGINX terminates TLS and proxies to this port
+      - "127.0.0.1:${DOCKER_RR_80_PORT:-8089}:80"
+    env_file:
+      # see the header: if the file is named .env on the server, put ENV_FILE=.env in it
+      - ${ENV_FILE:-.env.prod}
     environment:
-      #      RR_VERSION: ${RR_VERSION}
       APP_BASE_PATH: /app
-      #PHP_IDE_CONFIG: "serverName=roadrunner.local"
     working_dir: /app
     depends_on:
-      - temporal
-      - postgresql
-      - mariadb
-    restart: on-failure
-    #    healthcheck:
-    #      interval: 1s
-    #      timeout: 3s
-    #      retries: 3
-    #      start_period: 10s
+      mariadb:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      # DockerfileProd bakes the same command with interval 1s/retries 30 - keep this sane
+      # override. Needs the /health route from routes/web.php to exist.
+      test: ["CMD", "docker-healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging: *default-logging
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  horizon:
+    # Same image as roadrunner, different process. Separate container on purpose:
+    # `rr -c /etc/.rr.yaml reset` (needed after route/asset changes) restarts RoadRunner's whole
+    # process tree and would kill jobs mid-flight, `php artisan horizon:terminate` is the
+    # graceful worker restart you want on deploy and must not bounce HTTP, and a runaway job
+    # should hit this container's limits instead of OOM-ing the web server.
+    # maxProcesses in config/horizon.php is sized for the limits below - keep them in sync.
+    image: lara_shop_app:prod
+    build: *app-build
+    command: ["php", "artisan", "horizon"]
+    working_dir: /app
+    env_file:
+      - ${ENV_FILE:-.env.prod}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      # horizon:status exits 0 while a master supervisor is running, non-zero otherwise.
+      test: ["CMD", "php", "artisan", "horizon:status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging: *default-logging
+
   mariadb:
-    image: bitnami/mariadb:10
+    image: mariadb:11.7.2
     restart: unless-stopped
     deploy:
       resources:
@@ -44,155 +108,65 @@ services:
           cpus: '0.25'
           memory: 1G
     environment:
-      - MARIADB_USER=admin
-      - MARIADB_PASSWORD=secret
-      - MARIADB_ROOT_PASSWORD=rootsecret123
-      - MARIADB_DATABASE=shop
-      - MARIADB_SKIP_TEST_DB=yes
-#    ports:
-#      - '${DOCKER_MYSQL_PORT:-3307}:3306'
-#    volumes:
-#      - './.local_data/sql:/bitnami/mariadb'
-
-#  mariadb_test:
-#    image: bitnami/mariadb:10
-#    restart: unless-stopped
-#    environment:
-#      - MARIADB_USER=admin
-#      - MARIADB_PASSWORD=secret
-#      - MARIADB_ROOT_PASSWORD=rootsecret123
-#      - MARIADB_DATABASE=shop
-#      - MARIADB_SKIP_TEST_DB=yes
-#    ports:
-#      - '${DOCKER_MYSQL_TEST_PORT:-3308}:3306'
+      # official mariadb image reads MARIADB_* (the bitnami-only MARIADB_SKIP_TEST_DB is gone:
+      # this image creates no test database, and an unknown variable is simply ignored)
+      - MARIADB_USER=${DB_USERNAME:?DB_USERNAME is not set - check the env file (see compose.yaml header)}
+      - MARIADB_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is not set - check the env file (see compose.yaml header)}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is not set - add it to the env file}
+      - MARIADB_DATABASE=${DB_DATABASE:-shop}
+    ports:
+      # loopback only, for maintenance access - drop both lines once you have SSH access
+      - "127.0.0.1:${DOCKER_MYSQL_PORT:-3309}:3306"
+    volumes:
+      - 'db_data:/var/lib/mysql'
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging: *default-logging
 
   redis:
-    image: redis:6.2.5-alpine
+    image: redis:7.4-alpine
     restart: unless-stopped
+    environment:
+      # Same value Laravel reads (REDIS_PASSWORD in the env file); handed to the server
+      # as requirepass below, so client and server can never disagree.
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?REDIS_PASSWORD is not set - check the env file}
+    # Shell form so the password stays out of the process arguments (docker inspect/ps).
+    # Never set REDIS_PASSWORD to the literal string `null`: Laravel maps that to PHP null
+    # and sends no AUTH, while redis would demand the four-letter password.
+    command:
+      - sh
+      - -c
+      - 'exec redis-server --requirepass "$$REDIS_PASSWORD" --appendonly yes'
     deploy:
       resources:
         limits:
           cpus: '0.25'
           memory: 1G
-#    ports:
-#      - '${DOCKER_REDIS_PORT:-6380}:6379'
-#    command:
-#      - '--appendonly yes'
-#      - '--databases'
-#      - '512'
-#    volumes:
-#      - './.local_data/redis:/data'
+    ports:
+      # loopback only - the app reaches redis over the compose network as `redis:6379`
+      - "127.0.0.1:${DOCKER_REDIS_PORT:-6389}:6379"
+    volumes:
+      - 'redis_data:/data'
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *default-logging
 
 #  mailhog:
 #    image: mailhog/mailhog
 #    restart: on-failure
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.25'
-#          memory: 1G
 #    environment:
 #      MH_UI_WEB_PATH: mailhog
 #    ports:
-#      - '8025:8025'
+#      - '127.0.0.1:8025:8025'
 
-  postgresql:
-    container_name: temporal-postgresql
-    image: postgres:9.6
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 1G
-    environment:
-      POSTGRES_PASSWORD: temporal
-      POSTGRES_USER: temporal
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - './.local_data/temporal_sql:/var/lib/postgresql/data'
-
-  temporal:
-#    image: temporalio/auto-setup:latest
-    build:
-      context: ./
-      dockerfile: ./.docker/temporal/Dockerfile
-    image: gaintvlad/l_temporal
-    depends_on:
-      - postgresql
-    restart: on-failure
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "tctl",
-          "--address",
-          "temporal:7233",
-          "workflow",
-          "list"
-        ]
-      interval: 1s
-      timeout: 5s
-      retries: 30
-    environment:
-      - DB=postgresql
-      - DB_PORT=5432
-      - POSTGRES_USER=temporal
-      - POSTGRES_PWD=temporal
-      - POSTGRES_SEEDS=postgresql
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-#    ports:
-#      - "7233:7233"
-#    volumes:
-#      - ./.docker/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
-
-  temporal-admin-tools:
-    image: temporalio/admin-tools:latest
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_CLI_ADDRESS=temporal:7233
-    stdin_open: true
-    tty: true
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 1G
-
-  temporal-web:
-    image: temporalio/web:latest
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_GRPC_ENDPOINT=temporal:7233
-      - TEMPORAL_PERMIT_WRITE_API=true
-    ports:
-      - "8088:8088"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 1G
-
-  temporal-ui:
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-    image: temporalio/ui:latest
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 1G
-    #    networks:
-    #      - temporal-network
-#    ports:
-#      - 8099:8080
+volumes:
+  db_data:
+  redis_data:

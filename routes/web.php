@@ -6,11 +6,18 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'ShopController@list')->name('home');
+Route::redirect('/', '/shop')->name('home-index');
+
+// Used by the container healthcheck (docker-healthcheck -> http://localhost/health).
+// Plain response, no Inertia, no session, so it stays cheap under the RR worker pool.
+Route::get('/health', static fn () => response('ok', 200))->name('health');
 
 Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');
     $router->post('/change-payment', 'CartController@changePayment')->name('cart.change_payment');
+    $router->get('/payment-methods/{shippingMethodId}', 'CartController@paymentMethods')
+        ->whereNumber('shippingMethodId')
+        ->name('cart.payment_methods');
     $router->post('/add-related', 'CartController@addRelated')->name('cart.add_related');
     $router->post('/add-to-cart', 'CartController@addToCart')->name('cart.add_to_cart');;
     $router->post('/remove-item', 'CartController@removeItem')->name('cart.remove_item');;
@@ -34,8 +41,7 @@ Route::post('/order/action', 'OrderController@doAction')->name('change.order.sta
 Route::prefix('shop')->group( function() {
     Route::get('/', 'ShopController@list')->name('shop');
     Route::get('/category/{id}', 'ShopController@getChildCatalogs');
-    Route::get('/properties', 'ShopController@getFilterProperties');
-    Route::get('/{id}', 'ShopController@getProduct')->name('product');
+    Route::get('/{id}', 'ShopController@getProduct')->name('product')->whereNumber('id');
 });
 
 Route::prefix('filter')->group( function() {
@@ -48,7 +54,6 @@ Route::get('search', 'SearchController@search')->name('search');
 Auth::routes();
 
 Route::prefix('admin')->group( function() {
-    Route::get('/', 'AdminController@index')->name('admin.dashboard');
     Route::get('/login', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
     Route::post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/logout', 'Auth\AdminLoginController@adminLogout')->name('admin.logout');
@@ -58,6 +63,10 @@ Route::prefix('admin')->group( function() {
     Route::get('/password/reset', 'Auth\AdminForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
     Route::post('/password/reset', 'Auth\AdminResetPasswordController@reset');
     Route::get('/password/reset/{token}', 'Auth\AdminResetPasswordController@showResetForm')->name('admin.password.reset');
+});
+
+Route::middleware('auth:admin')->prefix('admin')->group( function() {
+    Route::get('/', 'AdminController@index')->name('admin.dashboard');
 
     //Admin categories management
     Route::get('/categories', 'AdminCategoriesController@list')->name('admin.categories');

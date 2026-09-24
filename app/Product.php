@@ -31,7 +31,7 @@ class Product extends Model
 
     protected $fillable = ['name', 'description', 'price', 'catalog_id', 'image'];
     
-    public const LIST_LIMIT = 100;
+    public const LIST_LIMIT = 20;
     
     /**
      * @return BelongsToMany

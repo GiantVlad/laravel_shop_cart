@@ -1,47 +1,20 @@
-@extends('admin.admin')
+@extends('layouts.admin-auth')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Admin Reset Password</div>
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <form method="POST" action="{{ route('admin.password.email') }}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        {{ csrf_field() }}
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    <form class="form-horizontal" method="POST" action="{{ route('admin.password.email') }}">
-                        {{ csrf_field() }}
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Send Password Reset Link
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <label for="email" class="admin-label">E-Mail Address</label>
+            <input id="email" type="email" class="admin-input" name="email" value="{{ old('email') }}" required autofocus>
         </div>
-    </div>
+
+        <button type="submit" class="admin-btn admin-btn--primary">
+            Send Password Reset Link
+        </button>
+    </form>
+
+    <a href="{{ route('admin.login') }}" style="font-size: 0.8rem; color: #0284c7;">Back to login</a>
 </div>
 @endsection

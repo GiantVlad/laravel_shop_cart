@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminLoginController extends Controller
 {
@@ -18,11 +19,11 @@ class AdminLoginController extends Controller
     }
     
     /**
-     * @return View
+     * @return Response
      */
-    public function showLoginForm(): View
+    public function showLoginForm(): Response
     {
-        return view('auth.admin-login');
+        return Inertia::render('Admin/Login');
     }
     
     /**
@@ -44,7 +45,9 @@ class AdminLoginController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         }
         
-        return redirect()->back()->withInput($request->only('email, remember'));
+        return redirect()->back()
+            ->withInput($request->only('email', 'remember'))
+            ->withErrors(['email' => 'These credentials do not match our records.']);
     }
     
     /**

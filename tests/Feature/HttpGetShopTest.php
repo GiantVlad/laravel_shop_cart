@@ -12,6 +12,7 @@ use App\User;
 use App\Order;
 use App\Catalog;
 use App\Product;
+use Inertia\Testing\AssertableInertia as Assert;
 
 class HttpGetShopTest extends TestCase
 {
@@ -36,14 +37,13 @@ class HttpGetShopTest extends TestCase
             ]);
     }
     /**
-     * A test home page.
+     * The root URL redirects to the shop page.
      *
      * @return void
      */
     public function testGetHomePage()
     {
-        $response = $this->get('/');
-        $response->assertSuccessful();
+        $this->get('/')->assertRedirect('/shop');
     }
 
     /**
@@ -55,6 +55,11 @@ class HttpGetShopTest extends TestCase
     {
         $response = $this->get('/shop');
         $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('ProductList', false)
+                ->has('products.data', Product::LIST_LIMIT)
+        );
     }
     
     /**
@@ -66,6 +71,11 @@ class HttpGetShopTest extends TestCase
     {
         $response = $this->get('/shop/' . $this->products->first()->id);
         $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Product', false)
+                ->where('product.id', $this->products->first()->id)
+        );
     }
 
     /**
@@ -101,6 +111,11 @@ class HttpGetShopTest extends TestCase
             ->get('/orders');
 
         $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Orders', false)
+                ->has('orders.data')
+        );
     }
 
     /**
@@ -114,5 +129,10 @@ class HttpGetShopTest extends TestCase
         $response = $this->get('/order/' . $this->order->id);
 
         $response->assertSuccessful();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Order', false)
+                ->where('order.id', $this->order->id)
+        );
     }
 }

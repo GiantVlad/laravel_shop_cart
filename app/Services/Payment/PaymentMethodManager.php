@@ -39,6 +39,35 @@ class PaymentMethodManager
     }
     
     /**
+     * Enabled payment methods the given shipping method accepts.
+     *
+     * @param int $shippingMethodId
+     * @return Collection
+     */
+    public function getAllEnabledForShippingMethod(int $shippingMethodId): Collection
+    {
+        $paymentMethods = $this->paymentMethodRepository->getListForShippingMethod($shippingMethodId);
+        $paymentMethods->map(function($item) {
+            /** @var PaymentMethod $item */
+            $item->selected = false;
+        });
+        
+        return $paymentMethods;
+    }
+    
+    /**
+     * Whether the pair shipping method + payment method is a valid combination.
+     *
+     * @param int $paymentMethodId
+     * @param int $shippingMethodId
+     * @return bool
+     */
+    public function isAvailableForShippingMethod(int $paymentMethodId, int $shippingMethodId): bool
+    {
+        return $this->paymentMethodRepository->isOfferedByShippingMethod($paymentMethodId, $shippingMethodId);
+    }
+    
+    /**
      * @param int $id
      * @return PaymentMethodInterface
      * @throws ContainerExceptionInterface

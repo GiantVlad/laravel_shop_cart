@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
@@ -9,11 +9,19 @@
     </testsuite>
   </testsuites>
   <php>
-    <env name="APP_ENV" value="testing" force="true"/>
-    <env name="CACHE_DRIVER" value="array"/>
-    <env name="SESSION_DRIVER" value="array"/>
-    <env name="QUEUE_DRIVER" value="sync"/>
-    <env name="DB_HOST" value="mariadb_test"/>
+    <!-- <server>, not <env>: Laravel's env() reads $_SERVER before $_ENV, and the container exports
+         these very variables (compose env_file / the server's .env). With <env> the suite quietly
+         kept using the dev `shop` database, the dev cache/session drivers and the dev queue, which
+         is why RefreshDatabase used to empty the working database.
+         force="true" is needed as well: without it PHPUnit leaves an already-set variable alone. -->
+    <server name="APP_ENV" value="testing" force="true"/>
+    <server name="CACHE_DRIVER" value="array" force="true"/>
+    <server name="SESSION_DRIVER" value="array" force="true"/>
+    <server name="QUEUE_DRIVER" value="sync" force="true"/>
+    <!-- Dedicated database inside the dev MariaDB container (created by .docker/mariadb/init/
+         01-create-test-database.sql). Never point this at `shop`. -->
+    <server name="DB_HOST" value="mariadb" force="true"/>
+    <server name="DB_DATABASE" value="shop_test" force="true"/>
   </php>
   <source>
     <include>

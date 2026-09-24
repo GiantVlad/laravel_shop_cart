@@ -21,3 +21,11 @@
 .env.prod
 build/
 node_modules/
+# composer install runs inside the image, so the host vendor/ (140MB+) never needs to
+# ship in the build context
+vendor/
+composer.phar
+.phpunit.cache/
+.phpunit.result.cache
+.idea/
+.hermes/

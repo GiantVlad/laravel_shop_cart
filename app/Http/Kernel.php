@@ -14,6 +14,9 @@ class Kernel extends HttpKernel
      * @var array<int, string>
      */
     protected $middleware = [
+        // Behind the host NGINX reverse proxy: without this Laravel ignores
+        // X-Forwarded-Proto/-For and generates http:// URLs + logs the proxy IP.
+        \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -33,6 +36,7 @@ class Kernel extends HttpKernel
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ForceLogout::class,
         ],

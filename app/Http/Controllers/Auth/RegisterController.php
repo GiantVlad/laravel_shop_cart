@@ -6,6 +6,9 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Validation\Rules\Password;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisterController extends Controller
 {
@@ -40,6 +43,14 @@ class RegisterController extends Controller
     }
 
     /**
+     * Show the application registration form (Inertia page).
+     */
+    public function showRegistrationForm(): Response
+    {
+        return Inertia::render('Register');
+    }
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param  array  $data
@@ -50,7 +61,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
         ]);
     }
 

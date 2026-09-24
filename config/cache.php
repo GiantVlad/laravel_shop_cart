@@ -70,7 +70,8 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
+            // db 1: see the comment on the redis connections in config/database.php
+            'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
         ],
 
     ],

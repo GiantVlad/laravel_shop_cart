@@ -4,44 +4,28 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Temporal\Client\GRPC\ServiceClient;
-use Temporal\Client\WorkflowClient;
-use Temporal\Client\WorkflowClientInterface;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot (): void
+    public function boot(): void
     {
-        if(env('APP_HTTPS_FOR_STATIC', false))
-        {
+        // The app's single password policy. laravel/ui's ResetsPasswords (used by
+        // both the customer and admin reset flows) validates with Password::defaults(),
+        // so setting it here covers every screen where a user picks a password.
+        Password::defaults(static fn () => Password::min(8)->letters()->numbers()->symbols());
+
+        if (env('APP_HTTPS_FOR_STATIC', false)) {
             try {
                 $this->app->get('request')->server->set('HTTPS', 'on');
                 URL::forceScheme('https');
             } catch (\Throwable $e) {
             }
-            
         }
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register ()
+    public function register(): void
     {
-        $this->app->singleton(
-            WorkflowClientInterface::class,
-            fn () => WorkflowClient::create(
-                ServiceClient::create('temporal:7233')
-            )
-        );
+        // Temporal SDK reference removed; sync controllers + Horizon used instead
     }
 }

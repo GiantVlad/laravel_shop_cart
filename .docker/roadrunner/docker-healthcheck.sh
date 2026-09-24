@@ -1,13 +1,8 @@
 #!/bin/sh
-
-url=roadrunner:2114/health?plugin=http
-
-status_code=$(curl --write-out %{http_code} --silent --output /dev/null ${url})
-
-echo ${status_code}
-
-if [[ "$status_code" -ne 200 ]] ; then
-  exit 1
-else
+url=http://localhost:80/health
+status_code=$(curl --write-out %{http_code} --silent --output /dev/null ${url} || echo "000")
+if [ "$status_code" = "200" ] || [ "$status_code" = "302" ]; then
   exit 0
+else
+  exit 1
 fi

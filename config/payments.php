@@ -20,5 +20,10 @@ return [
             'label' => 'Fondy',
             'class_name' => 'App\\Services\\Payment\\FondyPayment',
         ],
+        // Pay on pickup. Only shipping methods that offer it show it in the cart.
+        'cash' => [
+            'label' => 'Cash',
+            'class_name' => 'App\\Services\\Payment\\CashPayment',
+        ],
     ],
 ];

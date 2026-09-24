@@ -25,6 +25,40 @@ class PaymentMethodRepository
         return $query->orderBy('priority')->get();
     }
     
+    /**
+     * Enabled payment methods offered by the given shipping method.
+     *
+     * @param int $shippingMethodId
+     * @return EloquentCollection
+     */
+    public function getListForShippingMethod(int $shippingMethodId): EloquentCollection
+    {
+        return $this->mPaymentMethod
+            ->where('enabled', true)
+            ->whereHas('shippingMethods', static function ($query) use ($shippingMethodId) {
+                $query->where('shipping_methods.id', $shippingMethodId);
+            })
+            ->orderBy('priority')
+            ->get();
+    }
+    
+    /**
+     * Whether the shipping method offers this payment method.
+     *
+     * @param int $paymentMethodId
+     * @param int $shippingMethodId
+     * @return bool
+     */
+    public function isOfferedByShippingMethod(int $paymentMethodId, int $shippingMethodId): bool
+    {
+        return $this->mPaymentMethod
+            ->where('id', $paymentMethodId)
+            ->whereHas('shippingMethods', static function ($query) use ($shippingMethodId) {
+                $query->where('shipping_methods.id', $shippingMethodId);
+            })
+            ->exists();
+    }
+    
     public function changeStatus(int $id, bool $status): void
     {
         /** @var PaymentMethod $method */
