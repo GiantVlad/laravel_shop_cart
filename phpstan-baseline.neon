@@ -1,0 +1,1075 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Class App\\Admin uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Admin.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\Admin\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Admin.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\Admin\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Admin.php
+
+		-
+			message: '#^Class App\\Catalog uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Catalog.php
+
+		-
+			message: '#^Method App\\Catalog\:\:children\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Catalog.php
+
+		-
+			message: '#^Method App\\Catalog\:\:getCatalogIdsTree\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Catalog.php
+
+		-
+			message: '#^Method App\\Catalog\:\:parentsNode\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Catalog.php
+
+		-
+			message: '#^Method App\\Catalog\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Catalog.php
+
+		-
+			message: '#^Property App\\Console\\Kernel\:\:\$commands type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Console/Kernel.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:__construct\(\) has parameter \$catalogs with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:__construct\(\) has parameter \$parentCatalogs with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:getCatalogs\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:getParentCatalogs\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:setCatalogs\(\) has parameter \$catalogs with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\CategoriesDTO\:\:setParentCatalogs\(\) has parameter \$parentCatalogs with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Property App\\DTO\\CategoriesDTO\:\:\$catalogs with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Property App\\DTO\\CategoriesDTO\:\:\$parentCatalogs with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/DTO/CategoriesDTO.php
+
+		-
+			message: '#^Method App\\DTO\\FilterSelectorDTO\:\:__construct\(\) has parameter \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/DTO/FilterSelectorDTO.php
+
+		-
+			message: '#^Method App\\DTO\\FilterSelectorDTO\:\:getValues\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/DTO/FilterSelectorDTO.php
+
+		-
+			message: '#^Class App\\Dispatch uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Dispatch.php
+
+		-
+			message: '#^Method App\\Dispatch\:\:method\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Dispatch.php
+
+		-
+			message: '#^Deprecated in PHP 8\.4\: Parameter \#1 \$day \(Carbon\\Carbon\) is implicitly nullable via default value null\.$#'
+			identifier: parameter.implicitlyNullable
+			count: 1
+			path: app/Domain/Reports/DailySalesReport.php
+
+		-
+			message: '#^Method App\\Events\\Event\:\:broadcastOn\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Catalog\:\:\$parent_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminCategoriesController.php
+
+		-
+			message: '#^Instanceof between App\\Catalog and App\\Catalog will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/AdminCategoriesController.php
+
+		-
+			message: '#^PHPDoc tag @return with type Illuminate\\Contracts\\View\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 2
+			path: app/Http/Controllers/AdminCategoriesController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Catalog\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/AdminCategoriesController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Catalog\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/AdminCategoriesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminController\:\:index\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminOrdersController\:\:list\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminOrdersController\:\:search\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View\|Illuminate\\Http\\RedirectResponse is not subtype of native type Illuminate\\Http\\RedirectResponse\|Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Order\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: array\{id\: int, label\: string, createdAt\: non\-falsy\-string\|null, userName\: mixed, userEmail\: mixed, total\: float, status\: string\}, Closure\(App\\Order\)\: array\{id\: int, label\: string, createdAt\: non\-falsy\-string\|null, userName\: mixed, userEmail\: mixed, total\: float, status\: string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Order\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminPaymentMethodsController\:\:list\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminPaymentMethodsController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminPaymentMethodsController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Instanceof between App\\Product and App\\Product will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 3
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminProductsController\:\:categoryFilter\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminProductsController\:\:showEditForm\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View\|Illuminate\\Http\\RedirectResponse is not subtype of native type Illuminate\\Http\\RedirectResponse\|Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View\|string is not subtype of native type Illuminate\\Http\\JsonResponse\|Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\}, static\-Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\}, static\-Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Product\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 2
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Product\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 2
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Variable \$property in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminShippingMethodsController\:\:list\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminShippingMethodsController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminShippingMethodsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, label\: string, priority\: bool, enabled\: bool\}, Closure\(App\\ShippingMethod\)\: array\{id\: int, label\: string, priority\: bool, enabled\: bool\} given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/AdminShippingMethodsController.php
+
+		-
+			message: '#^Property App\\Http\\Controllers\\AdminShippingMethodsController\:\:\$order is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Http/Controllers/AdminShippingMethodsController.php
+
+		-
+			message: '#^Instanceof between App\\User and App\\User will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminUsersController\:\:list\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminUsersController\:\:search\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminUsersController\:\:showEditForm\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View is not subtype of native type Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Http\\Controllers\\View\|Illuminate\\Http\\RedirectResponse is not subtype of native type Illuminate\\Http\\RedirectResponse\|Inertia\\Response\.$#'
+			identifier: return.phpDocType
+			count: 2
+			path: app/Http/Controllers/AdminUsersController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\RegisterController\:\:create\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Auth/RegisterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Auth\\RegisterController\:\:validator\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Auth/RegisterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CartController\:\:getCartPostResource\(\) has parameter \$cartProducts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/CartController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, label\: string, config_key\: string\}, Closure\(App\\PaymentMethod\)\: array\{id\: int, label\: string, config_key\: string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CartController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/CheckoutController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\HomeController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/OrderController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ShopController\:\:catalogTree\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/ShopController.php
+
+		-
+			message: '#^Property App\\Http\\Controllers\\ShopController\:\:\$viewFactory is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Http/Controllers/ShopController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\TestController\:\:test\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/TestController.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CartAddRelatedRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CartAddRelatedRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CartAddRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CartAddRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CartChangePaymentRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CartChangePaymentRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CartChangeShippingRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CartChangeShippingRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CartRemoveItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CartRemoveItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CheckoutRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CheckoutRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\OrderActionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/OrderActionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CartPostResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CartPostResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CategoriesResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CategoriesResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Dispatch\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/Dispatch.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Dispatch\:\:toArray\(\) return type with generic interface Illuminate\\Contracts\\Support\\Arrayable does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Resources/Dispatch.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderCollection\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderCollection.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderData\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderData.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderData\:\:toArray\(\) return type with generic interface Illuminate\\Contracts\\Support\\Arrayable does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Resources/OrderData.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderDetailResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderDetailResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Payment\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/Payment.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\Payment\:\:toArray\(\) return type with generic interface Illuminate\\Contracts\\Support\\Arrayable does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Resources/Payment.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ProductCollection\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ProductCollection.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ProductCollection\:\:toArray\(\) return type with generic interface Illuminate\\Contracts\\Support\\Arrayable does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Resources/ProductCollection.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ProductResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\PropertiesResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/PropertiesResource.php
+
+		-
+			message: '#^Method App\\Listeners\\OrderSubscriber\:\:subscribe\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Listeners/OrderSubscriber.php
+
+		-
+			message: '#^Method App\\Listeners\\PaymentStatusSubscriber\:\:subscribe\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Listeners/PaymentStatusSubscriber.php
+
+		-
+			message: '#^Method App\\Notifications\\AdminResetPasswordNotification\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/AdminResetPasswordNotification.php
+
+		-
+			message: '#^Class App\\Order uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:dispatches\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:getOrderById\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:getOrderByLabel\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:getOrdersByUserId\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:orderData\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:payments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Method App\\Order\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\Order\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Order.php
+
+		-
+			message: '#^Class App\\OrderData uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/OrderData.php
+
+		-
+			message: '#^Method App\\OrderData\:\:product\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/OrderData.php
+
+		-
+			message: '#^Method App\\OrderData\:\:scopeByOrderId\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/OrderData.php
+
+		-
+			message: '#^Method App\\OrderData\:\:scopeByOrderId\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/OrderData.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\OrderData\:\:byOrderId\(\) return type contains generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/OrderData.php
+
+		-
+			message: '#^Class App\\Payment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Payment.php
+
+		-
+			message: '#^Method App\\Payment\:\:method\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Payment.php
+
+		-
+			message: '#^Class App\\PaymentMethod has PHPDoc tag @method for method update\(\) parameter \#1 \$values with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/PaymentMethod.php
+
+		-
+			message: '#^Class App\\PaymentMethod uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/PaymentMethod.php
+
+		-
+			message: '#^Method App\\PaymentMethod\:\:shippingMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/PaymentMethod.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\PaymentMethod\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/PaymentMethod.php
+
+		-
+			message: '#^Class App\\Product uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^Method App\\Product\:\:catalogs\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^Method App\\Product\:\:properties\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^Method App\\Product\:\:relatedProductData\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^Method App\\Product\:\:relatedProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Product\:\:\$properties contains generic class Illuminate\\Database\\Eloquent\\Collection but does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Product.php
+
+		-
+			message: '#^Class App\\Property uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Property.php
+
+		-
+			message: '#^Method App\\Property\:\:propertyValues\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Property.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Property\:\:\$selectProperties contains generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Property.php
+
+		-
+			message: '#^Class App\\PropertyValue uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/PropertyValue.php
+
+		-
+			message: '#^Method App\\PropertyValue\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/PropertyValue.php
+
+		-
+			message: '#^Method App\\PropertyValue\:\:properties\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/PropertyValue.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Method App\\Providers\\ErpServiceProvider\:\:boot\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Providers/ErpServiceProvider.php
+
+		-
+			message: '#^Method App\\Providers\\PaymentServiceProvider\:\:boot\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Providers/PaymentServiceProvider.php
+
+		-
+			message: '#^Class App\\RelatedProduct uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/RelatedProduct.php
+
+		-
+			message: '#^Method App\\RelatedProduct\:\:getRelatedProduct\(\) has parameter \$productsInCart with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/RelatedProduct.php
+
+		-
+			message: '#^Method App\\RelatedProduct\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/RelatedProduct.php
+
+		-
+			message: '#^Method App\\Repositories\\OrderRepository\:\:createOrder\(\) has parameter \$requestData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Repositories/OrderRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\OrderRepository\:\:getDailyOrders\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/OrderRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PaymentMethodRepository\:\:addFromConfig\(\) has parameter \$methodConfig with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Repositories/PaymentMethodRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PaymentMethodRepository\:\:getList\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/PaymentMethodRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PaymentMethodRepository\:\:getListForShippingMethod\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/PaymentMethodRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PaymentMethodRepository\:\:updateById\(\) has parameter \$array with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Repositories/PaymentMethodRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PaymentRepository\:\:updateById\(\) has parameter \$fieldsValues with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Repositories/PaymentRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:buildFilteredQuery\(\) has parameter \$filters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:buildFilteredQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:getFilteredProducts\(\) has parameter \$filters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:getFilteredProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:paginateFilteredProducts\(\) has parameter \$filters with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\ProductRepository\:\:paginateFilteredProducts\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/ProductRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\PropertyRepository\:\:getFilteredProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/PropertyRepository.php
+
+		-
+			message: '#^Method App\\Services\\Cart\\CartPostActions\:\:getActions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Cart/CartPostActions.php
+
+		-
+			message: '#^Method App\\Services\\Cart\\CartService\:\:getCart\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Cart/CartService.php
+
+		-
+			message: '#^Method App\\Services\\Cart\\CartService\:\:storeCart\(\) has parameter \$cart with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Cart/CartService.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$orderDetails contains generic class Illuminate\\Database\\Eloquent\\Collection but does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/Cart/CartService.php
+
+		-
+			message: '#^Method App\\Services\\Erp\\ErpServiceInterface\:\:sendDailySalesReport\(\) has parameter \$orders with generic class Illuminate\\Database\\Eloquent\\Collection but does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/Erp/ErpServiceInterface.php
+
+		-
+			message: '#^Method App\\Services\\Erp\\ErpServiceStub\:\:sendDailySalesReport\(\) has parameter \$orders with generic class Illuminate\\Database\\Eloquent\\Collection but does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/Erp/ErpServiceStub.php
+
+		-
+			message: '#^Method App\\Services\\Order\\OrderActions\:\:getActions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Order/OrderActions.php
+
+		-
+			message: '#^Method App\\Services\\Order\\OrderStatuses\:\:getStatuses\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Order/OrderStatuses.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\CashPayment\:\:pay\(\) has parameter \$paymentRequestData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/CashPayment.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\FondyPayment\:\:pay\(\) has parameter \$paymentRequestData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/FondyPayment.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaymentMethodInterface\:\:pay\(\) has parameter \$paymentRequestData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/PaymentMethodInterface.php
+
+		-
+			message: '#^Instanceof between App\\PaymentMethod and App\\PaymentMethod will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Services/Payment/PaymentMethodManager.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaymentMethodManager\:\:addToDB\(\) has parameter \$methodConfig with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/PaymentMethodManager.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaymentMethodManager\:\:getAllEnabled\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/Payment/PaymentMethodManager.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaymentMethodManager\:\:getAllEnabledForShippingMethod\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/Payment/PaymentMethodManager.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaymentMethodManager\:\:pay\(\) has parameter \$request with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/PaymentMethodManager.php
+
+		-
+			message: '#^Function array_first invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: app/Services/Payment/PaypalPayment.php
+
+		-
+			message: '#^Method App\\Services\\Payment\\PaypalPayment\:\:pay\(\) has parameter \$paymentRequestData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/Payment/PaypalPayment.php
+
+		-
+			message: '#^Class App\\ShippingMethod uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Method App\\ShippingMethod\:\:addImplementation\(\) has parameter \$shippingMethods with generic class Illuminate\\Database\\Eloquent\\Collection but does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Method App\\ShippingMethod\:\:addImplementation\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Method App\\ShippingMethod\:\:getAllEnabled\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Method App\\ShippingMethod\:\:list\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Method App\\ShippingMethod\:\:paymentMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/ShippingMethod.php
+
+		-
+			message: '#^Class App\\User uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/User.php
+
+		-
+			message: '#^Method App\\User\:\:orders\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/User.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\User\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/User.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\User\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/User.php

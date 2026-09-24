@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.3/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
@@ -18,9 +18,9 @@
     <server name="CACHE_DRIVER" value="array" force="true"/>
     <server name="SESSION_DRIVER" value="array" force="true"/>
     <server name="QUEUE_DRIVER" value="sync" force="true"/>
-    <!-- Dedicated database inside the dev MariaDB container (created by .docker/mariadb/init/
-         01-create-test-database.sql). Never point this at `shop`. -->
-    <server name="DB_HOST" value="mariadb" force="true"/>
+    <!-- DB_DATABASE is forced so a stray run can never target the dev `shop` database. DB_HOST is
+         deliberately NOT forced: CI exports 127.0.0.1 for its service container, the dev container
+         / .env.testing provide `mariadb`, and forcing it here would break one of the two. -->
     <server name="DB_DATABASE" value="shop_test" force="true"/>
   </php>
   <source>
