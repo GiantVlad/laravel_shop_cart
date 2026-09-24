@@ -41,25 +41,20 @@ services:
       - MARIADB_PASSWORD=secret
       - MARIADB_ROOT_PASSWORD=rootsecret123
       - MARIADB_DATABASE=shop
-      - MARIADB_SKIP_TEST_DB=yes
     ports:
       - '${DOCKER_MYSQL_PORT:-3307}:3306'
     volumes:
+      # .local_data/sql holds the old bitnami layout and is no longer used by this image (whose
+      # data directory is /var/lib/mysql), so the dev data currently lives in an anonymous
+      # volume. To persist it, point this at a fresh path and recreate + migrate + seed:
+      #   - './.local_data/mariadb:/var/lib/mysql'
       - './.local_data/sql:/bitnami/mariadb'
+      # Creates the shop_test database used by PHPUnit (only on a fresh data directory).
+      - './.docker/mariadb/init:/docker-entrypoint-initdb.d:ro'
 
-  mariadb_test:
-    image: mariadb:11.7.2
-    restart: unless-stopped
-    environment:
-      - MARIADB_USER=admin
-      - MARIADB_PASSWORD=secret
-      - MARIADB_ROOT_PASSWORD=rootsecret123
-      - MARIADB_DATABASE=shop
-      - MARIADB_SKIP_TEST_DB=yes
-    ports:
-      - '${DOCKER_MYSQL_TEST_PORT:-3308}:3306'
-    volumes:
-      - './.local_data/test_sql:/bitnami/mariadb'
+  # The test suite used to run against a second container (mariadb_test, port 3308). It was removed
+  # in favour of the shop_test database inside the mariadb container above: same isolation for
+  # RefreshDatabase, one less service, one less port. Re-add it here if you ever need two engines.
 
   redis:
     image: redis:6.2.5-alpine

@@ -19,6 +19,7 @@
         "inertiajs/inertia-laravel": "^v2.0.1",
         "laravel/framework": "^v12.1.1",
         "laravel/helpers": "^v1.7.0",
+        "laravel/horizon": "^5.50",
         "laravel/octane": "^v2.5.2",
         "laravel/tinker": "^v2.10.1",
         "laravel/ui": "^v4.6.1",

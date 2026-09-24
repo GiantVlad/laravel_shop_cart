@@ -59,7 +59,8 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
+            // db 2 (Horizon's own keyspace): see config/database.php redis connections
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'queue'),
             'queue' => 'default',
             'retry_after' => 90,
         ],

@@ -5,3 +5,7 @@ docker image tag lara_shop_roadrunner gaintvlad/lara_shop_roadrunner:latest
 docker image tag lara_shop_roadrunner gaintvlad/lara_shop_roadrunner:8.4-2025.1.15
 
 docker image push gaintvlad/lara_shop_roadrunner:latest
+
+# DockerfileProd/Dockerfile pull the pinned tag, so it has to be pushed too - pushing
+# only :latest leaves every FROM gaintvlad/lara_shop_roadrunner:<pinned> build unusable.
+docker image push gaintvlad/lara_shop_roadrunner:8.4-2025.1.15

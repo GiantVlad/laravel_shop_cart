@@ -33,12 +33,16 @@ class ProductRepository
             $query->whereHas('properties', function ($q) use ($filterDto) {
                 $q->when($filterDto instanceof FilterNumberDTO, function (Builder $nQuery) use ($filterDto) {
                     $nQuery->where('property_values.property_id', $filterDto->getId());
+                    // DOUBLE, not a bare DECIMAL: CAST(x AS DECIMAL) means DECIMAL(10,0) on
+                    // MariaDB, so "20.56" is rounded to 21 and a 0..20.56 range drops its own
+                    // boundary - decimal property values were effectively compared as rounded
+                    // integers. Verified: cast('20.56' as double) = 20.56, as DECIMAL = 21.
                     if ($filterDto->getMinValue()) {
-                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) >= ?')
+                        $nQuery->whereRaw('CAST(property_values.value as DOUBLE) >= ?')
                             ->addBinding($filterDto->getMinValue());
                     }
                     if ($filterDto->getMaxValue()) {
-                        $nQuery->whereRaw('CAST(property_values.value as DECIMAL) <= ?')
+                        $nQuery->whereRaw('CAST(property_values.value as DOUBLE) <= ?')
                             ->addBinding($filterDto->getMaxValue());
                     }
                 })

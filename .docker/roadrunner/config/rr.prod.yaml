@@ -1,10 +1,16 @@
 version: "3"
 
 rpc:
+  # Used by `rr -c /etc/.rr.yaml reset|status` from inside the container.
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php /app/artisan octane:start --host=0.0.0.0 --port=80"
+  # RoadRunner is PID 1 in the container and spawns this command as its worker(s), so it must
+  # be the Octane *worker* entry point. `php artisan octane:start` is not a worker: it starts a
+  # nested RoadRunner server of its own, prints a banner on STDOUT and makes RR abort with
+  # "validation failed on the message sent to STDOUT" followed by
+  # "rpc_plugin_serve: address -1919: invalid port" (reproduced with rr 2025.1.0).
+  command: "php /app/vendor/bin/roadrunner-worker"
   env:
     - XDEBUG_SESSION: 0
 
@@ -18,17 +24,20 @@ http:
   headers:
     response:
       X-Powered-By: RoadRunner
-  ssl:
-    # force redirect to https connection
-    redirect: false
-    # custom https port (default 443)
-    port: 443
-    # ssl cert
-    cert: /app/ssl/certificate.crt
-    # ssl private key
-    key: /app/ssl/private.key
-    # rootCA certificate path
-    rootCa: /app/ssl/ca_bundle.crt
+  # TLS is terminated by the host NGINX (see .docker/nginx/prod/), so this block stays off:
+  # ssl/* is gitignored, meaning a server-side checkout has no certificates and the RoadRunner
+  # TLS listener would fail to start.
+#  ssl:
+#    # force redirect to https connection
+#    redirect: false
+#    # custom https port (default 443)
+#    port: 443
+#    # ssl cert
+#    cert: /app/ssl/certificate.crt
+#    # ssl private key
+#    key: /app/ssl/private.key
+#    # rootCA certificate path
+#    rootCa: /app/ssl/ca_bundle.crt
   static:
     dir: "/app/public"
     forbid: [".htaccess", ".php", ".sql", ".config", "php_errors.log"]
@@ -46,14 +55,12 @@ http:
 
 # temporal section removed
 
-reload:
-  interval: 1s
-  patterns: [".php", ".yaml"]
-  services:
-    http:
-      recursive: true
-      dirs: [ "/app/app" ]
-
+# The `reload` plugin was removed from RoadRunner in v2023 - its compatibility guide says to drop
+# the section and use *.pool.debug instead. RR 2025 tolerates the key, but it would only start a
+# 1s filesystem watcher over /app/app whose contents never change at runtime. After a deploy, use
+# `rr -c /etc/.rr.yaml reset` over the rpc plugin above instead.
 
 status:
-  address: roadrunner:2114
+  # loopback: RR resolves a hostname at bind time, and this endpoint is only read
+  # from inside the container (rr status / health probes)
+  address: 127.0.0.1:2114

@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/shop')->name('home-index');
 
+// Used by the container healthcheck (docker-healthcheck -> http://localhost/health).
+// Plain response, no Inertia, no session, so it stays cheap under the RR worker pool.
+Route::get('/health', static fn () => response('ok', 200))->name('health');
+
 Route::prefix('cart')->group(static function(Router $router) {
     $router->post('/change-shipping', 'CartController@changeShipping')->name('cart.change_shipping');
     $router->post('/change-payment', 'CartController@changePayment')->name('cart.change_payment');
