@@ -217,6 +217,36 @@ parameters:
 			path: app/Http/Controllers/AdminOrdersController.php
 
 		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Order\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: array\{id\: int, label\: string, createdAt\: non\-falsy\-string\|null, userName\: mixed, userEmail\: mixed, total\: float, status\: string\}, Closure\(App\\Order\)\: array\{id\: int, label\: string, createdAt\: non\-falsy\-string\|null, userName\: mixed, userEmail\: mixed, total\: float, status\: string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Order\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/AdminOrdersController.php
+
+		-
 			message: '#^Method App\\Http\\Controllers\\AdminPaymentMethodsController\:\:list\(\) has invalid return type App\\Http\\Controllers\\View\.$#'
 			identifier: class.notFound
 			count: 1
@@ -265,15 +295,27 @@ parameters:
 			path: app/Http/Controllers/AdminProductsController.php
 
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\}, Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\} given\.$#'
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\}, static\-Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: never, value\: never\}\>\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/Http/Controllers/AdminProductsController.php
 
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\}, Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\} given\.$#'
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\}, static\-Closure\(App\\PropertyValue\)\: array\{id\: int, value\: int, propertyId\: int, propertyName\: string, propertyType\: string, options\: array\{\}\|Illuminate\\Support\\Collection\<int, array\{id\: int, value\: int\}\>\} given\.$#'
 			identifier: argument.type
 			count: 1
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Product\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 2
+			path: app/Http/Controllers/AdminProductsController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Pagination\\AbstractPaginator\<int,App\\Product\>\:\:through\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 2
 			path: app/Http/Controllers/AdminProductsController.php
 
 		-
@@ -661,7 +703,7 @@ parameters:
 			path: app/PaymentMethod.php
 
 		-
-			message: '#^Method App\\PaymentMethod\:\:shippingMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\PaymentMethod\:\:shippingMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/PaymentMethod.php
@@ -685,7 +727,7 @@ parameters:
 			path: app/Product.php
 
 		-
-			message: '#^Method App\\Product\:\:properties\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\Product\:\:properties\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/Product.php
@@ -697,7 +739,7 @@ parameters:
 			path: app/Product.php
 
 		-
-			message: '#^Method App\\Product\:\:relatedProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\Product\:\:relatedProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/Product.php
@@ -733,7 +775,7 @@ parameters:
 			path: app/PropertyValue.php
 
 		-
-			message: '#^Method App\\PropertyValue\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\PropertyValue\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/PropertyValue.php
@@ -775,7 +817,7 @@ parameters:
 			path: app/RelatedProduct.php
 
 		-
-			message: '#^Method App\\RelatedProduct\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\RelatedProduct\:\:products\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/RelatedProduct.php
@@ -853,7 +895,7 @@ parameters:
 			path: app/Repositories/ProductRepository.php
 
 		-
-			message: '#^Method App\\Repositories\\ProductRepository\:\:paginateFilteredProducts\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TItem$#'
+			message: '#^Method App\\Repositories\\ProductRepository\:\:paginateFilteredProducts\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/Repositories/ProductRepository.php
@@ -961,6 +1003,12 @@ parameters:
 			path: app/Services/Payment/PaymentMethodManager.php
 
 		-
+			message: '#^Function array_first invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: app/Services/Payment/PaypalPayment.php
+
+		-
 			message: '#^Method App\\Services\\Payment\\PaypalPayment\:\:pay\(\) has parameter \$paymentRequestData with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -997,7 +1045,7 @@ parameters:
 			path: app/ShippingMethod.php
 
 		-
-			message: '#^Method App\\ShippingMethod\:\:paymentMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			message: '#^Method App\\ShippingMethod\:\:paymentMethods\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/ShippingMethod.php

@@ -11,8 +11,10 @@ stays intact.
 - JS: `cd frontend && npm install`.
 
 ## Build & test
-- PHP static analysis: `./vendor/bin/phpstan analyse --memory-limit=2G --no-progress -c phpstan.neon ./` (currently broken
-  repo-wide: `phpstan.neon` uses PHPStan 1.x keys while `vendor/bin/phpstan` is 2.x — pre-existing, unrelated to feature work).
+- PHP static analysis: `./vendor/bin/phpstan analyse --memory-limit=2G --no-progress -c phpstan.neon` — no trailing path
+  argument, it would override the config's `paths: app`. phpstan 2.2 + larastan 3.12 at level 7, with
+  `phpstan-baseline.neon` freezing the existing 190 errors
+  (`--generate-baseline=phpstan-baseline.neon` to accept more, e.g. after a toolchain jump).
 - Backend tests: `docker compose exec -T roadrunner php artisan test`. They run against the dedicated `shop_test`
   database inside the dev MariaDB container, so `RefreshDatabase` no longer touches the `shop` you are working in (see the
   pitfalls).
@@ -59,8 +61,9 @@ RoadRunner serves the app *and* the static files from `/app/public`, so there is
 ## Pitfalls
 - RoadRunner needs reset for code changes: `docker-compose exec roadrunner rr -c /etc/.rr.yaml reset`.
 - XDebug + RoadRunner: set `pool.num_workers: 1`, `pool.debug: false`; disable active listener before reset.
-- CI uses PHP 8.1 with grpc extension; `phpunit.xml` pins `QUEUE_DRIVER=sync`, `DB_HOST=mariadb` and
-  `DB_DATABASE=shop_test` for the local suite.
+- CI (`.github/workflows/ci.yml`), on push to `master`/`dev2` and PRs to `master`: PHP 8.4 + grpc; `phpunit.xml` pins
+  `QUEUE_DRIVER=sync`, `CACHE_DRIVER`/`SESSION_DRIVER` `array` and `DB_DATABASE=shop_test` for the suite but deliberately
+  *not* `DB_HOST` — CI supplies `127.0.0.1` for its mariadb service while the dev container supplies `mariadb`.
 - `.env` and `.local_data/` are required; don't hand-edit generated `.rr.yaml` settings without checking docs.
 - `php artisan test` runs against the dedicated `shop_test` database inside the dev MariaDB container, so
   `RefreshDatabase` leaves the `shop` database you are working in alone. `shop_test` is created by
@@ -116,5 +119,28 @@ Production-specific traps (all hit and verified while setting up the prod stack)
 - The prod image installs with `composer install --no-dev`, so nothing the *deploy* needs may use a dev dependency.
   `php artisan db:seed` died on the server with `Class "Faker\Factory" not found` because four seeders called
   `Faker::create()` while `fakerphp/faker` is require-dev: keep seeders on plain PHP (`mt_rand`, word lists).
+- Toolchain: PHP 8.4, Laravel 12.69, PHPUnit 13.3, collision 8.9, larastan 3.12, phpstan 2.2, Octane 2.20. PHPUnit 13
+  ignores doc-comment metadata, so data providers and every other annotation must be attributes
+  (`#[DataProvider('weakPasswords')]`); a leftover `@dataProvider` passes zero arguments and fails the test rather than
+  warning. PHPUnit 13 requires PHP >= 8.4.1 (`composer.json` says `php: ^8.4`, CI runs 8.4) and collision >= 8.9, which
+  in turn needs `filp/whoops ^2.18.4` — that chain is what blocks PHPUnit 13 on older constraints, not PHPUnit itself.
+- **Restart RoadRunner after *any* `composer update`**, not just for route/asset changes: the long-lived worker keeps the
+  replaced classes in memory, so a vendor swap produces incoherent errors rather than "class not found".
+  `/admin/login` threw `Inertia\Response::__construct(): Argument #3 ($props) must be of type array, string given` (a v3
+  `Response` being called by a v2-era `ResponseFactory` still resident in the worker) and `rr -c /etc/.rr.yaml reset`
+  fixed it. Same run needs `php artisan view:clear` when Blade directives changed.
+- Inertia server and client must move together: `inertiajs/inertia-laravel` ^3 pairs with `@inertiajs/vue3` ^3. v3 moved
+  the initial page JSON out of the `data-page` attribute into that element's text content
+  (`<div data-page="app" type="application/json">{...}`), while the v2 client still does `JSON.parse(el.dataset.page)` —
+  a v2 client with a v3 server parses `"app"` and the SPA never mounts, and nothing server-side reveals it.
+- RoadRunner is two halves that must stay compatible: the `rr` binary (2025.1.0 in prod, 2025.1.15 in dev, copied from
+  ghcr at image build) and the PHP packages (`spiral/roadrunner` 2025.1.x, `roadrunner-http` 4.x, `roadrunner-worker`,
+  `spiral/goridge`). Changing only the PHP half changes the worker, so verify with `rr -c /etc/.rr.yaml reset` and then a
+  `/health` + `/shop` fetch; `laravel/octane` must allow the pair (2.20 does, and it also raises the PHP-side floor).
+- Composer cannot fetch the custom VCS package over ssh: the lock records
+  `git@github.com:GiantVlad/braintreehttp_php.git` while the containers ship no ssh client, so *any* full re-resolution
+  dies with `error: cannot run ssh`. Run
+  `git config --global url."https://github.com/".insteadOf "git@github.com:"` inside the container first — it is not
+  persisted, so either bake it into the dev image or repeat it after rebuilding the container.
 - `/health` (`routes/web.php`) is what the image's `docker-healthcheck` and the compose healthcheck call; without a
   matching route the container reports unhealthy forever while still serving traffic.

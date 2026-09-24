@@ -6,6 +6,7 @@ namespace Tests\Feature\Auth;
 
 use App\User;
 use Illuminate\Support\Facades\Password;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class PasswordRulesTest extends TestCase
@@ -32,9 +33,7 @@ class PasswordRulesTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider weakPasswords
-     */
+    #[DataProvider('weakPasswords')]
     public function testRegistrationRejectsWeakPasswords(string $password): void
     {
         $this->from('/register')
