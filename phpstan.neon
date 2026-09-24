@@ -1,5 +1,8 @@
 includes:
     - ./vendor/nunomaduro/larastan/extension.neon
+    # Existing level 7 debt, frozen so CI fails only on new errors. Burn it down over time:
+    #   ./vendor/bin/phpstan analyse --memory-limit=2G -c phpstan.neon --generate-baseline=phpstan-baseline.neon
+    - ./phpstan-baseline.neon
 
 parameters:
     paths:
@@ -17,6 +20,4 @@ parameters:
         - ./tests/**
         - ./storage/**
         - ./bootstrap/cache/**
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
-    checkGenericClassInNonGenericObjectType: false

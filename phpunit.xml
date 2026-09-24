@@ -18,9 +18,9 @@
     <server name="CACHE_DRIVER" value="array" force="true"/>
     <server name="SESSION_DRIVER" value="array" force="true"/>
     <server name="QUEUE_DRIVER" value="sync" force="true"/>
-    <!-- Dedicated database inside the dev MariaDB container (created by .docker/mariadb/init/
-         01-create-test-database.sql). Never point this at `shop`. -->
-    <server name="DB_HOST" value="mariadb" force="true"/>
+    <!-- DB_DATABASE is forced so a stray run can never target the dev `shop` database. DB_HOST is
+         deliberately NOT forced: CI exports 127.0.0.1 for its service container, the dev container
+         / .env.testing provide `mariadb`, and forcing it here would break one of the two. -->
     <server name="DB_DATABASE" value="shop_test" force="true"/>
   </php>
   <source>
