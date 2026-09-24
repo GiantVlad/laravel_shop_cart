@@ -113,5 +113,8 @@ Production-specific traps (all hit and verified while setting up the prod stack)
   bitnami-only variable and is gone.
 - `env()` outside of config files returns null once `php artisan config:cache` has run on the server — keep settings read
   at runtime (e.g. the Horizon dashboard allowlist) in a config file.
+- The prod image installs with `composer install --no-dev`, so nothing the *deploy* needs may use a dev dependency.
+  `php artisan db:seed` died on the server with `Class "Faker\Factory" not found` because four seeders called
+  `Faker::create()` while `fakerphp/faker` is require-dev: keep seeders on plain PHP (`mt_rand`, word lists).
 - `/health` (`routes/web.php`) is what the image's `docker-healthcheck` and the compose healthcheck call; without a
   matching route the container reports unhealthy forever while still serving traffic.

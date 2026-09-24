@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ProductsRelatedProductsTableSeeder extends Seeder
 {
@@ -16,11 +15,10 @@ class ProductsRelatedProductsTableSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
         $related_products = [];
         for ($i = 1; $i < 201; $i++) {
             for ($k = 1; $k < 6; $k++) {
-                $related_product_id = $faker->numberBetween(1,200);
+                $related_product_id = mt_rand(1, 200);
                 if ($related_product_id != $i) {
                     $related_products[] =
                         [
