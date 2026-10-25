@@ -1,5 +1,5 @@
 FROM ghcr.io/roadrunner-server/roadrunner:2025.1.0 as rr
-FROM gaintvlad/lara_shop_roadrunner:8.4-2025.1.15
+FROM gaintvlad/lara_shop_roadrunner:8.4.27-2025.1.15
 
 ARG WWWUSER=1000
 ARG WWWGROUP=1000
