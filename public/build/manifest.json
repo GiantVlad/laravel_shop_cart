@@ -1,38 +1,38 @@
 {
   "node_modules/primeicons/fonts/primeicons.eot": {
-    "file": "assets/primeicons-DMOk5skT.eot",
+    "file": "assets/primeicons-BZF8q66I.eot",
     "src": "node_modules/primeicons/fonts/primeicons.eot"
   },
   "node_modules/primeicons/fonts/primeicons.svg": {
-    "file": "assets/primeicons-Dr5RGzOO.svg",
+    "file": "assets/primeicons-BmvFdQzO.svg",
     "src": "node_modules/primeicons/fonts/primeicons.svg"
   },
   "node_modules/primeicons/fonts/primeicons.ttf": {
-    "file": "assets/primeicons-MpK4pl85.ttf",
+    "file": "assets/primeicons-vaISzP8W.ttf",
     "src": "node_modules/primeicons/fonts/primeicons.ttf"
   },
   "node_modules/primeicons/fonts/primeicons.woff": {
-    "file": "assets/primeicons-WjwUDZjB.woff",
+    "file": "assets/primeicons-qgkbr2_s.woff",
     "src": "node_modules/primeicons/fonts/primeicons.woff"
   },
   "node_modules/primeicons/fonts/primeicons.woff2": {
-    "file": "assets/primeicons-C6QP2o4f.woff2",
+    "file": "assets/primeicons-BvM4qbWp.woff2",
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "src/main.js": {
-    "file": "assets/main-DXy9Ke7Q.js",
+    "file": "assets/main-Ce9gcNKF.js",
     "name": "main",
     "src": "src/main.js",
     "isEntry": true,
     "css": [
-      "assets/main-BUUmYinw.css"
+      "assets/main-DMVCQFm7.css"
     ],
     "assets": [
-      "assets/primeicons-DMOk5skT.eot",
-      "assets/primeicons-C6QP2o4f.woff2",
-      "assets/primeicons-WjwUDZjB.woff",
-      "assets/primeicons-MpK4pl85.ttf",
-      "assets/primeicons-Dr5RGzOO.svg"
+      "assets/primeicons-BZF8q66I.eot",
+      "assets/primeicons-BvM4qbWp.woff2",
+      "assets/primeicons-qgkbr2_s.woff",
+      "assets/primeicons-vaISzP8W.ttf",
+      "assets/primeicons-BmvFdQzO.svg"
     ]
   }
 }
