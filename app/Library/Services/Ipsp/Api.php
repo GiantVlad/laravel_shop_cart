@@ -2,7 +2,6 @@
 
 namespace App\Library\Services\Ipsp;
 
-use ErrorException;
 use Exception;
 
 /**
@@ -29,8 +28,6 @@ class Api
         defined('IPSP_GATEWAY') or define('IPSP_GATEWAY' , 'api.fondy.eu');
         
         $this->client = new Client(MERCHANT_ID, MERCHANT_PASSWORD, IPSP_GATEWAY);
-        set_error_handler($this->handleError());
-        set_exception_handler($this->handleException());
     }
 
     /**
@@ -78,16 +75,6 @@ class Api
         return $this->params[$key];
     }
     
-    /**
-     * @return callable
-     */
-    public function handleError(): callable
-    {
-        return function (int $errno, string $errstr, string $errfile, int $errline) {
-            throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
-        };
-    }
-
     public function hasAcsData()
     {
         return isset($_POST['MD']) AND isset($_POST['PaRes']);
@@ -108,20 +95,4 @@ class Api
 
     }
 
-    public function handleException(): callable
-    {
-        return function (Exception $e) {
-            error_log($e->getMessage());
-        
-            $msg = sprintf('<h1>Ipsp PHP Error</h1>' .
-                '<h3>%s (%s)</h3>' .
-                '<pre>%s</pre>',
-                $e->getMessage(),
-                $e->getCode(),
-                $e->getTraceAsString()
-            );
-            
-            exit($msg);
-        };
-    }
 }
