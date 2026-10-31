@@ -3,6 +3,9 @@
 namespace App\Library\Services\Ipsp;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
+use JsonException;
+use UnexpectedValueException;
 
 /**
  * Class Resource
@@ -56,9 +59,35 @@ class Resource {
      * @param string $json
      * @return mixed
      */
-    private function parseJson(string $json='')
+    private function parseJson(string $json = ''): array
     {
-        $data = json_decode($json,TRUE);
+        try {
+            $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            Log::error('Fondy API returned invalid JSON.', [
+                'http_status' => $this->request->getStatusCode(),
+                'response_length' => strlen($json),
+                'json_error' => $exception->getMessage(),
+            ]);
+
+            throw new UnexpectedValueException(
+                'Fondy API returned an invalid JSON response.',
+                previous: $exception,
+            );
+        }
+
+        if (! is_array($data) || ! isset($data['response']) || ! is_array($data['response'])) {
+            Log::error('Fondy API response is missing the expected response object.', [
+                'http_status' => $this->request->getStatusCode(),
+                'response_length' => strlen($json),
+                'top_level_keys' => is_array($data) ? array_keys($data) : [],
+            ]);
+
+            throw new UnexpectedValueException(
+                'Fondy API response is missing the expected response object.',
+            );
+        }
+
         return $data['response'];
     }
 

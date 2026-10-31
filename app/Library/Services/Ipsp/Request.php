@@ -2,6 +2,9 @@
 
 namespace App\Library\Services\Ipsp;
 
+use Illuminate\Support\Facades\Log;
+use RuntimeException;
+
 /**
  * Class Request
  */
@@ -70,7 +73,7 @@ class Request
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength($params));
         
-        return $this->curl->execute();
+        return $this->execute($url);
     }
 
     /**
@@ -86,6 +89,40 @@ class Request
         $this->curl->ssl();
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength(implode('', $params)));
-        return $this->curl->execute();
+        return $this->execute($url);
+    }
+
+    public function getStatusCode(): ?int
+    {
+        $statusCode = $this->curl->info['http_code'] ?? null;
+
+        return $statusCode === null ? null : (int) $statusCode;
+    }
+
+    private function execute(string $url): string
+    {
+        $response = $this->curl->execute();
+
+        if ($response === false) {
+            $statusCode = $this->getStatusCode();
+            $errorCode = (int) $this->curl->error_code;
+            $errorMessage = $this->curl->error_string ?: 'Unknown cURL error';
+
+            Log::error('Fondy API request failed.', [
+                'url' => $url,
+                'http_status' => $statusCode,
+                'curl_error_code' => $errorCode,
+                'curl_error' => $errorMessage,
+            ]);
+
+            throw new RuntimeException(sprintf(
+                'Fondy API request failed (HTTP status: %s, cURL error %d: %s).',
+                $statusCode ?? 'unknown',
+                $errorCode,
+                $errorMessage,
+            ));
+        }
+
+        return $response;
     }
 }
