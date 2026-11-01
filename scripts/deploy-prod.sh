@@ -34,10 +34,16 @@ mkdir -p storage/logs
 echo "Building and starting the production application services..."
 "${COMPOSE[@]}" up -d --build roadrunner horizon
 
-echo "Clearing and rebuilding Laravel caches..."
-"${COMPOSE[@]}" exec -T roadrunner php artisan optimize:clear
-"${COMPOSE[@]}" exec -T roadrunner php artisan config:cache
-"${COMPOSE[@]}" exec -T roadrunner php artisan view:cache
+echo "Clearing the shared Redis application cache..."
+"${COMPOSE[@]}" exec -T roadrunner php artisan cache:clear
+
+for SERVICE in roadrunner horizon; do
+    echo "Clearing and rebuilding Laravel caches in ${SERVICE}..."
+    # Redis cache was cleared once above; optimization files live in each container.
+    "${COMPOSE[@]}" exec -T "$SERVICE" php artisan optimize:clear --except=cache
+    "${COMPOSE[@]}" exec -T "$SERVICE" php artisan config:cache
+    "${COMPOSE[@]}" exec -T "$SERVICE" php artisan view:cache
+done
 
 echo "Resetting RoadRunner workers..."
 "${COMPOSE[@]}" exec -T roadrunner rr -c /etc/.rr.yaml reset
