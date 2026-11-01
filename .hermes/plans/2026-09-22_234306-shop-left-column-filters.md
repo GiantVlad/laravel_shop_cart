@@ -82,7 +82,7 @@ The Vue 2 components that powered it are recoverable from git:
 - Tests **must** run inside the container; running `php artisan test` on the macOS host fails with `getaddrinfo for mariadb_test failed` (`.env.testing` sets `DB_HOST=mariadb_test`).
 - Working command: `docker compose exec -T roadrunner php artisan test --filter=<Name>`
   Verified baseline: `php artisan test --filter=testGetShopPage` → `PASS Tests\Feature\HttpGetShopTest / ✓ get shop page / Tests: 1 passed (12 assertions)`.
-- `docker-compose` (v1 binary) is **not installed**; use `docker compose` (v2). It resolves `compose.yaml`, which has **no bind mount** and uses `.env.prod`. Do **not** run `docker compose up -d` / rebuild — that would replace the currently running container (which is bind-mounted from `docker-compose.yml`) with a non-mounted one. `docker compose exec` is safe: it targets the already-running container by name.
+- `docker-compose` (v1 binary) is **not installed**; use `docker compose` (v2). It resolves `compose.yaml`, which has **no bind mount** and uses `.env.prod`. Do **not** run `docker compose up -d` / rebuild — that would replace the currently running container (which is bind-mounted from `../../docker-compose.local.yml`) with a non-mounted one. `docker compose exec` is safe: it targets the already-running container by name.
 - **PHPStan is broken repo-wide, pre-existing and unrelated to this work.** `./vendor/bin/phpstan analyse --memory-limit=2G --no-progress -c phpstan.neon ./` fails immediately with:
   ```
   Invalid configuration:

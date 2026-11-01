@@ -35,7 +35,7 @@ Host NGINX terminates TLS and proxies to the containerised RoadRunner; the vhost
 `.docker/nginx/prod/shop.cloud-workflow.com.conf` (installs to `/etc/nginx/sites-available/`, upstream `127.0.0.1:8089`).
 RoadRunner serves the app *and* the static files from `/app/public`, so there is nothing to serve from disk.
 
-- Files: `compose.yaml` = production (roadrunner + horizon + mariadb + redis), `docker-compose.yml` = dev. Always deploy
+- Files: `compose.yaml` = production (roadrunner + horizon + mariadb + redis), `docker-compose.local.yml` = dev. Always deploy
   with the explicit file: `docker compose -f compose.yaml ...`.
 - Env file: services read `${ENV_FILE:-.env.prod}`. On the server the file is named `.env`, so it has to contain
   `ENV_FILE=.env` and `COMPOSE_FILE=compose.yaml`; a file named `.env` is then also what compose uses for `${DB_*}`
@@ -78,7 +78,7 @@ RoadRunner serves the app *and* the static files from `/app/public`, so there is
   `$_SERVER='shop_test'`.
 - Both compose files live in the repo and compose prefers `compose.yaml`, so a bare `docker compose exec ...` picks the
   **production** file and dies on the missing prod variables. The dev `.env` (and the server's `.env`) therefore pin
-  `COMPOSE_FILE` (`docker-compose.yml` / `compose.yaml`); without it dev commands need an explicit `-f docker-compose.yml`.
+  `COMPOSE_FILE` (`docker-compose.local.yml` / `compose.yaml`); without it dev commands need an explicit `-f docker-compose.yml`.
 - RoadRunner workers cache routes *and* the Vite manifest: run `rr -c /etc/.rr.yaml reset` after changing routes or
   rebuilding assets, otherwise the browser keeps requesting the previous `assets/main-*.js`, which no longer exists →
   blank SPA on every page.

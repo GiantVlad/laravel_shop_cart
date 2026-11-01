@@ -50,6 +50,9 @@ services:
     environment:
       APP_BASE_PATH: /app
     working_dir: /app
+    volumes:
+      # Persist Laravel logs on the host. The same directory is mounted by Horizon below.
+      - ./storage/logs:/app/storage/logs
     depends_on:
       mariadb:
         condition: service_healthy
@@ -77,6 +80,8 @@ services:
     build: *app-build
     command: ["php", "artisan", "horizon"]
     working_dir: /app
+    volumes:
+      - ./storage/logs:/app/storage/logs
     env_file:
       - ${ENV_FILE:-.env.prod}
     deploy:
