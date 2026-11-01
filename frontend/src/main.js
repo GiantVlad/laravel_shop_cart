@@ -58,6 +58,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(PrimeVue, {
+                license: import.meta.env.VITE_PRIMEUI_LICENSE,
                 theme: {
                     preset: ShopPreset,
                     options: {
