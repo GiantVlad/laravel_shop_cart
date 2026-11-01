@@ -19,6 +19,7 @@ return [
         'fondy' => [
             'label' => 'Fondy',
             'class_name' => 'App\\Services\\Payment\\FondyPayment',
+            'verify_ssl_host' => env('FONDY_SSL_VERIFY_HOST', true),
         ],
         // Pay on pickup. Only shipping methods that offer it show it in the cart.
         'cash' => [

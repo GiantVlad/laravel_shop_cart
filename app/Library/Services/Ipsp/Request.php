@@ -68,7 +68,7 @@ class Request
     public function doPost(string $url = '' , string $params = '')
     {
         $this->curl->create($url);
-        $this->curl->ssl();
+        $this->curl->ssl(false, config('payments.fondy.verify_ssl_host', true) ? 2 : 0);
         $this->curl->post($params);
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength($params));
@@ -86,7 +86,7 @@ class Request
         $this->curl->create(
             $url.(empty($params) ? '' : '?'.http_build_query($params))
         );
-        $this->curl->ssl();
+        $this->curl->ssl(false, config('payments.fondy.verify_ssl_host', true) ? 2 : 0);
         $this->curl->http_header($this->getContentType( $this->format ));
         $this->curl->http_header($this->getContentLength(implode('', $params)));
         return $this->execute($url);
